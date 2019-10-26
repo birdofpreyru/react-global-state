@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "build": "babel src --out-dir build --source-maps --minified",
-    "lint": "eslint --ext .js,.jsx . && eslint bin/*",
+    "lint": "eslint --ext .js,.jsx .",
     "test": "npm run lint"
   },
   "repository": {
