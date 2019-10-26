@@ -1,0 +1,12 @@
+{
+  "presets": [
+    "@babel/env",
+    "@babel/react"
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "extensions": [".js", ".jsx"],
+      "root": ["./src"]
+    }]
+  ]
+}
