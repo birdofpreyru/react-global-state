@@ -30,6 +30,12 @@ export default class GlobalState {
   /**
    * Sets `value` at the specified state `path`. If `path` is null or undefined,
    * the value is set as the entire state object.
+   *
+   * TODO: With such naive use of _.set, the state is mutated in place, which
+   * may cause tons of unexpected side effects for dependants. It will be better
+   * to partially clone the state, so that any existing references are not
+   * mutated, while the full deep clonning is also avoided.
+   *
    * @param {String} path
    * @param {Any} value
    * @return {Any} value
