@@ -1,0 +1,9 @@
+{
+  "collectCoverage": true,
+  "collectCoverageFrom": ["src/**/*.{js,jsx}"],
+  "coverageDirectory": "__coverage__",
+  "rootDir": "..",
+  "transform": {
+    "\\.jsx?$": "babel-jest"
+  }
+}

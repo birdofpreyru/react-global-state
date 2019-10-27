@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`State set & get 1`] = `
+GlobalState {
+  "state": Object {
+    "key": "value",
+  },
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 2`] = `
+GlobalState {
+  "state": Object {
+    "": "value2",
+    "key": "value",
+  },
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 3`] = `
+GlobalState {
+  "state": "value3",
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 4`] = `
+GlobalState {
+  "state": "value4",
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 5`] = `
+GlobalState {
+  "state": Object {
+    "": "value5",
+  },
+  "watchers": Array [],
+}
+`;
