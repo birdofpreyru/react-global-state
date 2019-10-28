@@ -95,6 +95,12 @@ export default function Demo() {
   The first one is the value at the path. The second one is the function to
   update the path value.
 
+  Notifications on state updates are async, in the sence that if you update
+  the state multiple times from the same syncroneous code, the updates are
+  propagated to other components once the current code exits.
+
+  _&uArr; This requires a better explanation!_
+
 - <a name="useAsyncData"></a> `useAsyncData(path, loader, [options])` &ndash;
   Hook for storing async data in the global state and the specified path. When
   different components in your application rely on the same async data (e.g.

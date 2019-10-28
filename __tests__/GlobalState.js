@@ -5,16 +5,23 @@
 
 import GlobalState from 'src/GlobalState';
 
+jest.useFakeTimers();
+
 test('State set & get', () => {
   const state = new GlobalState({ key: 'value' });
   expect(state).toMatchSnapshot();
   state.set('', 'value2');
   expect(state).toMatchSnapshot();
+  jest.runAllTimers();
+  expect(state).toMatchSnapshot();
   state.set(undefined, 'value3');
+  jest.runAllTimers();
   expect(state).toMatchSnapshot();
   state.set(null, 'value4');
+  jest.runAllTimers();
   expect(state).toMatchSnapshot();
   state.set('', 'value5');
+  jest.runAllTimers();
   expect(state).toMatchSnapshot();
 });
 

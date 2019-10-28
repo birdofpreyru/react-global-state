@@ -1,12 +1,18 @@
+/**
+ * Tests `useGlobalState(..)` functionality in the "CounterScene":
+ * one component shows a value from the global state, another component
+ * implements a button, which updates that state when clicked.
+ */
 /* eslint-disable react/prop-types */
 
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 
 import pretty from 'pretty';
 
-import { mount, unmount } from 'jest/utils';
+import { act, mount, unmount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
+
+jest.useFakeTimers();
 
 function CounterView() {
   const [count] = useGlobalState('counter', 0);
@@ -42,24 +48,11 @@ function TestScene() {
 }
 
 let scene = null;
-
 afterEach(() => {
-  unmount(scene);
-});
-
-test('Base test', () => {
-  scene = mount(<TestScene />);
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  let button = document.querySelector('[data-testid=button-1]');
-  act(() => {
-    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-  });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  button = document.querySelector('[data-testid=button-2]');
-  act(() => {
-    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-  });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  if (scene) {
+    unmount(scene);
+    scene = null;
+  }
 });
 
 test('Throws if GlobalStateProvider is missing', () => {
@@ -73,4 +66,23 @@ test('Throws if GlobalStateProvider is missing', () => {
   }
   console.error = consoleError;
   expect(message).toMatchSnapshot();
+});
+
+test('The scene works as expected', () => {
+  act(() => {
+    scene = mount(<TestScene />);
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  let button = document.querySelector('[data-testid=button-1]');
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    jest.runAllTimers();
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  button = document.querySelector('[data-testid=button-2]');
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    jest.runAllTimers();
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
 });

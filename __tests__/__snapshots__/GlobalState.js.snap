@@ -2,6 +2,7 @@
 
 exports[`State set & get 1`] = `
 GlobalState {
+  "pendingNotification": false,
   "state": Object {
     "key": "value",
   },
@@ -11,6 +12,7 @@ GlobalState {
 
 exports[`State set & get 2`] = `
 GlobalState {
+  "pendingNotification": true,
   "state": Object {
     "": "value2",
     "key": "value",
@@ -21,20 +23,34 @@ GlobalState {
 
 exports[`State set & get 3`] = `
 GlobalState {
-  "state": "value3",
+  "pendingNotification": false,
+  "state": Object {
+    "": "value2",
+    "key": "value",
+  },
   "watchers": Array [],
 }
 `;
 
 exports[`State set & get 4`] = `
 GlobalState {
-  "state": "value4",
+  "pendingNotification": false,
+  "state": "value3",
   "watchers": Array [],
 }
 `;
 
 exports[`State set & get 5`] = `
 GlobalState {
+  "pendingNotification": false,
+  "state": "value4",
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 6`] = `
+GlobalState {
+  "pendingNotification": false,
   "state": Object {
     "": "value5",
   },

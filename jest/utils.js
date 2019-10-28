@@ -6,6 +6,8 @@
 
 import { render, unmountComponentAtNode } from 'react-dom';
 
+export { act } from 'react-dom/test-utils';
+
 /**
  * Mounts `Scene` to the DOM, and returns the root scene element.
  * @param {React.ReactNode} scene
