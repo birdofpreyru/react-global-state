@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`State set & get 1`] = `
+GlobalState {
+  "pendingNotification": false,
+  "state": Object {
+    "key": "value",
+  },
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 2`] = `
+GlobalState {
+  "pendingNotification": true,
+  "state": Object {
+    "": "value2",
+    "key": "value",
+  },
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 3`] = `
+GlobalState {
+  "pendingNotification": false,
+  "state": Object {
+    "": "value2",
+    "key": "value",
+  },
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 4`] = `
+GlobalState {
+  "pendingNotification": false,
+  "state": "value3",
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 5`] = `
+GlobalState {
+  "pendingNotification": false,
+  "state": "value4",
+  "watchers": Array [],
+}
+`;
+
+exports[`State set & get 6`] = `
+GlobalState {
+  "pendingNotification": false,
+  "state": Object {
+    "": "value5",
+  },
+  "watchers": Array [],
+}
+`;

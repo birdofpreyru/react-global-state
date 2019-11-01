@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The scene works as expected 1`] = `
+"<div>0</div>
+<div><button data-testid=\\"button-1\\" type=\\"button\\">Bump!</button></div>
+<div>0</div>
+<div><button data-testid=\\"button-2\\" type=\\"button\\">Bump!</button></div>"
+`;
+
+exports[`The scene works as expected 2`] = `
+"<div>1</div>
+<div><button data-testid=\\"button-1\\" type=\\"button\\">Bump!</button></div>
+<div>0</div>
+<div><button data-testid=\\"button-2\\" type=\\"button\\">Bump!</button></div>"
+`;
+
+exports[`The scene works as expected 3`] = `
+"<div>1</div>
+<div><button data-testid=\\"button-1\\" type=\\"button\\">Bump!</button></div>
+<div>1</div>
+<div><button data-testid=\\"button-2\\" type=\\"button\\">Bump!</button></div>"
+`;
+
+exports[`Throws if GlobalStateProvider is missing 1`] = `"Missing GlobalStateProvider"`;

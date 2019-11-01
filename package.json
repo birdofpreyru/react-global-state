@@ -1,12 +1,13 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Hook-based global state for React",
   "main": "build/index.js",
   "scripts": {
     "build": "babel src --out-dir build --source-maps --minified",
+    "jest": "jest --config jest/config.json",
     "lint": "eslint --ext .js,.jsx .",
-    "test": "npm run lint"
+    "test": "npm run lint && npm run jest"
   },
   "repository": {
     "type": "git",
@@ -36,16 +37,22 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
     "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.9.0",
     "babel-plugin-module-resolver": "^3.2.0",
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-import-resolver-babel-module": "^5.1.0",
     "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.21.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
+    "jest": "^24.9.0",
+    "mockdate": "^2.0.5",
+    "pretty": "^2.0.0",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0"
+    "react-dom": "^16.11.0",
+    "regenerator-runtime": "^0.13.3"
   },
   "peerDependencies": {
     "react": "^16.11.0",

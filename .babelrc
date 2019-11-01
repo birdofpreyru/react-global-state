@@ -6,7 +6,7 @@
   "plugins": [
     ["module-resolver", {
       "extensions": [".js", ".jsx"],
-      "root": ["./src"]
+      "root": ["./src", "."]
     }]
   ]
 }
