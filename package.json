@@ -48,9 +48,11 @@
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^24.9.0",
+    "mockdate": "^2.0.5",
     "pretty": "^2.0.0",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0"
+    "react-dom": "^16.11.0",
+    "regenerator-runtime": "^0.13.3"
   },
   "peerDependencies": {
     "react": "^16.11.0",

@@ -44,7 +44,7 @@ export default class GlobalState {
   set(path, value) {
     _.set(this, fullPath(path), value);
     this.pendingNotification = true;
-    setImmediate(() => {
+    setTimeout(() => {
       if (this.pendingNotification) {
         this.pendingNotification = false;
         this.watchers.forEach((w) => w());

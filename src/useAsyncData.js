@@ -57,12 +57,18 @@ export default function useAsyncData(
           });
         }
       });
+    } else {
+      globalState.set(path, {
+        ...state,
+        numRefs: 1 + state.numRefs,
+      });
     }
     return () => {
       now = Date.now();
       state = { ...globalState.get(path) };
       state.numRefs -= 1;
       if (!state.numRefs && state.timestamp < now - garbageCollectAge) {
+        state.timestamp = 0;
         state.data = null;
       }
       globalState.set(path, state);

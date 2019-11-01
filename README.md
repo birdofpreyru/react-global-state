@@ -126,6 +126,11 @@ export default function Demo() {
     - `[options.maxage]` (_Number_) &ndash; Optional. Maximum age of data
       acceptable to the caller. If data in the state are older than this time [ms],
       the reloading will be initiated.
+    - `[options.refreshAge]` (_Number_) &ndash; Optional. Maximum age of data
+      which will not trigger data update. Defaults to the `maxage` value.
+    - `[options.garbageCollectAge]` (_Number_) &ndash; Optional. Maximum age
+      of data after which they will be dropped from the state, if no objects
+      reference to them.
 
   **Returns** object with the following fields:
   - `data` (_Any_) &ndash; current data stored at the state.

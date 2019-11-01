@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Scenario I 1`] = `"<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"`;
+
+exports[`Scenario I 2`] = `
+"<div>{
+  \\"data\\": null,
+  \\"loading\\": true,
+  \\"timestamp\\": 0
+  }</div>
+<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+`;
+
+exports[`Scenario I 3`] = `
+"<div>{
+  \\"data\\": \\"data\\",
+  \\"loading\\": false,
+  \\"timestamp\\": 1572220801000
+  }</div>
+<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+`;
+
+exports[`Scenario I 4`] = `
+"<div>{
+  \\"data\\": \\"data\\",
+  \\"loading\\": false,
+  \\"timestamp\\": 1572220801000
+  }</div>
+<div>{
+  \\"data\\": \\"data\\",
+  \\"loading\\": false,
+  \\"timestamp\\": 1572220801000
+  }</div>
+<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+`;
+
+exports[`Scenario I 5`] = `
+"<div>{
+  \\"data\\": \\"data\\",
+  \\"loading\\": false,
+  \\"timestamp\\": 1572220801000
+  }</div>
+<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+`;
+
+exports[`Scenario I 6`] = `"<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"`;
+
+exports[`Scenario I 7`] = `
+"<div>{
+  \\"data\\": \\"data\\",
+  \\"loading\\": false,
+  \\"timestamp\\": 1572220801000
+  }</div>
+<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+`;
+
+exports[`Scenario I 8`] = `
+"<div>{
+  \\"data\\": null,
+  \\"loading\\": true,
+  \\"timestamp\\": 1572220801000
+  }</div>
+<div>{
+  \\"data\\": null,
+  \\"loading\\": true,
+  \\"timestamp\\": 1572220801000
+  }</div>
+<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+`;
+
+exports[`Scenario I 9`] = `
+"<div>{
+  \\"data\\": \\"data\\",
+  \\"loading\\": false,
+  \\"timestamp\\": 1572221162050
+  }</div>
+<div>{
+  \\"data\\": \\"data\\",
+  \\"loading\\": false,
+  \\"timestamp\\": 1572221162050
+  }</div>
+<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+`;
+
+exports[`Scenario I 10`] = `
+"<div>{
+  \\"data\\": null,
+  \\"loading\\": false,
+  \\"timestamp\\": 1572221162050
+  }</div>
+<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+`;
+
+exports[`Scenario I 11`] = `"<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"`;
