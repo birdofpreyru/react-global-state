@@ -14,8 +14,11 @@ function fullPath(statePath) {
 export default class GlobalState {
   constructor(initialState) {
     this.state = _.cloneDeep(initialState);
-    this.pendingNotification = false;
     this.watchers = [];
+
+    /* Holds ID of the timer which will trigger the next state update
+     * notifications. */
+    this.nextNotificationId = null;
   }
 
   /**
@@ -43,13 +46,12 @@ export default class GlobalState {
    */
   set(path, value) {
     _.set(this, fullPath(path), value);
-    this.pendingNotification = true;
-    setTimeout(() => {
-      if (this.pendingNotification) {
-        this.pendingNotification = false;
+    if (!this.nextNotificationId) {
+      this.nextNotificationId = setTimeout(() => {
+        this.nextNotificationId = null;
         this.watchers.forEach((w) => w());
-      }
-    });
+      });
+    }
     return value;
   }
 
