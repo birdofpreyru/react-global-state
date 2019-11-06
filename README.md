@@ -1,4 +1,9 @@
-# Dr. Pogodin's React Global State
+![Master Build Status](https://img.shields.io/circleci/project/github/birdofpreyru/react-global-state/master.svg?label=master)
+![Dev Build Status](https://img.shields.io/circleci/project/github/birdofpreyru/react-global-state/develop.svg?label=develop)
+![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/react-global-state.svg)
+![NPM Downloads](https://img.shields.io/npm/dm/@dr.pogodin/react-global-state.svg)
+
+# React Global State
 
 Efficient and simple to use global state management for React, implemented with
 hooks, and spiced by useful data management functions (async retrieval, caching,
