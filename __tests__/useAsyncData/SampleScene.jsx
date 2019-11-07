@@ -8,22 +8,17 @@ import React, { useState } from 'react';
 import mockdate from 'mockdate';
 import pretty from 'pretty';
 
-import { act, mount, unmount } from 'jest/utils';
+import {
+  act,
+  mockTimer,
+  mount,
+  timer,
+  unmount,
+} from 'jest/utils';
 import { GlobalStateProvider, useAsyncData } from 'src';
 
 jest.useFakeTimers();
 mockdate.set('2019-10-28Z');
-
-function timer(time) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, time);
-  });
-}
-
-async function mockTimer(time) {
-  mockdate.set(time + Date.now());
-  jest.advanceTimersByTime(time);
-}
 
 const loaderA = jest.fn(async () => {
   await timer(1000);

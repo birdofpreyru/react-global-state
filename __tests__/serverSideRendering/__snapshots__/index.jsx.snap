@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Naive server-side rendering 1`] = `
+"<div>
+  <div>{
+    &quot;data&quot;: null,
+    &quot;loading&quot;: false,
+    &quot;timestamp&quot;: 0
+    }</div>
+  <div>{
+    &quot;data&quot;: null,
+    &quot;loading&quot;: false,
+    &quot;timestamp&quot;: 0
+    }</div>
+</div>"
+`;
+
+exports[`Scene test in the front-end mode 1`] = `
+"<div>
+  <div>{
+    \\"data\\": null,
+    \\"loading\\": false,
+    \\"timestamp\\": 0
+    }</div>
+  <div>{
+    \\"data\\": null,
+    \\"loading\\": false,
+    \\"timestamp\\": 0
+    }</div>
+</div>"
+`;
+
+exports[`Scene test in the front-end mode 2`] = `
+"<div>
+  <div>{
+    \\"data\\": null,
+    \\"loading\\": true,
+    \\"timestamp\\": 0
+    }</div>
+  <div>{
+    \\"data\\": null,
+    \\"loading\\": true,
+    \\"timestamp\\": 0
+    }</div>
+</div>"
+`;
+
+exports[`Scene test in the front-end mode 3`] = `
+"<div>
+  <div>{
+    \\"data\\": \\"data\\",
+    \\"loading\\": false,
+    \\"timestamp\\": 1573084801100
+    }</div>
+  <div>{
+    \\"data\\": \\"data\\",
+    \\"loading\\": false,
+    \\"timestamp\\": 1573084801100
+    }</div>
+</div>"
+`;
+
+exports[`Smart server-sider rendering 1`] = `
+"<div><div>{
+  &quot;data&quot;: &quot;data&quot;,
+  &quot;loading&quot;: false,
+  &quot;timestamp&quot;: 1573084801100
+}</div><div>{
+  &quot;data&quot;: &quot;data&quot;,
+  &quot;loading&quot;: false,
+  &quot;timestamp&quot;: 1573084801100
+}</div></div>"
+`;

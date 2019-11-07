@@ -7,7 +7,7 @@
 
 Efficient and simple to use global state management for React, implemented with
 hooks, and spiced by useful data management functions (async retrieval, caching,
-etc.).
+etc.). Support server-side rendering (SSR) with a trivial setup.
 
 ### Content
 - [Base example](#base-example)
@@ -74,7 +74,11 @@ export default function Demo() {
   **Children** are optional, and they are rendered at the component place.
 
   **Properties**
+
   - `[initialState]` (_Any_) &ndash; Optional. Initial global state.
+
+  - `[ssr]` (_Boolean_) &ndash; Optional. Set `true` to run the state, and
+    related hooks, in the server-side rendering mode.
 
 - <a name="useGlobalState"></a> `useGlobalState(path, [initialValue])` &ndash;
   Base global state hook, similar to React's `useState` hook for the local state.
@@ -145,4 +149,4 @@ export default function Demo() {
 
 ### Notes
 
-_P.S.: Mind the version 0.0.1. As of now it is a proof-of-concept, which works great in the few tests I did. If you try, and find glitches, please report the bugs, it will help to polish this library faster._
+_P.S.: Mind the early version! As of now it is a proof-of-concept, which works great in my tests, but lacks some features, and optimizations I have in my mind._

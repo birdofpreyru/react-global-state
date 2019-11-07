@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
+
 /**
  * Transform state path into the full path inside GlobalState object.
  * @param {String} statePath
@@ -12,13 +14,25 @@ function fullPath(statePath) {
  * The GlobalState object powers data stores.
  */
 export default class GlobalState {
-  constructor(initialState) {
+  /**
+   * Creates a new global state object.
+   * @param {Any} [initialState] Intial global state.
+   * @param {Object} [ssrContext] Optional. Mutated. Server-side rendering
+   *  context.
+   */
+  constructor(initialState, ssrContext) {
+    /* eslint-disable no-param-reassign */
     this.state = _.cloneDeep(initialState);
+    this.nextNotifierId = null;
     this.watchers = [];
 
-    /* Holds ID of the timer which will trigger the next state update
-     * notifications. */
-    this.nextNotificationId = null;
+    if (ssrContext) {
+      ssrContext.dirty = false;
+      ssrContext.pending = [];
+      ssrContext.state = this.state;
+      this.ssrContext = ssrContext;
+    }
+    /* eslint-enable no-param-reassign */
   }
 
   /**
@@ -45,12 +59,17 @@ export default class GlobalState {
    * @return {Any} value
    */
   set(path, value) {
-    _.set(this, fullPath(path), value);
-    if (!this.nextNotificationId) {
-      this.nextNotificationId = setTimeout(() => {
-        this.nextNotificationId = null;
-        this.watchers.forEach((w) => w());
-      });
+    const p = fullPath(path);
+    if (value !== _.get(this, p)) {
+      _.set(this, p, value);
+      if (this.ssrContext) {
+        this.ssrContext.dirty = true;
+      } else if (!this.nextNotifierId) {
+        this.nextNotifierId = setTimeout(() => {
+          this.nextNotifierId = null;
+          this.watchers.forEach((w) => w());
+        });
+      }
     }
     return value;
   }
@@ -59,8 +78,11 @@ export default class GlobalState {
    * Removes `callback` from watcher array. No operation if `callback` is not
    * in the watchers list.
    * @param {Function} callback
+   * @throws if `ssrContext` is given: the state watching functionality is
+   *  intended for client-side only.
    */
   unWatch(callback) {
+    if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
     const { watchers } = this;
     const pos = watchers.indexOf(callback);
     if (pos >= 0) {
@@ -73,8 +95,11 @@ export default class GlobalState {
    * Subscribes `callback` to state updates. No operation if `callback` is
    * in the watchers list already.
    * @param {Function} callback
+   * @throws if `ssrContext` is given: the state watching functionality is
+   *  intended for client-side only.
    */
   watch(callback) {
+    if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
     const { watchers } = this;
     if (watchers.indexOf(callback) < 0) {
       watchers.push(callback);
