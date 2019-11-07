@@ -173,7 +173,7 @@ of some, or all async data at the server side.
     async function renderServerSide() {
       let render;
       const ssrContext = { state: {} };
-      for (let round; round < 3; round += 1) {
+      for (let round = 0; round < 3; round += 1) {
         render = ReactDOM.renderToString((
           <GlobalStateProvider
             initialState={ssrContext.state}
