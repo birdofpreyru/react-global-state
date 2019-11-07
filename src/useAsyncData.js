@@ -15,6 +15,7 @@ const DEFAULT_MAXAGE = 5 * 60 * 1000; // 5 minutes.
  * @param {String} path
  * @param {Function} loader
  * @param {Object} [options]
+ * @param {Boolea} [options.noSSR]
  * @param {Number} [options.garbageCollectAge=DEFAULT_MAXAGE]
  * @param {Number} [options.maxage=DEFAULT_MAXAGE]
  * @param {NumbeR} [options.refreshAge=DEFAULT_MAXAGE]
@@ -37,43 +38,68 @@ export default function useAsyncData(
     timestamp: 0,
   });
 
-  useEffect(() => {
+  if (globalState.ssrContext && !options.noSSR) {
     let state = globalState.get(path);
-    if (state.timestamp < Date.now() - refreshAge && !state.operationId) {
+    if (!state.timestamp && !state.operationId) {
       const operationId = uuid();
       globalState.set(path, {
         ...state,
         operationId,
-        numRefs: 1 + state.numRefs,
       });
-      loader().then((data) => {
-        state = globalState.get(path);
-        if (operationId === state.operationId) {
-          globalState.set(path, {
-            ...state,
-            data,
-            operationId: '',
-            timestamp: Date.now(),
-          });
-        }
-      });
-    } else {
-      globalState.set(path, {
-        ...state,
-        numRefs: 1 + state.numRefs,
-      });
+      globalState.ssrContext.pending.push(
+        loader().then((data) => {
+          state = globalState.get(path);
+          if (operationId === state.operationId) {
+            globalState.set(path, {
+              ...state,
+              data,
+              operationId: '',
+              timestamp: Date.now(),
+            });
+          }
+        }),
+      );
     }
-    return () => {
-      now = Date.now();
-      state = { ...globalState.get(path) };
-      state.numRefs -= 1;
-      if (!state.numRefs && state.timestamp < now - garbageCollectAge) {
-        state.timestamp = 0;
-        state.data = null;
+  } else {
+    useEffect(() => {
+      let state = globalState.get(path);
+      if (state.timestamp < Date.now() - refreshAge && !state.operationId) {
+        const operationId = uuid();
+        globalState.set(path, {
+          ...state,
+          operationId,
+          numRefs: 1 + state.numRefs,
+        });
+        loader().then((data) => {
+          state = globalState.get(path);
+          if (operationId === state.operationId) {
+            globalState.set(path, {
+              ...state,
+              data,
+              operationId: '',
+              timestamp: Date.now(),
+            });
+          }
+        });
+      } else {
+        globalState.set(path, {
+          ...state,
+          numRefs: 1 + state.numRefs,
+        });
       }
-      globalState.set(path, state);
-    };
-  }, []);
+      return () => {
+        now = Date.now();
+        state = { ...globalState.get(path) };
+        state.numRefs -= 1;
+        if (!state.numRefs && state.timestamp < now - garbageCollectAge) {
+          state.timestamp = 0;
+          state.data = null;
+        }
+        globalState.set(path, state);
+      };
+    }, []);
+  }
+
   return {
     data: localState.timestamp < now - maxage ? null : localState.data,
     loading: Boolean(localState.operationId),

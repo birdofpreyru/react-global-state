@@ -17,14 +17,17 @@ export function getGlobalState() {
 
 /**
  * Provides global state store to the wrapped components.
- * @param {Any} initialState Initial state.
- * @return {React.ElementType}
+ * @param {React.Node} [children] Provider children.
+ * @param {Any} [initialState] Initial state.
+ * @param {Object} [ssrContext] Server-side rendering context.
+ * @returns {React.ElementType}
  */
 export default function GlobalStateProvider({
   children,
   initialState,
+  ssrContext,
 }) {
-  const [state] = useState(new GlobalState(initialState));
+  const [state] = useState(new GlobalState(initialState, ssrContext));
   return (
     <context.Provider value={state}>
       {children}
