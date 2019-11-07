@@ -15,6 +15,7 @@ const DEFAULT_MAXAGE = 5 * 60 * 1000; // 5 minutes.
  * @param {String} path
  * @param {Function} loader
  * @param {Object} [options]
+ * @param {Boolea} [options.noSSR]
  * @param {Number} [options.garbageCollectAge=DEFAULT_MAXAGE]
  * @param {Number} [options.maxage=DEFAULT_MAXAGE]
  * @param {NumbeR} [options.refreshAge=DEFAULT_MAXAGE]
@@ -37,7 +38,7 @@ export default function useAsyncData(
     timestamp: 0,
   });
 
-  if (globalState.ssrContext) {
+  if (globalState.ssrContext && !options.noSSR) {
     let state = globalState.get(path);
     if (!state.timestamp && !state.operationId) {
       const operationId = uuid();
