@@ -20,14 +20,20 @@ export function getGlobalState() {
  * @param {React.Node} [children] Provider children.
  * @param {Any} [initialState] Initial state.
  * @param {Object} [ssrContext] Server-side rendering context.
+ * @param {Boolean} [stateProxy] Optional. Tells the provider to re-provide
+ *  the global state project from a parent context, rather than to create
+ *  a new one. Such feature is useful for code-splitting with SSR support.
  * @returns {React.ElementType}
  */
 export default function GlobalStateProvider({
   children,
   initialState,
   ssrContext,
+  stateProxy,
 }) {
-  const [state] = useState(new GlobalState(initialState, ssrContext));
+  let state;
+  if (stateProxy) state = getGlobalState();
+  else [state] = useState(new GlobalState(initialState, ssrContext));
   return (
     <context.Provider value={state}>
       {children}

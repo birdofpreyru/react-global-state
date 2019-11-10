@@ -34,12 +34,16 @@ function CounterButton({ testButtonId }) {
   );
 }
 
-function TestScene() {
+/**
+ * This is the test scene.
+ * @param {Boolean} [props.innerProviderIsProxy] Makes the inner provider proxy.
+ */
+function TestScene({ stateProxy }) {
   return (
     <GlobalStateProvider>
       <CounterView />
       <CounterButton testButtonId="button-1" />
-      <GlobalStateProvider>
+      <GlobalStateProvider stateProxy={stateProxy}>
         <CounterView />
         <CounterButton testButtonId="button-2" />
       </GlobalStateProvider>
@@ -71,6 +75,25 @@ test('Throws if GlobalStateProvider is missing', () => {
 test('The scene works as expected', () => {
   act(() => {
     scene = mount(<TestScene />);
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  let button = document.querySelector('[data-testid=button-1]');
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    jest.runAllTimers();
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  button = document.querySelector('[data-testid=button-2]');
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    jest.runAllTimers();
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+});
+
+test('Test of `stateProxy` prop of the state provider', () => {
+  act(() => {
+    scene = mount(<TestScene stateProxy />);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   let button = document.querySelector('[data-testid=button-1]');
