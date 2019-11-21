@@ -5,6 +5,7 @@
   },
   "plugins": ["jest"],
   "rules": {
+    "global-require": 0,
     "no-console": 0
   }
 }

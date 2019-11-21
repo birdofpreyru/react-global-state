@@ -16,7 +16,11 @@ import {
   unmount,
 } from 'jest/utils';
 
-import { GlobalStateProvider, useAsyncData } from 'src';
+import {
+  GlobalStateProvider,
+  getSsrContext,
+  useAsyncData,
+} from 'src';
 
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
@@ -128,4 +132,74 @@ test('Smart server-sider rendering', async () => {
   render = await render;
   expect(serverSideRender.round).toBe(1);
   expect(render).toMatchSnapshot();
+});
+
+describe('Test `getSsrContext()` function', () => {
+  /* eslint-disable react/prop-types */
+  function SceneUsingSsrContext({ throwWithoutSsrContext }) {
+    const ssrContext = getSsrContext(throwWithoutSsrContext);
+    return (
+      <div>
+        {JSON.stringify(ssrContext, null, 2)}
+      </div>
+    );
+  }
+  /* eslint-enable react/prop-types */
+
+  let consoleError;
+  beforeAll(() => {
+    consoleError = console.error;
+  });
+
+  afterEach(() => {
+    console.error = consoleError;
+    if (scene) {
+      unmount(scene);
+      scene = null;
+    }
+  });
+
+  test('Missing GlobalStateProvider', () => {
+    console.error = () => null;
+    let message;
+    try {
+      mount(<SceneUsingSsrContext />);
+    } catch (error) {
+      ({ message } = error);
+    }
+    expect(message).toMatchSnapshot();
+  });
+
+  test('Get SSR context when exists', () => {
+    scene = mount((
+      <GlobalStateProvider ssrContext={{ key: 'Dummy SSR Context' }}>
+        <SceneUsingSsrContext />
+      </GlobalStateProvider>
+    ));
+    expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  });
+
+  test('Get SSR context when does not exist', () => {
+    console.error = () => null;
+    let message;
+    try {
+      mount((
+        <GlobalStateProvider>
+          <SceneUsingSsrContext />
+        </GlobalStateProvider>
+      ));
+    } catch (error) {
+      ({ message } = error);
+    }
+    expect(message).toMatchSnapshot();
+  });
+
+  test('Get SSR context when does not exist, but no throw is opted in', () => {
+    scene = mount((
+      <GlobalStateProvider>
+        <SceneUsingSsrContext throwWithoutSsrContext={false} />
+      </GlobalStateProvider>
+    ));
+    expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  });
 });

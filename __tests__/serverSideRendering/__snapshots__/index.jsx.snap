@@ -71,3 +71,17 @@ exports[`Smart server-sider rendering 1`] = `
   &quot;timestamp&quot;: 1573084801100
 }</div></div>"
 `;
+
+exports[`Test \`getSsrContext()\` function Get SSR context when does not exist 1`] = `"No SSR context found"`;
+
+exports[`Test \`getSsrContext()\` function Get SSR context when does not exist, but no throw is opted in 1`] = `"<div></div>"`;
+
+exports[`Test \`getSsrContext()\` function Get SSR context when exists 1`] = `
+"<div>{
+  \\"key\\": \\"Dummy SSR Context\\",
+  \\"dirty\\": false,
+  \\"pending\\": []
+  }</div>"
+`;
+
+exports[`Test \`getSsrContext()\` function Missing GlobalStateProvider 1`] = `"Missing GlobalStateProvider"`;
