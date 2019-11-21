@@ -16,6 +16,22 @@ export function getGlobalState() {
 }
 
 /**
+ * Returns SSR context.
+ * @param {Boolean} [throwWithoutSsrContext=true] When `true` (default),
+ *  this function will throw if no SSR context is attached to the global state,
+ *  set `false` to not throw in such case. The function will still throw if
+ *  the GlobalStateProvider (hence the state) is missing.
+ * @returns {Object} SSR context.
+ */
+export function getSsrContext(throwWithoutSsrContext = true) {
+  const { ssrContext } = getGlobalState();
+  if (!ssrContext && throwWithoutSsrContext) {
+    throw new Error('No SSR context found');
+  }
+  return ssrContext;
+}
+
+/**
  * Provides global state store to the wrapped components.
  * @param {React.Node} [children] Provider children.
  * @param {Any} [initialState] Initial state.

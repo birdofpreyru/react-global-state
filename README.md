@@ -21,6 +21,8 @@ etc.), and the server-side rendering (SSR) support.
     Base global state hook.
   - [`useAsyncData(path, loader, [options])`](#useAsyncData) &ndash;
     Hook for storing async data in the global state.
+  - [`getSsrContext([throwWithoutSsrContext=true])`](#getSsrContext) &ndash;
+    Hook to access SSR context.
 - [Notes](#notes)
 
 ### Motivation
@@ -345,6 +347,21 @@ of some, or all async data at the server side.
   - `loading` (_Boolean_) &ndash; `true` if the data are being loaded.
   - `timestamp` (_Number_) &ndash; Timestamp of the data currently loaded into
     the state [ms]. Defaults 5 min.
+
+- <a name="getSsrContext"></a> `getSsrContext([throwWithoutSsrContext=true])`
+  &ndash; Hook to access SSR context from React components.
+
+  In most use cases you don't need to access SSR context directly from your
+  components. For SSR you just provide SSR context to the state provider,
+  and read its resulting state directly after the render (see SSR example
+  above). This hook is introduced to implement code-splitting with full SSR
+  support, in a scenario when some components need additional data to be passed
+  to them during SSR.
+
+  Returns the SSR context, or throws if it does not exist. The optional
+  `throwWithoutSsrContext` argument can be set to `false` to not throw if
+  the context does not exist. In any case, this hook still throws if entire
+  global state (i.e. `<GlobalStateProvider>`) is missing.
 
 ### Notes
 
