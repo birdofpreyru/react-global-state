@@ -274,10 +274,11 @@ of some, or all async data at the server side.
     - `ssrContext.state` (_Any_) &ndash; Will contain the resulting state after
       the rendering pass, including the results of async operations.
 
-  - `[stateProxy]` (_Boolean_) &ndash; Optional. If set `true`, the provider
-    will act as proxy, i.e. it will re-use the state from a parent provider,
-    instead of creating a new one. This is useful for code-splitting with SSR
-    support.
+  - `[stateProxy]` (_Boolean_ | _GlobalState_) &ndash; Optional. If set `true`,
+    the provider will act as proxy, i.e. it will re-use the state from a parent
+    provider, instead of creating a new one. If set an instance of the global
+    state object, that global state will be used. This is useful for
+    code-splitting with SSR support.
 
 - <a name="useGlobalState"></a> `useGlobalState(path, [initialValue])` &ndash;
   Base global state hook, similar to React's `useState` hook for the local state.

@@ -21,6 +21,66 @@ exports[`Test of \`stateProxy\` prop of the state provider 3`] = `
 <div><button data-testid=\\"button-2\\" type=\\"button\\">Bump!</button></div>"
 `;
 
+exports[`Test of \`stateProxy\` prop of the state provider II 1`] = `
+GlobalState {
+  "nextNotifierId": 11,
+  "state": Object {
+    "counter": 0,
+  },
+  "watchers": Array [
+    [Function],
+    [Function],
+  ],
+}
+`;
+
+exports[`Test of \`stateProxy\` prop of the state provider II 2`] = `
+"<div>0</div>
+<div><button data-testid=\\"button-1\\" type=\\"button\\">Bump!</button></div>
+<div>0</div>
+<div><button data-testid=\\"button-2\\" type=\\"button\\">Bump!</button></div>"
+`;
+
+exports[`Test of \`stateProxy\` prop of the state provider II 3`] = `
+GlobalState {
+  "nextNotifierId": null,
+  "state": Object {
+    "counter": 0,
+  },
+  "watchers": Array [
+    [Function],
+    [Function],
+  ],
+}
+`;
+
+exports[`Test of \`stateProxy\` prop of the state provider II 4`] = `
+"<div>1</div>
+<div><button data-testid=\\"button-1\\" type=\\"button\\">Bump!</button></div>
+<div>0</div>
+<div><button data-testid=\\"button-2\\" type=\\"button\\">Bump!</button></div>"
+`;
+
+exports[`Test of \`stateProxy\` prop of the state provider II 5`] = `
+GlobalState {
+  "nextNotifierId": null,
+  "state": Object {
+    "counter": 1,
+  },
+  "watchers": Array [
+    [Function],
+    [Function],
+  ],
+}
+`;
+
+exports[`Test of \`stateProxy\` prop of the state provider II 6`] = `
+"<div>1</div>
+<div><button data-testid=\\"button-1\\" type=\\"button\\">Bump!</button></div>
+<div>1</div>
+<div><button data-testid=\\"button-2\\" type=\\"button\\">Bump!</button></div>"
+`;
+
 exports[`The scene works as expected 1`] = `
 "<div>0</div>
 <div><button data-testid=\\"button-1\\" type=\\"button\\">Bump!</button></div>
