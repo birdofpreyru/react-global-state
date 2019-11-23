@@ -9,6 +9,7 @@ import React from 'react';
 
 import pretty from 'pretty';
 
+import GlobalState from 'GlobalState';
 import { act, mount, unmount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
@@ -107,5 +108,28 @@ test('Test of `stateProxy` prop of the state provider', () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+});
+
+test('Test of `stateProxy` prop of the state provider II', () => {
+  const innerGlobalState = new GlobalState();
+  act(() => {
+    scene = mount(<TestScene stateProxy={innerGlobalState} />);
+  });
+  expect(innerGlobalState).toMatchSnapshot();
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  let button = document.querySelector('[data-testid=button-1]');
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    jest.runAllTimers();
+  });
+  expect(innerGlobalState).toMatchSnapshot();
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  button = document.querySelector('[data-testid=button-2]');
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    jest.runAllTimers();
+  });
+  expect(innerGlobalState).toMatchSnapshot();
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 });
