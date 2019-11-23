@@ -21,6 +21,7 @@ etc.), and the server-side rendering (SSR) support.
     Base global state hook.
   - [`useAsyncData(path, loader, [options])`](#useAsyncData) &ndash;
     Hook for storing async data in the global state.
+  - [`getGlobalState()`](#getGlobalState) &ndash; Gets global state instance.
   - [`getSsrContext([throwWithoutSsrContext=true])`](#getSsrContext) &ndash;
     Hook to access SSR context.
 - [Notes](#notes)
@@ -363,6 +364,13 @@ of some, or all async data at the server side.
   `throwWithoutSsrContext` argument can be set to `false` to not throw if
   the context does not exist. In any case, this hook still throws if entire
   global state (i.e. `<GlobalStateProvider>`) is missing.
+
+- <a name="getGlobalState"></a> `getGlobalState()` &ndash; Hook to get
+  the actual `GlobalState` instance. In all practical usecases you want
+  to use [`useGlobalState(..)`](useGlobalState) hook instead. This one is
+  only intended for advanced usecases, like code-splitting, and SSR support,
+  where the same global state instance should be shared between independently
+  rendered React trees.
 
 ### Notes
 

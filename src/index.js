@@ -10,6 +10,7 @@ if (!Promise.allSettled) {
 
 export {
   default as GlobalStateProvider,
+  getGlobalState,
   getSsrContext,
 } from './GlobalStateProvider';
 export { default as useAsyncData } from './useAsyncData';
