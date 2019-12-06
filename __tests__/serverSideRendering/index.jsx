@@ -20,6 +20,7 @@ import {
   GlobalStateProvider,
   getSsrContext,
   useAsyncData,
+  useGlobalState,
 } from 'src';
 
 jest.useFakeTimers();
@@ -46,8 +47,10 @@ function ComponentB() {
 }
 
 function Scene() {
+  const [globalValue] = useGlobalState('value.path', 'defaultValue');
   return (
     <div>
+      <h1>{globalValue}</h1>
       <ComponentA />
       <ComponentB />
     </div>
