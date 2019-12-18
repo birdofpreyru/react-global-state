@@ -2,6 +2,7 @@
 
 exports[`Naive server-side rendering 1`] = `
 "<div>
+  <h1>defaultValue</h1>
   <div>{
     &quot;data&quot;: null,
     &quot;loading&quot;: false,
@@ -17,6 +18,7 @@ exports[`Naive server-side rendering 1`] = `
 
 exports[`Scene test in the front-end mode 1`] = `
 "<div>
+  <h1>defaultValue</h1>
   <div>{
     \\"data\\": null,
     \\"loading\\": false,
@@ -32,6 +34,7 @@ exports[`Scene test in the front-end mode 1`] = `
 
 exports[`Scene test in the front-end mode 2`] = `
 "<div>
+  <h1>defaultValue</h1>
   <div>{
     \\"data\\": null,
     \\"loading\\": true,
@@ -47,6 +50,7 @@ exports[`Scene test in the front-end mode 2`] = `
 
 exports[`Scene test in the front-end mode 3`] = `
 "<div>
+  <h1>defaultValue</h1>
   <div>{
     \\"data\\": \\"data\\",
     \\"loading\\": false,
@@ -61,7 +65,7 @@ exports[`Scene test in the front-end mode 3`] = `
 `;
 
 exports[`Smart server-sider rendering 1`] = `
-"<div><div>{
+"<div><h1>defaultValue</h1><div>{
   &quot;data&quot;: &quot;data&quot;,
   &quot;loading&quot;: false,
   &quot;timestamp&quot;: 1573084801100

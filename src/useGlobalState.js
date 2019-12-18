@@ -32,6 +32,6 @@ export default function useGlobalState(path, initialValue) {
     globalState.watch(callback);
     callback();
     return () => globalState.unWatch(callback);
-  }, []);
+  }, [localState, setLocalState]);
   return [localState, (value) => globalState.set(path, value)];
 }
