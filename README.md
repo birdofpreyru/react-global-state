@@ -313,7 +313,7 @@ of some, or all async data at the server side.
     - `setValue(newValue)` supports functional updates: if you pass in
       a function, that function will be called with the previous value as its
       argument, and the result will be used as the new value. This matches
-      [Functional updates feature of React's `useState(..)`][https://reactjs.org/docs/hooks-reference.html#functional-updates].
+      [Functional updates feature of React's `useState(..)`](https://reactjs.org/docs/hooks-reference.html#functional-updates).
     - `setValue(..)` is stable, and won't change on re-renders (again, same as
       the React's `setState(..)` functions returned by `useState(..)` hook).
 
