@@ -3,7 +3,7 @@
  */
 
 import { useEffect } from 'react';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 
 import { getGlobalState } from './GlobalStateProvider';
 import useGlobalState from './useGlobalState';
@@ -63,7 +63,7 @@ export default function useAsyncData(
   } else {
     useEffect(() => {
       let state = globalState.get(path);
-      if (state.timestamp < Date.now() - refreshAge && !state.operationId) {
+      if (refreshAge < Date.now() - state.timestamp && !state.operationId) {
         const operationId = uuid();
         globalState.set(path, {
           ...state,
@@ -91,7 +91,7 @@ export default function useAsyncData(
         now = Date.now();
         state = { ...globalState.get(path) };
         state.numRefs -= 1;
-        if (!state.numRefs && state.timestamp < now - garbageCollectAge) {
+        if (!state.numRefs && garbageCollectAge < now - state.timestamp) {
           state.timestamp = 0;
           state.data = null;
         }
@@ -101,7 +101,7 @@ export default function useAsyncData(
   }
 
   return {
-    data: localState.timestamp < now - maxage ? null : localState.data,
+    data: maxage < now - localState.timestamp ? null : localState.data,
     loading: Boolean(localState.operationId),
     timestamp: localState.timestamp,
   };
