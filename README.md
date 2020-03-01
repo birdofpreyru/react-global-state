@@ -298,12 +298,24 @@ of some, or all async data at the server side.
     [`_.set(..)`](https://lodash.com/docs/4.17.15#set) methods. Thus, it is
     safe to read, and set paths which have not been set in the state yet.
   
-  - `[initialValue]` (_Any_) &ndash; Optional. Initial value. If given, it will
-    be set at the path, if the current value at the path is undefined.
+  - `[initialValue]` (_Any_) &ndash; Optional. Initial value or its factory.
+    - If a function is provided, it will be executed only once, when the initial
+      value has to be set, and the value returned by the function will be used
+      as the initial value. This matches
+      [Lazy initial state feature of React's `useState(..)`](https://reactjs.org/docs/hooks-reference.html#lazy-initial-state).
+    - Otherwise the value itself will be used as the initial value.
 
   **Returns** `[value, setValue(newValue)]` &ndash; Array with two elements.
   The first one is the value at the path. The second one is the function to
   update the path value.
+
+  Notice:
+    - `setValue(newValue)` supports functional updates: if you pass in
+      a function, that function will be called with the previous value as its
+      argument, and the result will be used as the new value. This matches
+      [Functional updates feature of React's `useState(..)`][https://reactjs.org/docs/hooks-reference.html#functional-updates].
+    - `setValue(..)` is stable, and won't change on re-renders (again, same as
+      the React's `setState(..)` functions returned by `useState(..)` hook).
 
   Notifications on state updates are async, in the sence that if you update
   the state multiple times from the same syncroneous code, the updates are
