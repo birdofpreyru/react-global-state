@@ -1,0 +1,6 @@
+.*
+__coverage__
+__tests__
+dr.pogodin-react-global-state-*.tgz
+/jest
+/src
