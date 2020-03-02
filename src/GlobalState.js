@@ -61,9 +61,20 @@ export default class GlobalState {
   set(path, value) {
     const p = fullPath(path);
     if (value !== _.get(this, p)) {
+      let pos = this;
+      const pathSegments = _.toPath(p);
+      for (let i = 0; i < pathSegments.length - 1; i += 1) {
+        const seg = pathSegments[i];
+        const next = pos[seg];
+        if (_.isArray(next)) pos[seg] = [...next];
+        else if (_.isObject(next)) pos[seg] = { ...next };
+        else break;
+        pos = pos[seg];
+      }
       _.set(this, p, value);
       if (this.ssrContext) {
         this.ssrContext.dirty = true;
+        this.ssrContext.state = this.state;
       } else if (!this.nextNotifierId) {
         this.nextNotifierId = setTimeout(() => {
           this.nextNotifierId = null;
