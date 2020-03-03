@@ -78,7 +78,7 @@ export default class GlobalState {
       } else if (!this.nextNotifierId) {
         this.nextNotifierId = setTimeout(() => {
           this.nextNotifierId = null;
-          this.watchers.forEach((w) => w());
+          [...this.watchers].forEach((w) => w());
         });
       }
     }
