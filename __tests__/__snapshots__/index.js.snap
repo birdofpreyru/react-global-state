@@ -5,6 +5,7 @@ Object {
   "GlobalStateProvider": [Function],
   "getGlobalState": [Function],
   "getSsrContext": [Function],
+  "useAsyncCollection": [Function],
   "useAsyncData": [Function],
   "useGlobalState": [Function],
 }

@@ -35,18 +35,18 @@ async function load(path, loader, globalState) {
 
 /**
  * Loads and uses async data into the GlobalState path.
- * @param {String} path
- * @param {Function} loader
- * @param {Object} [options]
+ * @param {string} path
+ * @param {function} loader
+ * @param {object} [options]
  * @param {any[]}  [options.deps=[]] Optional. The array of dependencies
  *  to watch for changes. When any value in the array changes, the hook will
  *  attempt to reload async data (maxage and refreshAge setting still apply).
  *  The values are watched shallowly, using the standard React's useEffect
  *  hook internally.
- * @param {Boolea} [options.noSSR]
- * @param {Number} [options.garbageCollectAge=DEFAULT_MAXAGE]
- * @param {Number} [options.maxage=DEFAULT_MAXAGE]
- * @param {NumbeR} [options.refreshAge=DEFAULT_MAXAGE]
+ * @param {boolean} [options.noSSR]
+ * @param {number} [options.garbageCollectAge=DEFAULT_MAXAGE]
+ * @param {number} [options.maxage=DEFAULT_MAXAGE]
+ * @param {numbeR} [options.refreshAge=DEFAULT_MAXAGE]
  */
 export default function useAsyncData(
   path,

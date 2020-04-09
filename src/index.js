@@ -13,5 +13,7 @@ export {
   getGlobalState,
   getSsrContext,
 } from './GlobalStateProvider';
+
+export { default as useAsyncCollection } from './useAsyncCollection';
 export { default as useAsyncData } from './useAsyncData';
 export { default as useGlobalState } from './useGlobalState';
