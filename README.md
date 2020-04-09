@@ -15,22 +15,18 @@ etc.), and the server-side rendering (SSR) support.
   - [Base setup](#base-setup)
   - [Server-sider rendering support](#server-side-rendering-support)
 - [Reference](#reference)
-  - [`<GlobalStateProvider />`](#GlobalStateProvider) &ndash; Provides global
-    state to its children.
-  - [`useGlobalState(path, [initialValue])`](#useGlobalState) &ndash;
-    Base global state hook.
-  - [`useAsyncData(path, loader, [options])`](#useAsyncData) &ndash;
-    Hook for storing async data in the global state.
-  - [`getGlobalState()`](#getGlobalState) &ndash; Gets global state instance.
-  - [`getSsrContext([throwWithoutSsrContext=true])`](#getSsrContext) &ndash;
-    Hook to access SSR context.
-- [Notes](#notes)
+  - [`<GlobalStateProvider ... />`](#GlobalStateProvider)
+  - [`useGlobalState(path: string, initialValue?: any): array`](#useGlobalState)
+  - [`useAsyncData(path: string, loader: () => Promise<any>, options?: object): Promise<object>`](#useAsyncData)
+  - [`useAsyncCollection(id: string, path: string, loader: (id: string) => Promise<any>, options?: object): Promise<object>`](#useAsyncCollection)
+  - [`getSsrContext(throwWithoutSsrContext?: boolean = true): object`](#getSsrContext)
+  - [`getGlobalState(): GlobalState`](#getGlobalState)
 
 ### Motivation
 
-The motivation, and the vision, is to bring to the table all useful features
+The motivation and vision is to bring to the table all useful features
 of Redux, without related development overheads, like the amount of required
-boilerplate code, and the efforts needed to design, and mainaint actions,
+boilerplate code, and the efforts needed to design and maintain actions
 and reducers.
 
 With this library, the introduction of a datum (data piece), shared across
@@ -49,7 +45,7 @@ function SampleReactComponent() {
 ```
 
 Relying on async data, e.g. loading into the state data from a 3-rd party API,
-is similarly easy:
+is the same easy:
 
 ```jsx
 async function loader() {
@@ -60,7 +56,7 @@ async function loader() {
 }
 
 function SampleReactComponent() {
-  const { data, loading, timestamp } = useAsyncData('data.envelop.path', loader);
+  const { data, loading, timestamp } = useAsyncData('data.envelope.path', loader);
 
   /* `data` holds the data loaded into the global state, if they are fresh enough;
    * `loading` signals that data loading (or silent re-loading) is in-progress;
@@ -70,8 +66,8 @@ function SampleReactComponent() {
 }
 ```
 &uArr; Behind the scene, the library takes care about updating the component
-when the data loading starts, and ends; as well as about the timestamps,
-automatic reloading, and garbage collection of aged data.
+when the data loading starts and ends, also about the timestamps, automatic
+reloading, and garbage collection of aged data.
 
 Related closely to async data is the server-side rendering (SSR). This library
 takes it into account, and provides a flexible way to implement SSR with loading
@@ -204,12 +200,12 @@ of some, or all async data at the server side.
     } else break;
     ```
     in the case when last rendering pass triggered async operations, it waits
-    for them to complete, and repeats allows the rendering pass to be redone
+    for them to complete, and allows the rendering pass to be redone
     with the new initial value of the global state, which is written to
     `ssrContext.state` in this case. If no updates to the state happened
-    in the last rendering pass, this block breaks out of the loop, giving
-    you in the `render` variable the HTML markup to send to the client, and
-    in the `ssrContext.state` the initial value of the global state to use
+    in the last rendering pass, this block breaks out of the loop, leaving
+    to you in the `render` variable the HTML markup to send to the client,
+    and in the `ssrContext.state` the initial value of the global state to use
     for app initialization at the client side.
 
     The outer `for` loop serves to protect against possible long re-rendering
@@ -248,47 +244,49 @@ of some, or all async data at the server side.
 
 ### Reference
 
-- <a name="GlobalStateProvider"></a>`<GlobalStateProvider />` &ndash;
-  Provides global state to its children.
-  The `Missing GlobalStateProvider` error is thrown if a library function
-  is used inside a component which cannot find a provider up in the component
-  hierarchy. Multiple providers can be used, and nested, in the same code.
-  In such case a component will see the global state from the closest
-  provider up in the component hierarchy.
+_Each list item below describes a named export from the library._
+_A TypeScript-like syntax is employed below to document arguments, props,_
+_and return value types._
 
-  **Children** are optional, and they are rendered at the component place.
+- <a name="GlobalStateProvider"></a>
+  `<GlobalStateProvider ... />` &ndash; Provides a global state to its children.
+  Library functions throw the `Missing GlobalStateProvider` error if called from
+  a component having no global state provider up in their parent hierarchy.
+  Multiple providers can be used in a code, and they can be nested. In such case
+  a component will see the global state provided by the closest provider up in
+  its parent hierarchy.
 
   **Properties**
+  - `children?: any` &ndash; Optional. The content to render at the provider's
+    position, and to provide the global state to.
+  - `initialState?: any` &ndash; Optional. Initial global state value.
+  - `ssrContext?: object` &ndash; Optional. If given, enables the server-side
+    rendering (SSR) mode. In this mode async operations are executed in the way
+    optimal for SSR, and the following fields are added to `ssrContext` object
+    during each rendering pass:
+    - `ssrContext.dirty: boolean` &ndash; `true` if the global state has been
+      altered during the rendering pass.
+    - `ssrContext.pending: Promise[]` &ndash; The array of promises to wait for
+      prior to repeating the SSR pass.
+    - `ssrContext.state: any` &ndash; The global state value after the current
+      rendering pass.
+  - `stateProxy?: boolean|GlobalState` &ndash; Optional. If `true` this provider
+    will act as a proxy, i.e. it will reuse the state from the parent provider,
+    instead of creating a new one. If it is an instance of `GlobalState` class
+    this instance is used. This argument allows to implement code-splitting with
+    SSR support.
+  <hr />
 
-  - `[initialState]` (_Any_) &ndash; Optional. Initial global state.
 
-  - `[ssrContext]` (_Object_) &ndash; Optional. Switches provided state into
-    the SSR mode. In this state, async operations will be executed in the optimal
-    way, and the following fields will be written to `ssrContext` on the exit
-    from the rendering pass:
-    - `ssrContext.dirty` (_Boolean_) &ndash; Will be set `true`, if the state
-      was altered during the pass, including some async operations started.
-    - `ssrContext.pending` (_Promise[]_) &ndash; Array of promises which will
-      resolve or reject once all async operations triggered by the render pass,
-      are completed. Do `await Promise.allSettled(ssrContext.pending)` to wait
-      until the rendering pass can be repeated with the updated state.
-    - `ssrContext.state` (_Any_) &ndash; Will contain the resulting state after
-      the rendering pass, including the results of async operations.
-
-  - `[stateProxy]` (_Boolean_ | _GlobalState_) &ndash; Optional. If set `true`,
-    the provider will act as proxy, i.e. it will re-use the state from a parent
-    provider, instead of creating a new one. If set an instance of the global
-    state object, that global state will be used. This is useful for
-    code-splitting with SSR support.
-
-- <a name="useGlobalState"></a> `useGlobalState(path, [initialValue])` &ndash;
-  Base global state hook, similar to React's `useState` hook for the local state.
-  It subscribes the component to the data located at the given state `path`, and
-  also exposes the data update method.
+- <a name="useGlobalState"></a>
+  `useGlobalState(path: string, initialValue?: any): array` &ndash; The base
+  global state hook, similar to the standard React's `useState(..)`. Subscribes
+  the component to data localted at the given `path` of the global state, and
+  also provides the data update method.
 
   **Arguments**
 
-  - `path` (_String_) &ndash; State path. It can be undefined to subscribe for
+  - `path: string` &ndash; State path. It can be undefined to subscribe for
     entire state, though for most practical applications components should
     subscribe for relevant state paths.
     
@@ -298,36 +296,38 @@ of some, or all async data at the server side.
     [`_.set(..)`](https://lodash.com/docs/4.17.15#set) methods. Thus, it is
     safe to read, and set paths which have not been set in the state yet.
   
-  - `[initialValue]` (_Any_) &ndash; Optional. Initial value or its factory.
+  - `initialValue?: any` &ndash; Optional. Initial value or its factory.
     - If a function is provided, it will be executed only once, when the initial
       value has to be set, and the value returned by the function will be used
       as the initial value. This matches
       [Lazy initial state feature of React's `useState(..)`](https://reactjs.org/docs/hooks-reference.html#lazy-initial-state).
     - Otherwise the value itself will be used as the initial value.
 
-  **Returns** `[value, setValue(newValue)]` &ndash; Array with two elements.
-  The first one is the value at the path. The second one is the function to
-  update the path value.
+  **Result**
+  - `[value: any, setValue: (newValue: any) => undefined]` &ndash; Array with
+    two elements: the value at the reqested path of global state, and the setter
+    function which updates that value.
 
-  Notice:
-    - `setValue(newValue)` supports functional updates: if you pass in
-      a function, that function will be called with the previous value as its
-      argument, and the result will be used as the new value. This matches
-      [Functional updates feature of React's `useState(..)`](https://reactjs.org/docs/hooks-reference.html#functional-updates).
-    - `setValue(..)` is stable, and won't change on re-renders (again, same as
-      the React's `setState(..)` functions returned by `useState(..)` hook).
+    Note:
+    - `setValue: (newValue: any) => undefined` supports functional updates:
+      if `newValue` is a function, it is called with the previous value as
+      the argument, and its result is set as the new value. This behavior
+      matches the [Functional updates feature of React's `useState(..)`](https://reactjs.org/docs/hooks-reference.html#functional-updates).
+    - `setValue: (newValue: any) => undefiend` is stable, i.e. it does not
+      change when the component is re-rendered (again, it matches behavior
+      of the settter returned by the standard React's `setState(..)` hook).
 
-  Notifications on state updates are async, in the sence that if you update
-  the state multiple times from the same syncroneous code, the updates are
-  propagated to other components once the current code exits.
+  State update notifications are asyncroneous. If your code updates the state
+  many times during a rendering pass, all update notifications are queued and
+  dispatched after the current rendering pass completes.
+  <hr />
 
-  _&uArr; This requires a better explanation!_
-
-- <a name="useAsyncData"></a> `useAsyncData(path, loader, [options])` &ndash;
-  Hook for storing async data in the global state and the specified path. When
-  different components in your application rely on the same async data (e.g.
+- <a name="useAsyncData"></a>
+  `useAsyncData(path: string, loader: () => Promise<any>, options?: object): Promise<object>`
+  &ndash; The hook for storing async data in the global state at the specified path.
+  When different components in your application rely on the same async data (e.g.
   fetched from a remote API), this hook simplifies loading, and reusing these
-  data among the components (i.e. load just once, refresh if stale, etc.)
+  data among different components (i.e. load just once, refresh if stale, etc.)
 
   Given async data `loader` (a function which returns a `Promise` resolving to
   some data), this hook loads data to the specified global state path, ensuring
@@ -340,30 +340,82 @@ of some, or all async data at the server side.
   the state, when the last component relying on them is dismounted.
 
   **Arguments**
-  - `path` (_String_) &ndash; State path, where all related information will
+
+  - `path: string` &ndash; The state path, where all related information will
     be kept.
-  - `loader` (_Function_) &ndash; Async function with resolves to the data of
-    interest.
-  - `[options]` (_Object_) &ndash; Optional. Additional parameters.
-    - `[options.maxage]` (_Number_) &ndash; Optional. Maximum age of data
-      acceptable to the caller. If data in the state are older than this time [ms],
-      the reloading will be initiated.
-    - `[options.refreshAge]` (_Number_) &ndash; Optional. Maximum age of data
-      which will not trigger data update. Defaults to the `maxage` value.
-    - `[options.garbageCollectAge]` (_Number_) &ndash; Optional. Maximum age
-      of data after which they will be dropped from the state, if no objects
-      reference to them.
-    - `[options.noSSR]` (_Boolean_) &ndash; Optional. If `true` this async
+  - `loader: () => Promise<any>` &ndash; Async data loader, i.e. an async
+    function returning a promise which resolves to the loaded data.
+  - `options?: object` &ndash; Optional. Additional parameters.
+    - `options.deps?: any[] = []` Optional. The array of dependencies to watch
+      for changes (in the sence the standard React's `useEffect()` hook watches
+      the changes in its last depdendencies argument), and to attempt reload of
+      async data when any value in the array changes. The actual reloads are
+      still restricted by the timestamp of currently loaded data (if any),
+      and by `maxage`, `refreshAge` settings.
+    - `options.maxage?: number = 5 * 60 * 1000` &ndash; Optional. The maximum age
+      of data acceptable to the caller. If data in the state are older than this
+      time [ms], `null` is returned until the data are reloaded. Defaults to
+      5 minutes.
+    - `options.refreshAge?: number = options.maxage` &ndash; Optional. The maximum
+      age of data which will not trigger data update. Defaults to the `maxage`
+      value.
+    - `options.garbageCollectAge?: number = options.maxage` &ndash; Optional.
+      The maximum age of data after which they will be dropped from the state,
+      if no objects reference to them. Defaults to the `maxage` value.
+    - `options.noSSR?: boolean` &ndash; Optional. If `true` this async
       operation will be ignored during the SSR rendering.
 
-  **Returns** object with the following fields:
-  - `data` (_Any_) &ndash; current data stored at the state.
-  - `loading` (_Boolean_) &ndash; `true` if the data are being loaded.
-  - `timestamp` (_Number_) &ndash; Timestamp of the data currently loaded into
-    the state [ms]. Defaults 5 min.
+  **Result**
+  - `Promise<object>` Resolves to the object with following fields:
+    - `data: any` &ndash; The current data stored in the state.
+    - `loading: boolean` &ndash; `true` if the data are being loaded.
+    - `timestamp: number` &ndash; The timestamp of the data currently loaded
+      into the state [ms].
+  <hr />
 
-- <a name="getSsrContext"></a> `getSsrContext([throwWithoutSsrContext=true])`
-  &ndash; Hook to access SSR context from React components.
+- <a name="useAsyncCollection"></a>
+  `useAsyncCollection(id: string, path: string, loader: (id: string) => Promise<any>, options?: object): Promise<object>`
+  &ndash; The hook for storing an async collection of data at the specified
+  global state path.
+
+  **Arguments**
+  - `id: string` &ndash; ID of the collection item to return.
+  - `path: string` &ndash; The global state path at which the entire collection
+    will be stored.
+  - `loader: (id: string) => Promise<any>` &ndash; An async data loader, which
+    given an ID of collection item loads it asyncroneously and returns to
+    the caller.
+  - `options?: object` &ndash; Optional. Additional options.
+    - `options.deps?: any[] = []` Optional. The array of dependencies to watch
+      for changes (in the sence the standard React's `useEffect()` hook watches
+      the changes in its last depdendencies argument), and to attempt reload of
+      async data when any value in the array changes. The actual reloads are
+      still restricted by the timestamp of currently loaded data (if any),
+      and by `maxage`, `refreshAge` settings.
+    - `options.maxage?: number = 5 * 60 * 1000` &ndash; Optional. The maximum age
+      of data acceptable to the caller. If data in the state are older than this
+      time [ms], `null` is returned until the data are reloaded. Defaults to
+      5 minutes.
+    - `options.refreshAge?: number = options.maxage` &ndash; Optional. The maximum
+      age of data which will not trigger data update. Defaults to the `maxage`
+      value.
+    - `options.garbageCollectAge?: number = options.maxage` &ndash; Optional.
+      The maximum age of data after which they will be dropped from the state,
+      if no objects reference to them. Defaults to the `maxage` value.
+    - `options.noSSR?: boolean` &ndash; Optional. If `true` this async
+      operation will be ignored during the SSR rendering.
+
+  **Result**
+  - `Promise<object>` Resolves to the object with following fields:
+      - `data: any` &ndash; The current data stored in the state.
+      - `loading: boolean` &ndash; `true` if the data are being loaded.
+      - `timestamp: number` &ndash; The timestamp of the data currently loaded
+        into the state [ms].
+  <hr />
+
+- <a name="getSsrContext"></a>
+  `getSsrContext(throwWithoutSsrContext?: boolean = true]): Context`
+  &ndash; The hook to access the closest SSR context from React components.
 
   In most use cases you don't need to access SSR context directly from your
   components. For SSR you just provide SSR context to the state provider,
@@ -372,18 +424,23 @@ of some, or all async data at the server side.
   support, in a scenario when some components need additional data to be passed
   to them during SSR.
 
-  Returns the SSR context, or throws if it does not exist. The optional
-  `throwWithoutSsrContext` argument can be set to `false` to not throw if
-  the context does not exist. In any case, this hook still throws if entire
-  global state (i.e. `<GlobalStateProvider>`) is missing.
+  **Arguments**
+  - `throwWithoutSsrContext?: boolean = true` &ndash; Optional. Specifies
+    whether the hook should throw if no SSR context exist. Default `true`.
+    In any case, the hook will still throw if the entire global state is missing
+    (i.e. there is no [`<GlobalStateProvider ... />`](#GlobalStateProvider)
+    in the parent component hierarchy).
 
-- <a name="getGlobalState"></a> `getGlobalState()` &ndash; Hook to get
-  the actual `GlobalState` instance. In all practical usecases you want
-  to use [`useGlobalState(..)`](useGlobalState) hook instead. This one is
+  **Result**
+  - `object` &ndash; SSR context. See documentation of
+    the [`<GlobalStateProvider ... />`](#GlobalStateProvider) component,
+    in particular the `ssrContext` argument.
+  <hr />
+
+- <a name="getGlobalState"></a>
+  `getGlobalState(): GlobalState` &ndash; The Hook to get `GlobalState` instance
+  from the closest global state context. In all practical usecases you want
+  to use the [`useGlobalState(..)`](useGlobalState) hook instead. This one is
   only intended for advanced usecases, like code-splitting, and SSR support,
   where the same global state instance should be shared between independently
   rendered React trees.
-
-### Notes
-
-_P.S.: Mind the early version! As of now it is a proof-of-concept, which works great in my tests, but lacks some features, and optimizations I have in my mind._
