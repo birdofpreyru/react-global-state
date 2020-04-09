@@ -345,6 +345,12 @@ of some, or all async data at the server side.
   - `loader` (_Function_) &ndash; Async function with resolves to the data of
     interest.
   - `[options]` (_Object_) &ndash; Optional. Additional parameters.
+    - `[options.deps]` (_any[]_) Optional. The array of dependencies to watch
+      for changes (in the sence the standard React's `useEffect()` hook watches
+      the changes in its last depdendencies argument), and to attempt reload of
+      async data when any value in the array changes. The actual reloads are
+      still restricted by the timestamp of currently loaded data (if any),
+      and by `maxage`, `refreshAge` settings.
     - `[options.maxage]` (_Number_) &ndash; Optional. Maximum age of data
       acceptable to the caller. If data in the state are older than this time [ms],
       the reloading will be initiated.
