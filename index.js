@@ -7,4 +7,4 @@
 
 module.exports = typeof process !== 'undefined'
   && process.versions && process.versions.node
-  ? eval('require')('./node') : require('./web');
+  ? eval('require')('./build/node') : require('./build/web');
