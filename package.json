@@ -1,10 +1,12 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Hook-based global state for React",
-  "main": "build/index.js",
+  "main": "index.js",
   "scripts": {
-    "build": "babel src --out-dir build --source-maps --minified",
+    "build": "rimraf build && npm run build:node && npm run build:web",
+    "build:node": "rimraf build/node && babel src --out-dir build/node --source-maps",
+    "build:web": "rimraf build/web && babel src --out-dir build/web --source-maps --config-file ./babel.web.config.js",
     "jest": "jest --config jest/config.json",
     "lint": "eslint --ext .js,.jsx .",
     "test": "npm run lint && npm run jest"
@@ -28,6 +30,7 @@
   "homepage": "https://dr.pogodin.studio",
   "dependencies": {
     "lodash": "^4.17.15",
+    "regenerator-runtime": "^0.13.5",
     "uuid": "^7.0.3"
   },
   "devDependencies": {
@@ -52,7 +55,7 @@
     "pretty": "^2.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "regenerator-runtime": "^0.13.5"
+    "rimraf": "^3.0.2"
   },
   "peerDependencies": {
     "react": "^16.12.0",
