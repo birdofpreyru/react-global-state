@@ -3,9 +3,6 @@
   "collectCoverageFrom": ["src/**/*.{js,jsx}"],
   "coverageDirectory": "__coverage__",
   "rootDir": "..",
-  "setupFilesAfterEnv": [
-    "<rootDir>/jest/setup.js"
-  ],
   "transform": {
     "\\.jsx?$": "babel-jest"
   }
