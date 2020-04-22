@@ -15,6 +15,7 @@ module.exports = function preset(api, options = {}) {
   return {
     presets: [envPreset, '@babel/react'],
     plugins: [
+      '@babel/plugin-transform-runtime',
       ['module-resolver', {
         extensions: ['.js', '.jsx'],
         root: ['./src', '.'],
