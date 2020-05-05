@@ -19,7 +19,9 @@ module.exports = function preset(api, options = {}) {
         extensions: ['.js', '.jsx'],
         root: ['./src', '.'],
       }],
-      '@babel/plugin-transform-runtime',
+      ['@babel/plugin-transform-runtime', {
+        corejs: targets === 'defaults' && 3,
+      }],
     ],
   };
 };
