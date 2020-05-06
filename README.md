@@ -15,12 +15,15 @@ etc.), and the server-side rendering (SSR) support.
   - [Base setup](#base-setup)
   - [Server-sider rendering support](#server-side-rendering-support)
 - [Reference](#reference)
-  - [`<GlobalStateProvider ... />`](#GlobalStateProvider)
-  - [`useGlobalState(path: string, initialValue?: any): array`](#useGlobalState)
-  - [`useAsyncData(path: string, loader: () => Promise<any>, options?: object): Promise<object>`](#useAsyncData)
-  - [`useAsyncCollection(id: string, path: string, loader: (id: string) => Promise<any>, options?: object): Promise<object>`](#useAsyncCollection)
-  - [`getSsrContext(throwWithoutSsrContext?: boolean = true): object`](#getSsrContext)
-  - [`getGlobalState(): GlobalState`](#getGlobalState)
+  - [Environment Variables](#EnvironmentVariables)
+    - [`REACT_GLOBAL_STATE_DEBUG` (environment variable)](#REACT_GLOBAL_STATE_DEBUG)
+  - [API](#api-section)
+    - [`<GlobalStateProvider ... />`](#GlobalStateProvider)
+    - [`useGlobalState(path: string, initialValue?: any): array`](#useGlobalState)
+    - [`useAsyncData(path: string, loader: () => Promise<any>, options?: object): Promise<object>`](#useAsyncData)
+    - [`useAsyncCollection(id: string, path: string, loader: (id: string) => Promise<any>, options?: object): Promise<object>`](#useAsyncCollection)
+    - [`getSsrContext(throwWithoutSsrContext?: boolean = true): object`](#getSsrContext)
+    - [`getGlobalState(): GlobalState`](#getGlobalState)
 
 ### Motivation
 
@@ -247,6 +250,17 @@ of some, or all async data at the server side.
 _Each list item below describes a named export from the library._
 _A TypeScript-like syntax is employed below to document arguments, props,_
 _and return value types._
+
+<a name="EnvironmentVariables"></a>
+**Environment Variables**
+
+- <a name="REACT_GLOBAL_STATE_DEBUG"></a>
+  `REACT_GLOBAL_STATE_DEBUG` &ndash; When this environment variable is set or
+  injected via Webpack, the library will log into the console state mutations,
+  thus facilitating the development based on ReactGlobalState.
+
+<a name="api-section"></a>
+**API**
 
 - <a name="GlobalStateProvider"></a>
   `<GlobalStateProvider ... />` &ndash; Provides a global state to its children.

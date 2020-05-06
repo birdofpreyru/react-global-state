@@ -32,6 +32,17 @@ export default class GlobalState {
       ssrContext.state = this.state;
       this.ssrContext = ssrContext;
     }
+
+    if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+      /* eslint-disable no-console */
+      console.log('A new ReactGlobalState is created:');
+      console.log(
+        '- Initial state:',
+        initialState ? _.cloneDeep(initialState) : 'no',
+      );
+      console.log('- SSR mode:', ssrContext ? 'yes' : 'no');
+      /* eslint-enable no-console */
+    }
     /* eslint-enable no-param-reassign */
   }
 
@@ -61,6 +72,13 @@ export default class GlobalState {
   set(path, value) {
     const p = fullPath(path);
     if (value !== _.get(this, p)) {
+      if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+        /* eslint-disable no-console */
+        console.log('ReactGlobalState update:');
+        console.log('- Path:', path || '');
+        console.log('- New value:', _.cloneDeep(value));
+        /* eslint-enable no-console */
+      }
       let pos = this;
       const pathSegments = _.toPath(p);
       for (let i = 0; i < pathSegments.length - 1; i += 1) {
@@ -80,6 +98,11 @@ export default class GlobalState {
           this.nextNotifierId = null;
           [...this.watchers].forEach((w) => w());
         });
+      }
+      if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+        /* eslint-disable no-console */
+        console.log('- New state:', _.cloneDeep(this.state));
+        /* eslint-enable no-console */
       }
     }
     return value;

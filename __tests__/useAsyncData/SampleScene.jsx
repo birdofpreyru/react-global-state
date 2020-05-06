@@ -10,6 +10,7 @@ import pretty from 'pretty';
 
 import {
   act,
+  mockConsoleLog,
   mockTimer,
   mount,
   timer,
@@ -81,6 +82,9 @@ afterEach(() => {
  * loaded, then dismounted. The data are expected to load, and be kept in the
  * state. */
 test('Scenario I', async () => {
+  process.env.REACT_GLOBAL_STATE_DEBUG = true;
+  mockConsoleLog();
+
   /* Empty scene. */
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 
@@ -150,4 +154,6 @@ test('Scenario I', async () => {
     expect(loaderB).toHaveBeenCalledTimes(1);
     /* eslint-enable no-await-in-loop */
   }
+
+  expect(console.log.logs).toMatchSnapshot();
 });
