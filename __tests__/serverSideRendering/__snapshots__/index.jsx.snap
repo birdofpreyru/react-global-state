@@ -76,6 +76,165 @@ exports[`Smart server-sider rendering 1`] = `
 }</div></div>"
 `;
 
+exports[`Smart server-sider rendering 2`] = `
+Array [
+  Array [
+    "A new ReactGlobalState is created:",
+  ],
+  Array [
+    "- Initial state:",
+    Object {},
+  ],
+  Array [
+    "- SSR mode:",
+    "yes",
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "value.path",
+  ],
+  Array [
+    "- New value:",
+    "defaultValue",
+  ],
+  Array [
+    "- New state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+    },
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "x",
+  ],
+  Array [
+    "- New value:",
+    Object {
+      "data": null,
+      "numRefs": 0,
+      "operationId": "",
+      "timestamp": 0,
+    },
+  ],
+  Array [
+    "- New state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+      "x": Object {
+        "data": null,
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 0,
+      },
+    },
+  ],
+  Array [
+    "ReactGlobalState - useAsyncData data (re-)loading:",
+  ],
+  Array [
+    "- Path:",
+    "x",
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "x.operationId",
+  ],
+  Array [
+    "- New value:",
+    "00000000-0000-0000-0000-000000000002",
+  ],
+  Array [
+    "- New state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+      "x": Object {
+        "data": null,
+        "numRefs": 0,
+        "operationId": "00000000-0000-0000-0000-000000000002",
+        "timestamp": 0,
+      },
+    },
+  ],
+  Array [
+    "ReactGlobalState - useAsyncData data (re-)loaded:",
+  ],
+  Array [
+    "- Path:",
+    "x",
+  ],
+  Array [
+    "- Data:",
+    "data",
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "x",
+  ],
+  Array [
+    "- New value:",
+    Object {
+      "data": "data",
+      "numRefs": 0,
+      "operationId": "",
+      "timestamp": 1573084801100,
+    },
+  ],
+  Array [
+    "- New state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+      "x": Object {
+        "data": "data",
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 1573084801100,
+      },
+    },
+  ],
+  Array [
+    "A new ReactGlobalState is created:",
+  ],
+  Array [
+    "- Initial state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+      "x": Object {
+        "data": "data",
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 1573084801100,
+      },
+    },
+  ],
+  Array [
+    "- SSR mode:",
+    "yes",
+  ],
+]
+`;
+
 exports[`Test \`getSsrContext()\` function Get SSR context when does not exist 1`] = `"No SSR context found"`;
 
 exports[`Test \`getSsrContext()\` function Get SSR context when does not exist, but no throw is opted in 1`] = `"<div></div>"`;

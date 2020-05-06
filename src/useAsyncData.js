@@ -2,6 +2,7 @@
  * Loads and uses async data into the GlobalState path.
  */
 
+import _ from 'lodash';
 import { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 
@@ -18,12 +19,25 @@ const DEFAULT_MAXAGE = 5 * 60 * 1000; // 5 minutes.
  * @return {Promise} Resolves once the operation is done.
  */
 async function load(path, loader, globalState) {
+  if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+    /* eslint-disable no-console */
+    console.log('ReactGlobalState - useAsyncData data (re-)loading:');
+    console.log('- Path:', path);
+    /* eslint-enable no-console */
+  }
   const operationId = uuid();
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
   globalState.set(operationIdPath, operationId);
   const data = await loader();
   const state = globalState.get(path);
   if (operationId === state.operationId) {
+    if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+      /* eslint-disable no-console */
+      console.log('ReactGlobalState - useAsyncData data (re-)loaded:');
+      console.log('- Path:', path || '');
+      console.log('- Data:', _.cloneDeep(data));
+      /* eslint-enable no-console */
+    }
     globalState.set(path, {
       ...state,
       data,
@@ -85,6 +99,12 @@ export default function useAsyncData(
           state.numRefs === 1
           && garbageCollectAge < Date.now() - state.timestamp
         ) {
+          if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+            /* eslint-disable no-console */
+            console.log('ReactGlobalState - useAsyncData garbage collected:');
+            console.log('- Path:', path || '');
+            /* eslint-enable no-console */
+          }
           globalState.set(path, {
             ...state,
             data: null,

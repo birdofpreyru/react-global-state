@@ -11,8 +11,10 @@ import pretty from 'pretty';
 import {
   act,
   timer,
+  mockConsoleLog,
   mockTimer,
   mount,
+  unMockConsoleLog,
   unmount,
 } from 'jest/utils';
 
@@ -22,6 +24,8 @@ import {
   useAsyncData,
   useGlobalState,
 } from 'src';
+
+jest.mock('uuid');
 
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
@@ -60,6 +64,8 @@ function Scene() {
 let scene;
 
 beforeEach(() => {
+  delete process.env.REACT_GLOBAL_STATE_DEBUG;
+  unMockConsoleLog();
   loaderA.mockClear();
   loaderB.mockClear();
 });
@@ -130,11 +136,14 @@ async function serverSideRender() {
 }
 
 test('Smart server-sider rendering', async () => {
+  process.env.REACT_GLOBAL_STATE_DEBUG = true;
+  mockConsoleLog();
   let render = serverSideRender();
   await jest.runAllTimers();
   render = await render;
   expect(serverSideRender.round).toBe(1);
   expect(render).toMatchSnapshot();
+  expect(console.log.logs).toMatchSnapshot();
 });
 
 describe('Test `getSsrContext()` function', () => {

@@ -42,6 +42,13 @@ export default function useGlobalState(path, initialValue) {
       setter: (value) => {
         const newValue = _.isFunction(value)
           ? value(ref.current.localState) : value;
+        if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+          /* eslint-disable no-console */
+          console.log('ReactGlobalState - useGlobalState setter triggered:');
+          console.log('- Path:', path || '');
+          console.log('- New value:', _.cloneDeep(newValue));
+          /* eslint-enable no-console */
+        }
         globalState.set(path, newValue);
       },
     };

@@ -57,3 +57,102 @@ GlobalState {
   "watchers": Array [],
 }
 `;
+
+exports[`State set & get 7`] = `
+Array [
+  Array [
+    "A new ReactGlobalState is created:",
+  ],
+  Array [
+    "- Initial state:",
+    Object {
+      "key": "value",
+    },
+  ],
+  Array [
+    "- SSR mode:",
+    "no",
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "",
+  ],
+  Array [
+    "- New value:",
+    "value2",
+  ],
+  Array [
+    "- New state:",
+    Object {
+      "": "value2",
+      "key": "value",
+    },
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "",
+  ],
+  Array [
+    "- New value:",
+    "value3",
+  ],
+  Array [
+    "- New state:",
+    "value3",
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "",
+  ],
+  Array [
+    "- New value:",
+    "value4",
+  ],
+  Array [
+    "- New state:",
+    "value4",
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "",
+  ],
+  Array [
+    "- New value:",
+    "value5",
+  ],
+  Array [
+    "- New state:",
+    Object {
+      "": "value5",
+    },
+  ],
+]
+`;
+
+exports[`Watch & unWatch logic 1`] = `
+Array [
+  Array [
+    "A new ReactGlobalState is created:",
+  ],
+  Array [
+    "- Initial state:",
+    "no",
+  ],
+  Array [
+    "- SSR mode:",
+    "no",
+  ],
+]
+`;
