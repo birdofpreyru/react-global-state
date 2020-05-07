@@ -1,5 +1,5 @@
 ![Master Build Status](https://img.shields.io/circleci/project/github/birdofpreyru/react-global-state/master.svg?label=master)
-![Dev Build Status](https://img.shields.io/circleci/project/github/birdofpreyru/react-global-state/develop.svg?label=develop)
+![Dev Build Status](https://img.shields.io/circleci/project/github/birdofpreyru/react-global-state/devel.svg?label=devel)
 ![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/react-global-state.svg)
 ![NPM Downloads](https://img.shields.io/npm/dm/@dr.pogodin/react-global-state.svg)
 
