@@ -127,7 +127,6 @@ test('Functional update to a function value', () => {
   expect(TestComponent06.func2).not.toHaveBeenCalled();
 });
 
-
 function TestComponent07() {
   TestComponent07.pass += 1;
   const [value, set] = useGlobalState('path', () => 'value-07');
