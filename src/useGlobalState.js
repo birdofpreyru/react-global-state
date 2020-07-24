@@ -25,6 +25,7 @@ export default function useGlobalState(path, initialValue) {
     localState,
     setLocalState,
   ] = useState(() => state);
+
   useEffect(() => {
     const callback = () => {
       const newState = globalState.get(path);
@@ -49,7 +50,16 @@ export default function useGlobalState(path, initialValue) {
           console.log('- New value:', _.cloneDeep(newValue));
           /* eslint-enable no-console */
         }
+
         globalState.set(path, newValue);
+
+        // The update of local state here is important for managed inputs:
+        // if we wait until the global state change notification is delivered
+        // (which happens after the next React render), React won't conserve
+        // the text cursor inside the currently focused input field (the cursor
+        // will jump to the field end, like if the value was changed not by
+        // keyboard input).
+        setLocalState(() => newValue);
       },
     };
   } else {
