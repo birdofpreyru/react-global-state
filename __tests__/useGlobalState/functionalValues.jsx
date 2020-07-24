@@ -66,7 +66,7 @@ test('Functional initial value, returing a function', () => {
 function TestComponent04() {
   TestComponent04.pass += 1;
   const [value, set] = useGlobalState('path', 'value-04');
-  set('value-04-2');
+  setTimeout(() => set('value-04-2'));
   switch (TestComponent04.pass) {
     case 1: expect(value).toBe('value-04'); break;
     case 2: expect(value).toBe('value-04-2'); break;
@@ -106,7 +106,7 @@ test('Functional update', () => {
 function TestComponent06() {
   TestComponent06.pass += 1;
   const [value, set] = useGlobalState('path', () => TestComponent06.func);
-  set(() => TestComponent06.func2);
+  setTimeout(() => set(() => TestComponent06.func2));
   switch (TestComponent06.pass) {
     case 1: expect(value === TestComponent06.func).toBe(true); break;
     case 2: expect(value === TestComponent06.func2).toBe(true); break;
@@ -126,7 +126,6 @@ test('Functional update to a function value', () => {
   expect(TestComponent06.func).not.toHaveBeenCalled();
   expect(TestComponent06.func2).not.toHaveBeenCalled();
 });
-
 
 function TestComponent07() {
   TestComponent07.pass += 1;
