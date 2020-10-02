@@ -20,8 +20,8 @@ etc.), and the server-side rendering (SSR) support.
   - [API](#api-section)
     - [`<GlobalStateProvider ... />`](#GlobalStateProvider)
     - [`useGlobalState(path: string, initialValue?: any): array`](#useGlobalState)
-    - [`useAsyncData(path: string, loader: () => Promise<any>, options?: object): Promise<object>`](#useAsyncData)
-    - [`useAsyncCollection(id: string, path: string, loader: (id: string) => Promise<any>, options?: object): Promise<object>`](#useAsyncCollection)
+    - [`useAsyncData(path: string, loader: () => Promise<any>, options?: object): object`](#useAsyncData)
+    - [`useAsyncCollection(id: string, path: string, loader: (id: string) => Promise<any>, options?: object): object`](#useAsyncCollection)
     - [`getSsrContext(throwWithoutSsrContext?: boolean = true): object`](#getSsrContext)
     - [`getGlobalState(): GlobalState`](#getGlobalState)
 
@@ -337,7 +337,7 @@ _and return value types._
   <hr />
 
 - <a name="useAsyncData"></a>
-  `useAsyncData(path: string, loader: () => Promise<any>, options?: object): Promise<object>`
+  `useAsyncData(path: string, loader: () => Promise<any>, options?: object): object`
   &ndash; The hook for storing async data in the global state at the specified path.
   When different components in your application rely on the same async data (e.g.
   fetched from a remote API), this hook simplifies loading, and reusing these
@@ -380,7 +380,7 @@ _and return value types._
       operation will be ignored during the SSR rendering.
 
   **Result**
-  - `Promise<object>` Resolves to the object with following fields:
+  - `object` Object with following fields:
     - `data: any` &ndash; The current data stored in the state.
     - `loading: boolean` &ndash; `true` if the data are being loaded.
     - `timestamp: number` &ndash; The timestamp of the data currently loaded
@@ -388,7 +388,7 @@ _and return value types._
   <hr />
 
 - <a name="useAsyncCollection"></a>
-  `useAsyncCollection(id: string, path: string, loader: (id: string) => Promise<any>, options?: object): Promise<object>`
+  `useAsyncCollection(id: string, path: string, loader: (id: string) => Promise<any>, options?: object): object`
   &ndash; The hook for storing an async collection of data at the specified
   global state path.
 
@@ -420,7 +420,7 @@ _and return value types._
       operation will be ignored during the SSR rendering.
 
   **Result**
-  - `Promise<object>` Resolves to the object with following fields:
+  - `object` Object with following fields:
       - `data: any` &ndash; The current data stored in the state.
       - `loading: boolean` &ndash; `true` if the data are being loaded.
       - `timestamp: number` &ndash; The timestamp of the data currently loaded
