@@ -5,9 +5,12 @@
 
 # React Global State
 
-Efficient and simple global state management for React, implemented with hooks,
-and spiced by useful data management functions (asyncroneous retrieval, caching,
-etc.), and the server-side rendering (SSR) support.
+State of the art approach to the global state and asynchronous data management
+in React applications, powered by hooks and Context API. Simple, efficient, with
+full server-side rendering (SSR) support.
+
+**Tutorial:**
+[The Global State In React Designed Right](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
 
 ### Content
 - [Motivation](#motivation)
@@ -331,7 +334,7 @@ _and return value types._
       change when the component is re-rendered (again, it matches behavior
       of the settter returned by the standard React's `setState(..)` hook).
 
-  State update notifications are asyncroneous. If your code updates the state
+  State update notifications are asynchronous. If your code updates the state
   many times during a rendering pass, all update notifications are queued and
   dispatched after the current rendering pass completes.
   <hr />
@@ -397,7 +400,7 @@ _and return value types._
   - `path: string` &ndash; The global state path at which the entire collection
     will be stored.
   - `loader: (id: string) => Promise<any>` &ndash; An async data loader, which
-    given an ID of collection item loads it asyncroneously and returns to
+    given an ID of collection item loads it asynchronously and returns to
     the caller.
   - `options?: object` &ndash; Optional. Additional options.
     - `options.deps?: any[] = []` Optional. The array of dependencies to watch
