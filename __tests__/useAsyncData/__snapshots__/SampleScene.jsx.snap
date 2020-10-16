@@ -107,6 +107,17 @@ Array [
     "no",
   ],
   Array [
+    "A new ReactGlobalState is created:",
+  ],
+  Array [
+    "- Initial state:",
+    "no",
+  ],
+  Array [
+    "- SSR mode:",
+    "no",
+  ],
+  Array [
     "ReactGlobalState update:",
   ],
   Array [
