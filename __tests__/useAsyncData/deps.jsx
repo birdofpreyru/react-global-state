@@ -2,7 +2,7 @@
  * Tests that data reloading happens as expected when `deps` option is used.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import mockdate from 'mockdate';
 import pretty from 'pretty';
 

@@ -2,7 +2,6 @@
  * Base test of the server-side rendering features.
  */
 
-import React from 'react';
 import ReactDOM from 'react-dom/server';
 
 import mockdate from 'mockdate';

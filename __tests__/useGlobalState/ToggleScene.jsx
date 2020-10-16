@@ -1,7 +1,5 @@
 /* eslint-disable react/prop-types */
 
-import React from 'react';
-
 import pretty from 'pretty';
 import { act, mount, unmount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';

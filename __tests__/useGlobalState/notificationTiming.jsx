@@ -3,8 +3,6 @@
  * in an async manner.
  */
 
-import React from 'react';
-
 import pretty from 'pretty';
 
 import { act, mount, unmount } from 'jest/utils';
