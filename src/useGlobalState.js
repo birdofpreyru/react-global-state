@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { getGlobalState } from './GlobalStateProvider';
 
+import { IS_DEBUG_MODE } from './utils';
+
 /**
  * Subscribes to the global state `path`.
  * @param {String} path
@@ -43,7 +45,7 @@ export default function useGlobalState(path, initialValue) {
       setter: (value) => {
         const newValue = _.isFunction(value)
           ? value(ref.current.localState) : value;
-        if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+        if (IS_DEBUG_MODE) {
           /* eslint-disable no-console */
           console.log('ReactGlobalState - useGlobalState setter triggered:');
           console.log('- Path:', path || '');

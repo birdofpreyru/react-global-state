@@ -9,6 +9,8 @@ import { v4 as uuid } from 'uuid';
 import { getGlobalState } from './GlobalStateProvider';
 import useGlobalState from './useGlobalState';
 
+import { IS_DEBUG_MODE } from './utils';
+
 const DEFAULT_MAXAGE = 5 * 60 * 1000; // 5 minutes.
 
 /**
@@ -19,7 +21,7 @@ const DEFAULT_MAXAGE = 5 * 60 * 1000; // 5 minutes.
  * @return {Promise} Resolves once the operation is done.
  */
 async function load(path, loader, globalState) {
-  if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+  if (IS_DEBUG_MODE) {
     /* eslint-disable no-console */
     console.log('ReactGlobalState - useAsyncData data (re-)loading:');
     console.log('- Path:', path);
@@ -31,7 +33,7 @@ async function load(path, loader, globalState) {
   const data = await loader();
   const state = globalState.get(path);
   if (operationId === state.operationId) {
-    if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+    if (IS_DEBUG_MODE) {
       /* eslint-disable no-console */
       console.log('ReactGlobalState - useAsyncData data (re-)loaded:');
       console.log('- Path:', path || '');
@@ -99,7 +101,7 @@ export default function useAsyncData(
           state.numRefs === 1
           && garbageCollectAge < Date.now() - state.timestamp
         ) {
-          if (process.env.REACT_GLOBAL_STATE_DEBUG) {
+          if (IS_DEBUG_MODE) {
             /* eslint-disable no-console */
             console.log('ReactGlobalState - useAsyncData garbage collected:');
             console.log('- Path:', path || '');
