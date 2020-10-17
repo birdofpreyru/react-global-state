@@ -4,8 +4,6 @@
  */
 /* eslint-disable react/prop-types */
 
-import React from 'react';
-
 import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 

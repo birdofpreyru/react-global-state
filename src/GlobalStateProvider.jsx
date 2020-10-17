@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 
-import React, { useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 import GlobalState from './GlobalState';
 
-const context = React.createContext();
+const context = createContext();
 
 /**
  * Gets GlobalState instance from the context.

@@ -13,7 +13,14 @@ module.exports = function preset(api, options = {}) {
   if (targets) envPreset = [envPreset, { targets }];
 
   return {
-    presets: [envPreset, '@babel/react'],
+    presets: [
+      envPreset,
+
+      // TODO: Starting from Babel 8, "automatic" will be the default runtime,
+      // thus once upgraded to Babel 8, runtime should be removed from
+      // @babel/react options below.
+      ['@babel/react', { runtime: 'automatic' }],
+    ],
     plugins: [
       ['module-resolver', {
         extensions: ['.js', '.jsx'],

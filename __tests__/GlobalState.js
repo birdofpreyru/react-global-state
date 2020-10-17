@@ -4,11 +4,11 @@
  */
 
 import { mockConsoleLog, unMockConsoleLog } from 'jest/utils';
-import GlobalState from 'src/GlobalState';
 
 jest.useFakeTimers();
 
 beforeEach(() => {
+  jest.resetModules();
   delete process.env.REACT_GLOBAL_STATE_DEBUG;
   unMockConsoleLog();
 });
@@ -16,6 +16,7 @@ beforeEach(() => {
 test('State set & get', () => {
   mockConsoleLog();
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
+  const GlobalState = require('src/GlobalState').default;
   const state = new GlobalState({ key: 'value' });
   expect(state).toMatchSnapshot();
   state.set('', 'value2');
@@ -37,6 +38,7 @@ test('State set & get', () => {
 test('Watch & unWatch logic', () => {
   mockConsoleLog();
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
+  const GlobalState = require('src/GlobalState').default;
   const state = new GlobalState();
   const watcher1 = () => null;
   const watcher2 = () => null;

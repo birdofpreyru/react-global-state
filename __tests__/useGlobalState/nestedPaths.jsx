@@ -2,7 +2,6 @@
  * Updates of nested state paths should notify watchers of the wrapping paths.
  */
 
-import React from 'react';
 import pretty from 'pretty';
 
 import {

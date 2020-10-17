@@ -2,28 +2,12 @@
  * Base test of the server-side rendering features.
  */
 
-import React from 'react';
-import ReactDOM from 'react-dom/server';
-
 import mockdate from 'mockdate';
 import pretty from 'pretty';
 
-import {
-  act,
-  timer,
-  mockConsoleLog,
-  mockTimer,
-  mount,
-  unMockConsoleLog,
-  unmount,
-} from 'jest/utils';
-
-import {
-  GlobalStateProvider,
-  getSsrContext,
-  useAsyncData,
-  useGlobalState,
-} from 'src';
+let JU;
+let LIB;
+let ReactDOM;
 
 jest.mock('uuid');
 
@@ -31,27 +15,27 @@ jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
 
 const loaderA = jest.fn(async () => {
-  await timer(1000);
+  await JU.timer(1000);
   return 'data';
 });
 
 const loaderB = jest.fn(async () => {
-  await timer(1000);
+  await JU.timer(1000);
   return 'data';
 });
 
 function ComponentA() {
-  const envelop = useAsyncData('x', loaderA);
+  const envelop = LIB.useAsyncData('x', loaderA);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 
 function ComponentB() {
-  const envelop = useAsyncData('x', loaderB);
+  const envelop = LIB.useAsyncData('x', loaderB);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 
 function Scene() {
-  const [globalValue] = useGlobalState('value.path', 'defaultValue');
+  const [globalValue] = LIB.useGlobalState('value.path', 'defaultValue');
   return (
     <div>
       <h1>{globalValue}</h1>
@@ -64,37 +48,41 @@ function Scene() {
 let scene;
 
 beforeEach(() => {
+  jest.resetModules();
   delete process.env.REACT_GLOBAL_STATE_DEBUG;
-  unMockConsoleLog();
+  ReactDOM = require('react-dom/server');
+  JU = require('jest/utils');
+  JU.unMockConsoleLog();
   loaderA.mockClear();
   loaderB.mockClear();
 });
 
 afterEach(() => {
   if (scene) {
-    unmount(scene);
+    JU.unmount(scene);
     scene = null;
   }
 });
 
 test('Scene test in the front-end mode', async () => {
-  scene = mount((
-    <GlobalStateProvider>
+  LIB = require('src');
+  scene = JU.mount((
+    <LIB.GlobalStateProvider>
       <Scene />
-    </GlobalStateProvider>
+    </LIB.GlobalStateProvider>
   ));
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  await act(async () => {
-    await mockTimer(100);
+  await JU.act(async () => {
+    await JU.mockTimer(100);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
-  await act(async () => {
-    await mockTimer(1000);
+  await JU.act(async () => {
+    await JU.mockTimer(1000);
   });
-  await act(async () => {
-    await mockTimer(0);
+  await JU.act(async () => {
+    await JU.mockTimer(0);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
@@ -102,10 +90,11 @@ test('Scene test in the front-end mode', async () => {
 });
 
 test('Naive server-side rendering', () => {
+  LIB = require('src');
   const render = ReactDOM.renderToString((
-    <GlobalStateProvider>
+    <LIB.GlobalStateProvider>
       <Scene />
-    </GlobalStateProvider>
+    </LIB.GlobalStateProvider>
   ));
   expect(pretty(render)).toMatchSnapshot();
 });
@@ -114,18 +103,19 @@ test('Naive server-side rendering', () => {
  * This is the sample SSR code assembly.
  */
 async function serverSideRender() {
+  LIB = require('src');
   let render;
   serverSideRender.round = 0;
   const ssrContext = { state: {} };
   for (; serverSideRender.round < 10; serverSideRender.round += 1) {
     /* eslint-disable no-await-in-loop */
     render = ReactDOM.renderToString((
-      <GlobalStateProvider
+      <LIB.GlobalStateProvider
         initialState={ssrContext.state}
         ssrContext={ssrContext}
       >
         <Scene />
-      </GlobalStateProvider>
+      </LIB.GlobalStateProvider>
     ));
     if (ssrContext.dirty) {
       await Promise.allSettled(ssrContext.pending);
@@ -137,7 +127,8 @@ async function serverSideRender() {
 
 test('Smart server-sider rendering', async () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
-  mockConsoleLog();
+  LIB = require('src');
+  JU.mockConsoleLog();
   let render = serverSideRender();
   await jest.runAllTimers();
   render = await render;
@@ -149,7 +140,7 @@ test('Smart server-sider rendering', async () => {
 describe('Test `getSsrContext()` function', () => {
   /* eslint-disable react/prop-types */
   function SceneUsingSsrContext({ throwWithoutSsrContext }) {
-    const ssrContext = getSsrContext(throwWithoutSsrContext);
+    const ssrContext = LIB.getSsrContext(throwWithoutSsrContext);
     return (
       <div>
         {JSON.stringify(ssrContext, null, 2)}
@@ -166,16 +157,17 @@ describe('Test `getSsrContext()` function', () => {
   afterEach(() => {
     console.error = consoleError;
     if (scene) {
-      unmount(scene);
+      JU.unmount(scene);
       scene = null;
     }
   });
 
   test('Missing GlobalStateProvider', () => {
+    LIB = require('src');
     console.error = () => null;
     let message;
     try {
-      mount(<SceneUsingSsrContext />);
+      JU.mount(<SceneUsingSsrContext />);
     } catch (error) {
       ({ message } = error);
     }
@@ -183,22 +175,24 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when exists', () => {
-    scene = mount((
-      <GlobalStateProvider ssrContext={{ key: 'Dummy SSR Context' }}>
+    LIB = require('src');
+    scene = JU.mount((
+      <LIB.GlobalStateProvider ssrContext={{ key: 'Dummy SSR Context' }}>
         <SceneUsingSsrContext />
-      </GlobalStateProvider>
+      </LIB.GlobalStateProvider>
     ));
     expect(pretty(scene.innerHTML)).toMatchSnapshot();
   });
 
   test('Get SSR context when does not exist', () => {
+    LIB = require('src');
     console.error = () => null;
     let message;
     try {
-      mount((
-        <GlobalStateProvider>
+      JU.mount((
+        <LIB.GlobalStateProvider>
           <SceneUsingSsrContext />
-        </GlobalStateProvider>
+        </LIB.GlobalStateProvider>
       ));
     } catch (error) {
       ({ message } = error);
@@ -207,10 +201,11 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when does not exist, but no throw is opted in', () => {
-    scene = mount((
-      <GlobalStateProvider>
+    LIB = require('src');
+    scene = JU.mount((
+      <LIB.GlobalStateProvider>
         <SceneUsingSsrContext throwWithoutSsrContext={false} />
-      </GlobalStateProvider>
+      </LIB.GlobalStateProvider>
     ));
     expect(pretty(scene.innerHTML)).toMatchSnapshot();
   });

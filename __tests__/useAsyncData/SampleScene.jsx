@@ -3,48 +3,40 @@
  * the same data into the same state segment.
  */
 
-import React, { useState } from 'react';
-
 import mockdate from 'mockdate';
 import pretty from 'pretty';
 
-import {
-  act,
-  mockConsoleLog,
-  mockTimer,
-  mount,
-  timer,
-  unmount,
-} from 'jest/utils';
-import { GlobalStateProvider, useAsyncData } from 'src';
+let JU;
+let LIB;
+let React;
 
 jest.useFakeTimers();
 mockdate.set('2019-10-28Z');
 
 const loaderA = jest.fn(async () => {
-  await timer(1000);
+  await JU.timer(1000);
   return 'data';
 });
 
 const loaderB = jest.fn(async () => {
-  await timer(1000);
+  await JU.timer(1000);
   return 'data';
 });
 
 function ComponentA() {
-  const envelop = useAsyncData('x', loaderA);
+  const envelop = LIB.useAsyncData('x', loaderA);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 
 function ComponentB() {
-  const envelop = useAsyncData('x', loaderB);
+  const envelop = LIB.useAsyncData('x', loaderB);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 
 function Scene() {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = React.useState(0);
   return (
-    <GlobalStateProvider>
+    <LIB.GlobalStateProvider>
       { value % 4 === 1 || value % 4 === 2 ? <ComponentA /> : null }
       { value % 4 === 2 || value % 4 === 3 ? <ComponentB /> : null }
       <div>
@@ -56,23 +48,30 @@ function Scene() {
           Move
         </button>
       </div>
-    </GlobalStateProvider>
+    </LIB.GlobalStateProvider>
   );
 }
 
 let scene = null;
 let button = null;
 
+function initTestScene() {
+  LIB = require('src');
+  scene = JU.mount(<Scene />);
+  button = document.querySelector('[data-testid=button]');
+}
+
 beforeEach(() => {
+  jest.resetModules();
+  JU = require('jest/utils');
+  React = require('react');
   loaderA.mockClear();
   loaderB.mockClear();
-  scene = mount(<Scene />);
-  button = document.querySelector('[data-testid=button]');
 });
 
 afterEach(() => {
   if (scene) {
-    unmount(scene);
+    JU.unmount(scene);
     scene = null;
     button = null;
   }
@@ -83,26 +82,27 @@ afterEach(() => {
  * state. */
 test('Scenario I', async () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
-  mockConsoleLog();
+  JU.mockConsoleLog();
+  initTestScene();
 
   /* Empty scene. */
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 
   /* Mounts ComponentA, and checks the loading is started. */
-  await act(async () => {
+  await JU.act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    await mockTimer(0);
+    await JU.mockTimer(0);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
 
   /* Checks the loading is completed. */
-  await act(async () => {
-    await mockTimer(1000);
+  await JU.act(async () => {
+    await JU.mockTimer(1000);
   });
-  await act(async () => {
-    await mockTimer(0);
+  await JU.act(async () => {
+    await JU.mockTimer(0);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
@@ -111,9 +111,9 @@ test('Scenario I', async () => {
   /* Mounts/unmounts components rapidly, checks data are not reloaded. */
   for (let i = 0; i < 4; i += 1) {
     /* eslint-disable no-await-in-loop, no-loop-func */
-    await act(async () => {
+    await JU.act(async () => {
       button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      await mockTimer(10);
+      await JU.mockTimer(10);
     });
     expect(pretty(scene.innerHTML)).toMatchSnapshot();
     expect(loaderA).toHaveBeenCalledTimes(1);
@@ -122,32 +122,32 @@ test('Scenario I', async () => {
   }
 
   /* Data are reloaded if stale when a new dependant component is mount. */
-  await act(async () => {
-    await mockTimer(6 * 60 * 1000);
+  await JU.act(async () => {
+    await JU.mockTimer(6 * 60 * 1000);
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    await mockTimer(10);
+    await JU.mockTimer(10);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(1);
 
   /* Checks the loading is completed. */
-  await act(async () => {
-    await mockTimer(1000);
+  await JU.act(async () => {
+    await JU.mockTimer(1000);
   });
-  await act(async () => {
-    await mockTimer(0);
+  await JU.act(async () => {
+    await JU.mockTimer(0);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(1);
 
-  await mockTimer(6 * 60 * 1000);
+  await JU.mockTimer(6 * 60 * 1000);
   for (let i = 0; i < 2; i += 1) {
     /* eslint-disable no-await-in-loop, no-loop-func */
-    await act(async () => {
+    await JU.act(async () => {
       button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      await mockTimer(10);
+      await JU.mockTimer(10);
     });
     expect(pretty(scene.innerHTML)).toMatchSnapshot();
     expect(loaderA).toHaveBeenCalledTimes(1);
