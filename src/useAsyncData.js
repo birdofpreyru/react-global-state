@@ -117,13 +117,21 @@ export default function useAsyncData(
         } else globalState.set(numRefsPath, state.numRefs - 1);
       };
     }, []);
+
     /* Data loading and refreshing. */
+    let loadTriggered = false;
     useEffect(() => {
       const state = globalState.get(path);
       if (refreshAge < Date.now() - state.timestamp && !state.operationId) {
         load(path, loader, globalState);
+        loadTriggered = true;
       }
     }, options.deps || []);
+
+    const hardDeps = options.hardDeps || [];
+    useEffect(() => {
+      if (!loadTriggered && hardDeps.length) load(path, loader, globalState);
+    }, hardDeps);
   }
 
   return {
