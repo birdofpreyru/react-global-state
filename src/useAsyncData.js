@@ -69,9 +69,10 @@ export default function useAsyncData(
   loader,
   options = {},
 ) {
-  const maxage = options.maxage || DEFAULT_MAXAGE;
-  const refreshAge = options.refreshAge || maxage;
-  const garbageCollectAge = options.garbageCollectAge || maxage;
+  let { garbageCollectAge, maxage, refreshAge } = options;
+  if (maxage === undefined) maxage = DEFAULT_MAXAGE;
+  if (refreshAge === undefined) refreshAge = maxage;
+  if (garbageCollectAge === undefined) garbageCollectAge = maxage;
 
   const globalState = getGlobalState();
   const [localState] = useGlobalState(path, {
