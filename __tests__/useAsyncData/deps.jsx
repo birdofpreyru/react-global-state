@@ -16,8 +16,6 @@ import {
 
 import { GlobalStateProvider, useAsyncData } from 'src';
 
-const MIN_MS = 60 * 1000;
-
 jest.useFakeTimers();
 mockdate.set('2020-04-09Z');
 
@@ -64,6 +62,7 @@ let button = null;
 async function wait(time) {
   await act(async () => {
     await mockTimer(time);
+    mockdate.set(Date.now() + time);
   });
 }
 
@@ -88,16 +87,13 @@ test('Scenario I', async () => {
   /* Check of the initial state. */
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 
-  /* Push button right away. No reload will happen because data
-   * are too fresh. */
-  button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-  await wait(1500);
-  await wait(10 * MIN_MS);
+  /* Data are not stale. */
+  await wait(10);
+  await wait(10);
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 
-  /* Push button. Now the data are stale and should reload. */
+  /* Press of button forces data refresh via "deps" option. */
   button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-  await wait(1500);
-  await wait(0);
+  await wait(10);
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 });

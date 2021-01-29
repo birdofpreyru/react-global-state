@@ -28,5 +28,5 @@ export default function useAsyncCollection(
   options = {},
 ) {
   const itemPath = path ? `${path}.${id}` : id;
-  return useAsyncData(itemPath, () => loader(id), options);
+  return useAsyncData(itemPath, (oldData) => loader(id, oldData), options);
 }

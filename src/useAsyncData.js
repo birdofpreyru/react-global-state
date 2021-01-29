@@ -18,9 +18,12 @@ const DEFAULT_MAXAGE = 5 * 60 * 1000; // 5 minutes.
  * @param {string} path Data segment path inside the global state.
  * @param {function} loader Data loader.
  * @param {GlobalState} globalState The global state instance.
+ * @param {any} [oldData] Optional. Previously fetched data, currently stored in
+ *  the state, if already fetched by the caller; otherwise, they will be fetched
+ *  by the load() function itself.
  * @return {Promise} Resolves once the operation is done.
  */
-async function load(path, loader, globalState) {
+async function load(path, loader, globalState, oldData) {
   if (IS_DEBUG_MODE) {
     /* eslint-disable no-console */
     console.log('ReactGlobalState - useAsyncData data (re-)loading:');
@@ -30,7 +33,7 @@ async function load(path, loader, globalState) {
   const operationId = uuid();
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
   globalState.set(operationIdPath, operationId);
-  const data = await loader();
+  const data = await loader(oldData || globalState.get(path).data);
   const state = globalState.get(path);
   if (operationId === state.operationId) {
     if (IS_DEBUG_MODE) {
@@ -86,7 +89,7 @@ export default function useAsyncData(
     const state = globalState.get(path);
     if (!state.timestamp && !state.operationId) {
       globalState.ssrContext.pending.push(
-        load(path, loader, globalState),
+        load(path, loader, globalState, state.data),
       );
     }
   } else {
@@ -123,15 +126,15 @@ export default function useAsyncData(
     useEffect(() => {
       const state = globalState.get(path);
       if (refreshAge < Date.now() - state.timestamp && !state.operationId) {
-        load(path, loader, globalState);
+        load(path, loader, globalState, state.data);
         loadTriggered = true;
       }
-    }, options.deps || []);
+    });
 
-    const hardDeps = options.hardDeps || [];
+    const deps = options.deps || [];
     useEffect(() => {
-      if (!loadTriggered && hardDeps.length) load(path, loader, globalState);
-    }, hardDeps);
+      if (!loadTriggered && deps.length) load(path, loader, globalState);
+    }, deps);
   }
 
   return {

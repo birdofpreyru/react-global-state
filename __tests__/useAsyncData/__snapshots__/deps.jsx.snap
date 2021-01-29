@@ -5,7 +5,7 @@ exports[`Scenario I 1`] = `
   <div>{
     \\"data\\": 0,
     \\"loading\\": false,
-    \\"timestamp\\": 1586390401500
+    \\"timestamp\\": 1586390403000
     }</div><button data-test-id=\\"button\\" type=\\"button\\">Update</button>
 </div>"
 `;
@@ -15,7 +15,7 @@ exports[`Scenario I 2`] = `
   <div>{
     \\"data\\": 0,
     \\"loading\\": false,
-    \\"timestamp\\": 1586390401500
+    \\"timestamp\\": 1586390403000
     }</div><button data-test-id=\\"button\\" type=\\"button\\">Update</button>
 </div>"
 `;
@@ -23,9 +23,9 @@ exports[`Scenario I 2`] = `
 exports[`Scenario I 3`] = `
 "<div>
   <div>{
-    \\"data\\": 2,
-    \\"loading\\": false,
-    \\"timestamp\\": 1586391004500
+    \\"data\\": 0,
+    \\"loading\\": true,
+    \\"timestamp\\": 1586390403000
     }</div><button data-test-id=\\"button\\" type=\\"button\\">Update</button>
 </div>"
 `;
