@@ -126,12 +126,12 @@ export default function useAsyncData(
         load(path, loader, globalState);
         loadTriggered = true;
       }
-    }, options.deps || []);
+    });
 
-    const hardDeps = options.hardDeps || [];
+    const deps = options.deps || [];
     useEffect(() => {
-      if (!loadTriggered && hardDeps.length) load(path, loader, globalState);
-    }, hardDeps);
+      if (!loadTriggered && deps.length) load(path, loader, globalState);
+    }, deps);
   }
 
   return {

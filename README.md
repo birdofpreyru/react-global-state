@@ -363,18 +363,9 @@ _and return value types._
   - `loader: () => Promise<any>` &ndash; Async data loader, i.e. an async
     function returning a promise which resolves to the loaded data.
   - `options?: object` &ndash; Optional. Additional parameters.
-
     - `options.deps?: any[] = []` Optional. An array of dependencies which
       should trigger data refresh attempt when changed. These dependencies
-      are watched as dependencies of the standard `useEffect()` hook, and
-      the actual data refresh happens only when the currently loaded data
-      are stale according to the `refreshAge` criteria.
-
-    - `options.hardDeps?: any[] = []` Optional. An array of dependencies which
-      should trigger data refresh when changed. These dependencies are watched
-      as dependencies of the standard `useEffect()` hook, and unlike with `deps`
-      option, the currently loaded data age is not taken into account.
-
+      are watched as dependencies of the standard `useEffect()` hook.
     - `options.maxage?: number = 5 * 60 * 1000` &ndash; Optional. The maximum age
       of data acceptable to the caller. If data in the state are older than this
       time [ms], `null` is returned until the data are reloaded. Defaults to

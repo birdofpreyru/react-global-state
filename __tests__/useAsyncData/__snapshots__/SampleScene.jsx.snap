@@ -85,7 +85,7 @@ exports[`Scenario I 9`] = `
 exports[`Scenario I 10`] = `
 "<div>{
   \\"data\\": null,
-  \\"loading\\": false,
+  \\"loading\\": true,
   \\"timestamp\\": 1572221162050
   }</div>
 <div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
@@ -377,28 +377,6 @@ Array [
     "no",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.numRefs",
-  ],
-  Array [
-    "- New value:",
-    2,
-  ],
-  Array [
-    "- New state:",
-    Object {
-      "x": Object {
-        "data": "data",
-        "numRefs": 2,
-        "operationId": "",
-        "timestamp": 1572220801000,
-      },
-    },
-  ],
-  Array [
     "ReactGlobalState - useAsyncData data (re-)loading:",
   ],
   Array [
@@ -415,6 +393,28 @@ Array [
   Array [
     "- New value:",
     "00000000-0000-0000-0000-000000000002",
+  ],
+  Array [
+    "- New state:",
+    Object {
+      "x": Object {
+        "data": "data",
+        "numRefs": 1,
+        "operationId": "00000000-0000-0000-0000-000000000002",
+        "timestamp": 1572220801000,
+      },
+    },
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "x.numRefs",
+  ],
+  Array [
+    "- New value:",
+    2,
   ],
   Array [
     "- New state:",
@@ -499,6 +499,35 @@ Array [
     },
   ],
   Array [
+    "ReactGlobalState - useAsyncData data (re-)loading:",
+  ],
+  Array [
+    "- Path:",
+    "x",
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "x.operationId",
+  ],
+  Array [
+    "- New value:",
+    "00000000-0000-0000-0000-000000000003",
+  ],
+  Array [
+    "- New state:",
+    Object {
+      "x": Object {
+        "data": "data",
+        "numRefs": 1,
+        "operationId": "00000000-0000-0000-0000-000000000003",
+        "timestamp": 1572221162050,
+      },
+    },
+  ],
+  Array [
     "A new ReactGlobalState is created:",
   ],
   Array [
@@ -528,7 +557,7 @@ Array [
     Object {
       "data": null,
       "numRefs": 0,
-      "operationId": "",
+      "operationId": "00000000-0000-0000-0000-000000000003",
       "timestamp": 0,
     },
   ],
@@ -538,8 +567,46 @@ Array [
       "x": Object {
         "data": null,
         "numRefs": 0,
-        "operationId": "",
+        "operationId": "00000000-0000-0000-0000-000000000003",
         "timestamp": 0,
+      },
+    },
+  ],
+  Array [
+    "ReactGlobalState - useAsyncData data (re-)loaded:",
+  ],
+  Array [
+    "- Path:",
+    "x",
+  ],
+  Array [
+    "- Data:",
+    "data",
+  ],
+  Array [
+    "ReactGlobalState update:",
+  ],
+  Array [
+    "- Path:",
+    "x",
+  ],
+  Array [
+    "- New value:",
+    Object {
+      "data": "data",
+      "numRefs": 0,
+      "operationId": "",
+      "timestamp": 1572221523070,
+    },
+  ],
+  Array [
+    "- New state:",
+    Object {
+      "x": Object {
+        "data": "data",
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 1572221523070,
       },
     },
   ],

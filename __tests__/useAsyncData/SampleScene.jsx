@@ -88,7 +88,7 @@ test('Scenario I', async () => {
   /* Empty scene. */
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 
-  /* Mounts ComponentA, and checks the loading is started. */
+  /* Mounts ComponentA, checks the loading started. */
   await JU.act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await JU.mockTimer(0);
@@ -97,7 +97,7 @@ test('Scenario I', async () => {
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
 
-  /* Checks the loading is completed. */
+  /* Checks the loading is completed 1 second later. */
   await JU.act(async () => {
     await JU.mockTimer(1000);
   });
@@ -108,7 +108,9 @@ test('Scenario I', async () => {
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
 
-  /* Mounts/unmounts components rapidly, checks data are not reloaded. */
+  /* A series of component (un-)mounts in a rapid succession, checks
+   * it causes no data re-loads, and the final state is the same as
+   * before: ComponentA mounted. */
   for (let i = 0; i < 4; i += 1) {
     /* eslint-disable no-await-in-loop, no-loop-func */
     await JU.act(async () => {
@@ -121,17 +123,22 @@ test('Scenario I', async () => {
     /* eslint-enable no-await-in-loop */
   }
 
-  /* Data are reloaded if stale when a new dependant component is mount. */
+  /**
+   * Waits 6 secs to stale loaded data, then mounts ComponentB.
+   * Checks a data re-loading started by ComponentA, as in the final state
+   * both components are mounted, and ComponentA is rendered first.
+   */
   await JU.act(async () => {
     await JU.mockTimer(6 * 60 * 1000);
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await JU.mockTimer(10);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  expect(loaderA).toHaveBeenCalledTimes(1);
-  expect(loaderB).toHaveBeenCalledTimes(1);
+  expect(loaderA).toHaveBeenCalledTimes(2);
+  expect(loaderB).toHaveBeenCalledTimes(0);
 
-  /* Checks the loading is completed. */
+  /* Checks the data loading is completed 1 sec later, and both components
+   * are mounted. */
   await JU.act(async () => {
     await JU.mockTimer(1000);
   });
@@ -139,21 +146,29 @@ test('Scenario I', async () => {
     await JU.mockTimer(0);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  expect(loaderA).toHaveBeenCalledTimes(1);
+  expect(loaderA).toHaveBeenCalledTimes(2);
+  expect(loaderB).toHaveBeenCalledTimes(0);
+
+  /* Waits 6 secs to stale data, and unmounts ComponentA. Checks the data
+   * are re-loaded by ComponentB, which is still mounted. */
+  await JU.mockTimer(6 * 60 * 1000);
+  await JU.act(async () => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await JU.mockTimer(10);
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);
 
-  await JU.mockTimer(6 * 60 * 1000);
-  for (let i = 0; i < 2; i += 1) {
-    /* eslint-disable no-await-in-loop, no-loop-func */
-    await JU.act(async () => {
-      button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      await JU.mockTimer(10);
-    });
-    expect(pretty(scene.innerHTML)).toMatchSnapshot();
-    expect(loaderA).toHaveBeenCalledTimes(1);
-    expect(loaderB).toHaveBeenCalledTimes(1);
-    /* eslint-enable no-await-in-loop */
-  }
+  /* Waits 1 sec, unmounts ComponentB, checks the data are loaded. */
+  await JU.mockTimer(1000);
+  await JU.act(async () => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await JU.mockTimer(10);
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  expect(loaderA).toHaveBeenCalledTimes(2);
+  expect(loaderB).toHaveBeenCalledTimes(1);
 
   expect(console.log.logs).toMatchSnapshot();
 });
