@@ -360,8 +360,10 @@ _and return value types._
 
   - `path: string` &ndash; The state path, where all related information will
     be kept.
-  - `loader: () => Promise<any>` &ndash; Async data loader, i.e. an async
-    function returning a promise which resolves to the loaded data.
+  - `loader: (oldData: any) => Promise<any>` &ndash; Async data loader,
+    _i.e._ an async function returning a promise which resolves to the loaded
+    data. The previously loaded data, currently stored in state, are passed in
+    as an argument, useful for some use cases.
   - `options?: object` &ndash; Optional. Additional parameters.
     - `options.deps?: any[] = []` Optional. An array of dependencies which
       should trigger data refresh attempt when changed. These dependencies
@@ -396,9 +398,9 @@ _and return value types._
   - `id: string` &ndash; ID of the collection item to return.
   - `path: string` &ndash; The global state path at which the entire collection
     will be stored.
-  - `loader: (id: string) => Promise<any>` &ndash; An async data loader, which
-    given an ID of collection item loads it asynchronously and returns to
-    the caller.
+  - `loader: (id: string, oldData: any) => Promise<any>` &ndash; An async data
+    loader, which given an ID of collection item, and the previously loaded
+    item, loads it asynchronously and returns to the caller.
   - `options?: object` &ndash; Optional. Additional options.
     - `options.deps?: any[] = []` Optional. The array of dependencies to watch
       for changes (in the sence the standard React's `useEffect()` hook watches
