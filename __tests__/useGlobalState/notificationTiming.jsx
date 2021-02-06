@@ -48,7 +48,6 @@ test('Scene works as expected', () => {
   act(() => {
     scene = mount(<Scene />);
   });
-  // expect(pretty(scene.innerHTML)).toMatchSnapshot();
   act(() => jest.runAllTimers());
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 });

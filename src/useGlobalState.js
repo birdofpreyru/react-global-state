@@ -29,13 +29,23 @@ export default function useGlobalState(path, initialValue) {
   ] = useState(() => state);
 
   useEffect(() => {
+    // Note: the "callback.active" flag below is needed to workaround the issue
+    // https://github.com/birdofpreyru/react-global-state/issues/33,
+    // which, unfortunately, I am not able to reproduce in test environment,
+    // but I definitely seen it in the wild.
     const callback = () => {
-      const newState = globalState.get(path);
-      if (newState !== localState) setLocalState(() => newState);
+      if (callback.active) {
+        const newState = globalState.get(path);
+        if (newState !== localState) setLocalState(() => newState);
+      }
     };
+    callback.active = true;
     globalState.watch(callback);
     callback();
-    return () => globalState.unWatch(callback);
+    return () => {
+      delete callback.active;
+      globalState.unWatch(callback);
+    };
   }, [localState]);
 
   const ref = useRef();

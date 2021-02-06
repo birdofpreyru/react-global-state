@@ -5,8 +5,9 @@
 import _ from 'lodash';
 import mockdate from 'mockdate';
 import { render, unmountComponentAtNode } from 'react-dom';
+import { act } from 'react-dom/test-utils';
 
-export { act } from 'react-dom/test-utils';
+export { act };
 
 /**
  * Generates a mock UUID.
@@ -73,4 +74,14 @@ export async function timer(time) {
 export function unmount(scene) {
   unmountComponentAtNode(scene);
   scene.remove();
+}
+
+/**
+ * Advances mock timers by the specified time, and waits for any DOM updates
+ * to complete.
+ * @param {number} time [miliseconds]
+ * @return {Promise} Wait for this.
+ */
+export function wait(time) {
+  return act(() => mockTimer(time));
 }

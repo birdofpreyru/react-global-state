@@ -67,15 +67,6 @@ async function clickButton() {
   });
 }
 
-/**
- * Moves the mock timer by the specified time.
- * @param {number} time
- * @return {Promise}
- */
-async function wait(time) {
-  return JU.act(() => JU.mockTimer(time));
-}
-
 function initTestScene() {
   LIB = require('src');
   scene = JU.mount(<Scene />);
@@ -146,7 +137,7 @@ test('Scenario I', async () => {
    * Checks a data re-loading started by ComponentA, as in the final state
    * both components are mounted, and ComponentA is rendered first.
    */
-  await wait(6 * 60 * 1000);
+  await JU.wait(6 * 60 * 1000);
   await clickButton();
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
@@ -154,22 +145,22 @@ test('Scenario I', async () => {
 
   /* Checks the data loading is completed 1 sec later, and both components
    * are mounted. */
-  await wait(1000);
-  await wait(0);
+  await JU.wait(1000);
+  await JU.wait(0);
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(0);
 
   /* Waits 6 secs to stale data, and unmounts ComponentA. Checks the data
    * are re-loaded by ComponentB, which is still mounted. */
-  await wait(6 * 60 * 1000);
+  await JU.wait(6 * 60 * 1000);
   await clickButton();
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);
 
   /* Waits 1 sec, unmounts ComponentB, checks the data are loaded. */
-  await wait(1000);
+  await JU.wait(1000);
   await clickButton();
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
