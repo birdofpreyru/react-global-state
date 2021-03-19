@@ -6,8 +6,7 @@ import _ from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 
 import { getGlobalState } from './GlobalStateProvider';
-
-import { IS_DEBUG_MODE } from './utils';
+import { isDebugMode } from './utils';
 
 /**
  * Subscribes to the global state `path`.
@@ -55,7 +54,7 @@ export default function useGlobalState(path, initialValue) {
       setter: (value) => {
         const newValue = _.isFunction(value)
           ? value(ref.current.localState) : value;
-        if (IS_DEBUG_MODE) {
+        if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
           /* eslint-disable no-console */
           console.log('ReactGlobalState - useGlobalState setter triggered:');
           console.log('- Path:', path || '');

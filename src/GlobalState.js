@@ -1,6 +1,5 @@
 import _ from 'lodash';
-
-import { IS_DEBUG_MODE } from './utils';
+import { isDebugMode } from './utils';
 
 const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
 
@@ -35,7 +34,7 @@ export default class GlobalState {
       this.ssrContext = ssrContext;
     }
 
-    if (IS_DEBUG_MODE) {
+    if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
       /* eslint-disable no-console */
       console.log('A new ReactGlobalState is created:');
       console.log(
@@ -74,7 +73,7 @@ export default class GlobalState {
   set(path, value) {
     const p = fullPath(path);
     if (value !== _.get(this, p)) {
-      if (IS_DEBUG_MODE) {
+      if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
         console.log('ReactGlobalState update:');
         console.log('- Path:', path || '');
@@ -101,7 +100,7 @@ export default class GlobalState {
           [...this.watchers].forEach((w) => w());
         });
       }
-      if (IS_DEBUG_MODE) {
+      if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
         console.log('- New state:', _.cloneDeep(this.state));
         /* eslint-enable no-console */

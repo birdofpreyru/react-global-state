@@ -262,6 +262,9 @@ _and return value types._
   injected via Webpack, the library will log into the console state mutations,
   thus facilitating the development based on ReactGlobalState.
 
+  **Note:** It has no effect in production mode (`NODE_ENV` set to `production`,
+  which is also automatically injected by Webpack in production mode).
+
 <a name="api-section"></a>
 **API**
 
