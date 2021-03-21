@@ -23,6 +23,7 @@ const originalConsole = console.log;
 
 export async function mockConsoleLog() {
   console.log = (...args) => console.log.logs.push(_.cloneDeep(args));
+  console.groupCollapsed = console.log;
   console.log.clear = () => {
     console.log.logs = [];
   };

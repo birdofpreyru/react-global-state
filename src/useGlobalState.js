@@ -56,9 +56,13 @@ export default function useGlobalState(path, initialValue) {
           ? value(ref.current.localState) : value;
         if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
           /* eslint-disable no-console */
-          console.log('ReactGlobalState - useGlobalState setter triggered:');
-          console.log('- Path:', path || '');
-          console.log('- New value:', _.cloneDeep(newValue));
+          console.groupCollapsed(
+            `ReactGlobalState - useGlobalState setter triggered for path ${
+              path || ''
+            }`,
+          );
+          console.log('New value:', _.cloneDeep(newValue));
+          console.groupEnd();
           /* eslint-enable no-console */
         }
 

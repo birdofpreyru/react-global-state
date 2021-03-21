@@ -36,12 +36,11 @@ export default class GlobalState {
 
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
       /* eslint-disable no-console */
-      console.log('A new ReactGlobalState is created:');
-      console.log(
-        '- Initial state:',
-        initialState ? _.cloneDeep(initialState) : 'no',
-      );
-      console.log('- SSR mode:', ssrContext ? 'yes' : 'no');
+      let msg = 'New ReactGlobalState created';
+      if (ssrContext) msg += ' (SSR mode)';
+      console.groupCollapsed(msg);
+      console.log('Initial state:', _.cloneDeep(initialState));
+      console.groupEnd();
       /* eslint-enable no-console */
     }
     /* eslint-enable no-param-reassign */
@@ -75,9 +74,10 @@ export default class GlobalState {
     if (value !== _.get(this, p)) {
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
-        console.log('ReactGlobalState update:');
-        console.log('- Path:', path || '');
-        console.log('- New value:', _.cloneDeep(value));
+        console.groupCollapsed(
+          `ReactGlobalState update. Path: "${path || ''}"`,
+        );
+        console.log('New value:', _.cloneDeep(value));
         /* eslint-enable no-console */
       }
       let pos = this;
@@ -102,7 +102,8 @@ export default class GlobalState {
       }
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
-        console.log('- New state:', _.cloneDeep(this.state));
+        console.log('New state:', _.cloneDeep(this.state));
+        console.groupEnd();
         /* eslint-enable no-console */
       }
     }

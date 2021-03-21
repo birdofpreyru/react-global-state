@@ -61,79 +61,59 @@ GlobalState {
 exports[`State set & get 7`] = `
 Array [
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
+    "Initial state:",
     Object {
       "key": "value",
     },
   ],
   Array [
-    "- SSR mode:",
-    "no",
+    "ReactGlobalState update. Path: \\"\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     "value2",
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "": "value2",
       "key": "value",
     },
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"\\"",
   ],
   Array [
-    "- Path:",
-    "",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     "value3",
   ],
   Array [
-    "- New state:",
+    "New state:",
     "value3",
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"\\"",
   ],
   Array [
-    "- Path:",
-    "",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     "value4",
   ],
   Array [
-    "- New state:",
+    "New state:",
     "value4",
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"\\"",
   ],
   Array [
-    "- Path:",
-    "",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     "value5",
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "": "value5",
     },
@@ -144,15 +124,11 @@ Array [
 exports[`Watch & unWatch logic 1`] = `
 Array [
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
-    "no",
-  ],
-  Array [
-    "- SSR mode:",
-    "no",
+    "Initial state:",
+    undefined,
   ],
 ]
 `;

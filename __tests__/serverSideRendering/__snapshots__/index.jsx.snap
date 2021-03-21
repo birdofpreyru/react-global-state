@@ -79,29 +79,21 @@ exports[`Smart server-sider rendering 1`] = `
 exports[`Smart server-sider rendering 2`] = `
 Array [
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created (SSR mode)",
   ],
   Array [
-    "- Initial state:",
+    "Initial state:",
     Object {},
   ],
   Array [
-    "- SSR mode:",
-    "yes",
+    "ReactGlobalState update. Path: \\"value.path\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "value.path",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     "defaultValue",
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "value": Object {
         "path": "defaultValue",
@@ -109,14 +101,10 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     Object {
       "data": null,
       "numRefs": 0,
@@ -125,7 +113,7 @@ Array [
     },
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "value": Object {
         "path": "defaultValue",
@@ -139,25 +127,17 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState - useAsyncData data (re-)loading:",
+    "ReactGlobalState: useAsyncData data (re-)loading. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
+    "ReactGlobalState update. Path: \\"x.operationId\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.operationId",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     "00000000-0000-0000-0000-000000000001",
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "value": Object {
         "path": "defaultValue",
@@ -171,25 +151,17 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState - useAsyncData data (re-)loaded:",
+    "ReactGlobalState: useAsyncData data (re-)loaded. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- Data:",
+    "Data:",
     "data",
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     Object {
       "data": "data",
       "numRefs": 0,
@@ -198,7 +170,7 @@ Array [
     },
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "value": Object {
         "path": "defaultValue",
@@ -212,10 +184,10 @@ Array [
     },
   ],
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created (SSR mode)",
   ],
   Array [
-    "- Initial state:",
+    "Initial state:",
     Object {
       "value": Object {
         "path": "defaultValue",
@@ -227,10 +199,6 @@ Array [
         "timestamp": 1573084801100,
       },
     },
-  ],
-  Array [
-    "- SSR mode:",
-    "yes",
   ],
 ]
 `;

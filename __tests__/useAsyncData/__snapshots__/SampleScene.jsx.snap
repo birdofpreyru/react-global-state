@@ -96,36 +96,24 @@ exports[`Scenario I 11`] = `"<div><button data-testid=\\"button\\" type=\\"butto
 exports[`Scenario I 12`] = `
 Array [
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
-    "no",
+    "Initial state:",
+    undefined,
   ],
   Array [
-    "- SSR mode:",
-    "no",
+    "New ReactGlobalState created",
   ],
   Array [
-    "A new ReactGlobalState is created:",
+    "Initial state:",
+    undefined,
   ],
   Array [
-    "- Initial state:",
-    "no",
+    "ReactGlobalState update. Path: \\"x\\"",
   ],
   Array [
-    "- SSR mode:",
-    "no",
-  ],
-  Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     Object {
       "data": null,
       "numRefs": 0,
@@ -134,7 +122,7 @@ Array [
     },
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": null,
@@ -145,18 +133,14 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
-    "- Path:",
-    "x.numRefs",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     1,
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": null,
@@ -167,25 +151,17 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState - useAsyncData data (re-)loading:",
+    "ReactGlobalState: useAsyncData data (re-)loading. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
+    "ReactGlobalState update. Path: \\"x.operationId\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.operationId",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     "00000000-0000-0000-0000-000000000001",
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": null,
@@ -196,25 +172,17 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState - useAsyncData data (re-)loaded:",
+    "ReactGlobalState: useAsyncData data (re-)loaded. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- Data:",
+    "Data:",
     "data",
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     Object {
       "data": "data",
       "numRefs": 1,
@@ -223,7 +191,7 @@ Array [
     },
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -234,29 +202,21 @@ Array [
     },
   ],
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
-    "no",
+    "Initial state:",
+    undefined,
   ],
   Array [
-    "- SSR mode:",
-    "no",
+    "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.numRefs",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     2,
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -267,29 +227,21 @@ Array [
     },
   ],
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
-    "no",
+    "Initial state:",
+    undefined,
   ],
   Array [
-    "- SSR mode:",
-    "no",
+    "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.numRefs",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     1,
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -300,29 +252,21 @@ Array [
     },
   ],
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
-    "no",
+    "Initial state:",
+    undefined,
   ],
   Array [
-    "- SSR mode:",
-    "no",
+    "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.numRefs",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     0,
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -333,29 +277,21 @@ Array [
     },
   ],
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
-    "no",
+    "Initial state:",
+    undefined,
   ],
   Array [
-    "- SSR mode:",
-    "no",
+    "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.numRefs",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     1,
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -366,36 +302,24 @@ Array [
     },
   ],
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
-    "no",
+    "Initial state:",
+    undefined,
   ],
   Array [
-    "- SSR mode:",
-    "no",
+    "ReactGlobalState: useAsyncData data (re-)loading. Path: \\"x\\"",
   ],
   Array [
-    "ReactGlobalState - useAsyncData data (re-)loading:",
+    "ReactGlobalState update. Path: \\"x.operationId\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.operationId",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     "00000000-0000-0000-0000-000000000002",
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -406,18 +330,14 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
-    "- Path:",
-    "x.numRefs",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     2,
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -428,25 +348,17 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState - useAsyncData data (re-)loaded:",
+    "ReactGlobalState: useAsyncData data (re-)loaded. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- Data:",
+    "Data:",
     "data",
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     Object {
       "data": "data",
       "numRefs": 2,
@@ -455,7 +367,7 @@ Array [
     },
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -466,29 +378,21 @@ Array [
     },
   ],
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
-    "no",
+    "Initial state:",
+    undefined,
   ],
   Array [
-    "- SSR mode:",
-    "no",
+    "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.numRefs",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     1,
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -499,25 +403,17 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState - useAsyncData data (re-)loading:",
+    "ReactGlobalState: useAsyncData data (re-)loading. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
+    "ReactGlobalState update. Path: \\"x.operationId\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.operationId",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     "00000000-0000-0000-0000-000000000003",
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -528,25 +424,17 @@ Array [
     },
   ],
   Array [
-    "ReactGlobalState - useAsyncData data (re-)loaded:",
+    "ReactGlobalState: useAsyncData data (re-)loaded. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- Data:",
+    "Data:",
     "data",
   ],
   Array [
-    "ReactGlobalState update:",
+    "ReactGlobalState update. Path: \\"x\\"",
   ],
   Array [
-    "- Path:",
-    "x",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     Object {
       "data": "data",
       "numRefs": 1,
@@ -555,7 +443,7 @@ Array [
     },
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",
@@ -566,29 +454,21 @@ Array [
     },
   ],
   Array [
-    "A new ReactGlobalState is created:",
+    "New ReactGlobalState created",
   ],
   Array [
-    "- Initial state:",
-    "no",
+    "Initial state:",
+    undefined,
   ],
   Array [
-    "- SSR mode:",
-    "no",
+    "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
-    "ReactGlobalState update:",
-  ],
-  Array [
-    "- Path:",
-    "x.numRefs",
-  ],
-  Array [
-    "- New value:",
+    "New value:",
     0,
   ],
   Array [
-    "- New state:",
+    "New state:",
     Object {
       "x": Object {
         "data": "data",

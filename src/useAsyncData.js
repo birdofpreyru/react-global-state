@@ -25,8 +25,9 @@ const DEFAULT_MAXAGE = 5 * 60 * 1000; // 5 minutes.
 async function load(path, loader, globalState, oldData) {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
-    console.log('ReactGlobalState - useAsyncData data (re-)loading:');
-    console.log('- Path:', path);
+    console.log(
+      `ReactGlobalState: useAsyncData data (re-)loading. Path: "${path || ''}"`,
+    );
     /* eslint-enable no-console */
   }
   const operationId = uuid();
@@ -37,9 +38,12 @@ async function load(path, loader, globalState, oldData) {
   if (operationId === state.operationId) {
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
       /* eslint-disable no-console */
-      console.log('ReactGlobalState - useAsyncData data (re-)loaded:');
-      console.log('- Path:', path || '');
-      console.log('- Data:', _.cloneDeep(data));
+      console.groupCollapsed(
+        `ReactGlobalState: useAsyncData data (re-)loaded. Path: "${
+          path || ''
+        }"`,
+      );
+      console.log('Data:', _.cloneDeep(data));
       /* eslint-enable no-console */
     }
     globalState.set(path, {
@@ -48,6 +52,11 @@ async function load(path, loader, globalState, oldData) {
       operationId: '',
       timestamp: Date.now(),
     });
+    if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+      /* eslint-disable no-console */
+      console.groupEnd();
+      /* eslint-enable no-console */
+    }
   }
 }
 
@@ -106,8 +115,11 @@ export default function useAsyncData(
         ) {
           if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
             /* eslint-disable no-console */
-            console.log('ReactGlobalState - useAsyncData garbage collected:');
-            console.log('- Path:', path || '');
+            console.log(
+              `ReactGlobalState - useAsyncData garbage collected at path ${
+                path || ''
+              }`,
+            );
             /* eslint-enable no-console */
           }
           globalState.set(path, {
