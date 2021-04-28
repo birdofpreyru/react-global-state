@@ -1,7 +1,11 @@
 .*
 __coverage__
+__mocks__
 __tests__
 babel.*config.js
 dr.pogodin-react-global-state-*.tgz
+/bin
+/config
+/docs
 /jest
 /src

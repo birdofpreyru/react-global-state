@@ -1,18 +1,12 @@
-![Master Build Status](https://img.shields.io/circleci/project/github/birdofpreyru/react-global-state/master.svg?label=master)
-![Dev Build Status](https://img.shields.io/circleci/project/github/birdofpreyru/react-global-state/devel.svg?label=devel)
-![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/react-global-state.svg)
-![NPM Downloads](https://img.shields.io/npm/dm/@dr.pogodin/react-global-state.svg)
+[**react-global-state**](https://www.npmjs.com/package/@dr.pogodin/react-global-state)
+is a state of the art library for global state and asynchronous data managment
+in React applications, powered by hooks and Context API. It is simple, efficient,
+and with a full server-side rendering (SSR) support.
 
-# React Global State
+[Motivation](#motivation) &bull; [Setup](#setup) &bull;
+[Blog Article](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
 
-State of the art approach to the global state and asynchronous data management
-in React applications, powered by hooks and Context API. Simple, efficient, with
-full server-side rendering (SSR) support.
-
-[**Library Reference**](https://dr.pogodin.studio/docs/react-global-state/index.html) &bull;
-[**Blog Article**](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
-
-### Motivation
+### <a name="motivation"></a> Motivation
 
 The motivation and vision is to bring to the table all useful features
 of Redux, without related development overheads, like the amount of required
@@ -63,7 +57,7 @@ Related closely to async data is the server-side rendering (SSR). This library
 takes it into account, and provides a flexible way to implement SSR with loading
 of some, or all async data at the server side.
 
-### Setup
+### <a name="setup"></a> Setup
 
 1.  <a name="base-setup"></a> The base setup is simple: just wrap your app into
     the `<GlobalStateProvider>` component, provided by this library, and you'll
@@ -231,6 +225,3 @@ of some, or all async data at the server side.
       ), document.getElementById('your-react-view'));
     }
     ```
-
-[**Library Reference**](https://dr.pogodin.studio/docs/react-global-state/index.html) &bull;
-[**Blog Article**](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)

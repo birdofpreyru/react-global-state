@@ -2,3 +2,4 @@ __coverage__
 build/*
 node_modules
 dr.pogodin-react-global-state-*.tgz
+/docs
