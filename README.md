@@ -9,8 +9,8 @@ State of the art approach to the global state and asynchronous data management
 in React applications, powered by hooks and Context API. Simple, efficient, with
 full server-side rendering (SSR) support.
 
-[**Library Reference**](https://dr.pogodin.studio/docs/react-global-state/index.html) &bull;
-[**Blog Article**](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
+[Library Reference](https://dr.pogodin.studio/docs/react-global-state/index.html) &bull;
+[Blog Article](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
 
 ### Motivation
 
@@ -232,5 +232,5 @@ of some, or all async data at the server side.
     }
     ```
 
-[**Library Reference**](https://dr.pogodin.studio/docs/react-global-state/index.html) &bull;
-[**Blog Article**](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
+[Library Reference](https://dr.pogodin.studio/docs/react-global-state/index.html) &bull;
+[Blog Article](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
