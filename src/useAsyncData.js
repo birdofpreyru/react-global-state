@@ -2,7 +2,7 @@
  * Loads and uses async data into the GlobalState path.
  */
 
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 import { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 
@@ -44,7 +44,7 @@ async function load(path, loader, globalState, oldData) {
           path || ''
         }"`,
       );
-      console.log('Data:', _.cloneDeep(data));
+      console.log('Data:', cloneDeep(data));
       /* eslint-enable no-console */
     }
     globalState.set(path, {

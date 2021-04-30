@@ -1,4 +1,13 @@
-import _ from 'lodash';
+import {
+  cloneDeep,
+  get,
+  isArray,
+  isObject,
+  isNil,
+  set,
+  toPath,
+} from 'lodash';
+
 import { isDebugMode } from './utils';
 
 const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
@@ -10,7 +19,7 @@ const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
  * @ignore
  */
 function fullPath(statePath) {
-  return _.isNil(statePath) ? 'state' : `state.${statePath}`;
+  return isNil(statePath) ? 'state' : `state.${statePath}`;
 }
 
 export default class GlobalState {
@@ -23,7 +32,7 @@ export default class GlobalState {
    */
   constructor(initialState, ssrContext) {
     /* eslint-disable no-param-reassign */
-    this.state = _.cloneDeep(initialState);
+    this.state = cloneDeep(initialState);
     this.nextNotifierId = null;
     this.watchers = [];
 
@@ -39,7 +48,7 @@ export default class GlobalState {
       let msg = 'New ReactGlobalState created';
       if (ssrContext) msg += ' (SSR mode)';
       console.groupCollapsed(msg);
-      console.log('Initial state:', _.cloneDeep(initialState));
+      console.log('Initial state:', cloneDeep(initialState));
       console.groupEnd();
       /* eslint-enable no-console */
     }
@@ -56,7 +65,7 @@ export default class GlobalState {
    * @return {any}
    */
   get(path) {
-    return _.get(this, fullPath(path));
+    return get(this, fullPath(path));
   }
 
   /**
@@ -70,22 +79,22 @@ export default class GlobalState {
    */
   set(path, value) {
     const p = fullPath(path);
-    if (value !== _.get(this, p)) {
+    if (value !== get(this, p)) {
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
         console.groupCollapsed(
           `ReactGlobalState update. Path: "${path || ''}"`,
         );
-        console.log('New value:', _.cloneDeep(value));
+        console.log('New value:', cloneDeep(value));
         /* eslint-enable no-console */
       }
       let pos = this;
-      const pathSegments = _.toPath(p);
+      const pathSegments = toPath(p);
       for (let i = 0; i < pathSegments.length - 1; i += 1) {
         const seg = pathSegments[i];
         const next = pos[seg];
-        if (_.isArray(next)) pos[seg] = [...next];
-        else if (_.isObject(next)) pos[seg] = { ...next };
+        if (isArray(next)) pos[seg] = [...next];
+        else if (isObject(next)) pos[seg] = { ...next };
         else break;
         pos = pos[seg];
       }
@@ -95,7 +104,7 @@ export default class GlobalState {
       // It will be better to partially clone the state, so that any existing
       // references are not mutated, while the full deep clonning is also
       // avoided.
-      _.set(this, p, value);
+      set(this, p, value);
 
       if (this.ssrContext) {
         this.ssrContext.dirty = true;
@@ -108,7 +117,7 @@ export default class GlobalState {
       }
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
-        console.log('New state:', _.cloneDeep(this.state));
+        console.log('New state:', cloneDeep(this.state));
         console.groupEnd();
         /* eslint-enable no-console */
       }

@@ -1,6 +1,6 @@
 // Hook for updates of global state.
 
-import _ from 'lodash';
+import { cloneDeep, isFunction, isUndefined } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 
 import { getGlobalState } from './GlobalStateProvider';
@@ -61,8 +61,8 @@ import { isDebugMode } from './utils';
 export default function useGlobalState(path, initialValue) {
   const globalState = getGlobalState();
   let state = globalState.get(path);
-  if (_.isUndefined(state) && !_.isUndefined(initialValue)) {
-    const value = _.isFunction(initialValue) ? initialValue() : initialValue;
+  if (isUndefined(state) && !isUndefined(initialValue)) {
+    const value = isFunction(initialValue) ? initialValue() : initialValue;
     state = globalState.set(path, value);
   }
   const [
@@ -95,7 +95,7 @@ export default function useGlobalState(path, initialValue) {
     ref.current = {
       localState,
       setter: (value) => {
-        const newValue = _.isFunction(value)
+        const newValue = isFunction(value)
           ? value(ref.current.localState) : value;
         if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
           /* eslint-disable no-console */
@@ -104,7 +104,7 @@ export default function useGlobalState(path, initialValue) {
               path || ''
             }`,
           );
-          console.log('New value:', _.cloneDeep(newValue));
+          console.log('New value:', cloneDeep(newValue));
           console.groupEnd();
           /* eslint-enable no-console */
         }

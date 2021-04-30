@@ -2,7 +2,7 @@
  * Jest test utils.
  */
 
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 import mockdate from 'mockdate';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
@@ -22,7 +22,7 @@ export function getMockUuid(seed = 0) {
 const originalConsole = console.log;
 
 export async function mockConsoleLog() {
-  console.log = (...args) => console.log.logs.push(_.cloneDeep(args));
+  console.log = (...args) => console.log.logs.push(cloneDeep(args));
   console.groupCollapsed = console.log;
   console.log.clear = () => {
     console.log.logs = [];
