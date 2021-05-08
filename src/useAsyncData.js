@@ -2,10 +2,6 @@
  * Loads and uses async data into the GlobalState path.
  */
 
-// TODO: This is temporary disabled, as detected issues should be analyzed
-// carefully.
-/* eslint-disable react-hooks/rules-of-hooks, react-hooks/exhaustive-deps */
-
 import { cloneDeep } from 'lodash';
 import { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
@@ -170,9 +166,16 @@ export default function useAsyncData(
       );
     }
   } else {
-    /* This takes care about the client-side reference counting, and garbage
-     * collection. */
-    useEffect(() => {
+    // This takes care about the client-side reference counting, and garbage
+    // collection.
+    //
+    // Note: the Rules of Hook below are violated by conditional call to a hook,
+    // but as the condition is actually server-side or client-side environment,
+    // it is effectively non-conditional at the runtime.
+    //
+    // TODO: Though, maybe there is a way to refactor it into a cleaner code.
+    // The same applies to other useEffect() hooks below.
+    useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       const numRefsPath = path ? `${path}.numRefs` : 'numRefs';
       const numRefs = globalState.get(numRefsPath);
       globalState.set(numRefsPath, numRefs + 1);
@@ -199,22 +202,25 @@ export default function useAsyncData(
           });
         } else globalState.set(numRefsPath, state.numRefs - 1);
       };
-    }, []);
+    }, [garbageCollectAge, globalState, path]);
 
-    /* Data loading and refreshing. */
+    // Note: a bunch of Rules of Hooks ignored belows because in our very
+    // special case the otherwise wrong behavior is actually what we need.
+
+    // Data loading and refreshing.
     let loadTriggered = false;
-    useEffect(() => {
+    useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       const state = globalState.get(path);
       if (refreshAge < Date.now() - state.timestamp && !state.operationId) {
         load(path, loader, globalState, state.data);
-        loadTriggered = true;
+        loadTriggered = true; // eslint-disable-line react-hooks/exhaustive-deps
       }
     });
 
     const deps = options.deps || [];
-    useEffect(() => {
+    useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       if (!loadTriggered && deps.length) load(path, loader, globalState);
-    }, deps);
+    }, deps); // eslint-disable-line react-hooks/exhaustive-deps
   }
 
   return {
