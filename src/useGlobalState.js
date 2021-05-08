@@ -88,12 +88,13 @@ export default function useGlobalState(path, initialValue) {
       delete callback.active;
       globalState.unWatch(callback);
     };
-  }, [localState]);
+  }, [globalState, localState, path]);
 
   const ref = useRef();
   if (!ref.current) {
     ref.current = {
       localState,
+      path,
       setter: (value) => {
         const newValue = isFunction(value)
           ? value(ref.current.localState) : value;
@@ -101,7 +102,7 @@ export default function useGlobalState(path, initialValue) {
           /* eslint-disable no-console */
           console.groupCollapsed(
             `ReactGlobalState - useGlobalState setter triggered for path ${
-              path || ''
+              ref.current.path || ''
             }`,
           );
           console.log('New value:', cloneDeep(newValue));
@@ -109,7 +110,7 @@ export default function useGlobalState(path, initialValue) {
           /* eslint-enable no-console */
         }
 
-        globalState.set(path, newValue);
+        globalState.set(ref.current.path, newValue);
 
         // The update of local state here is important for managed inputs:
         // if we wait until the global state change notification is delivered
@@ -122,6 +123,7 @@ export default function useGlobalState(path, initialValue) {
     };
   } else {
     ref.current.localState = localState;
+    ref.current.path = path;
   }
 
   return [

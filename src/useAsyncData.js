@@ -2,6 +2,10 @@
  * Loads and uses async data into the GlobalState path.
  */
 
+// TODO: This is temporary disabled, as detected issues should be analyzed
+// carefully.
+/* eslint-disable react-hooks/rules-of-hooks, react-hooks/exhaustive-deps */
+
 import { cloneDeep } from 'lodash';
 import { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';

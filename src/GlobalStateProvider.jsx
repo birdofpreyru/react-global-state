@@ -31,7 +31,14 @@ const context = createContext();
  * @return {GlobalState}
  */
 export function getGlobalState() {
+  // Here Rules of Hooks are violated because "getGlobalState()" does not follow
+  // convention that hook names should start with use... This is intentional in
+  // our case, as getGlobalState() hook is intended for advance scenarious,
+  // while the normal interaction with the global state should happen via
+  // another hook, useGlobalState().
+  /* eslint-disable react-hooks/rules-of-hooks */
   const globalState = useContext(context);
+  /* eslint-enable react-hooks/rules-of-hooks */
   if (!globalState) throw new Error('Missing GlobalStateProvider');
   return globalState;
 }
@@ -80,9 +87,15 @@ export default function GlobalStateProvider({
   stateProxy,
 }) {
   let state;
+  // Here Rules of Hooks are violated because hooks are called conditionally,
+  // however we assume that these properties should not change at runtime, thus
+  // the actual hook order is preserved. Probably, it should be handled better,
+  // though.
+  /* eslint-disable react-hooks/rules-of-hooks */
   if (stateProxy instanceof GlobalState) state = stateProxy;
   else if (stateProxy) state = getGlobalState();
   else [state] = useState(new GlobalState(initialState, ssrContext));
+  /* eslint-enable react-hooks/rules-of-hooks */
   return (
     <context.Provider value={state}>
       {children}
