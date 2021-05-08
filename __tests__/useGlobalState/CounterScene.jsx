@@ -3,7 +3,6 @@
  * one component shows a value from the global state, another component
  * implements a button, which updates that state when clicked.
  */
-/* eslint-disable react/prop-types */
 
 import pretty from 'pretty';
 

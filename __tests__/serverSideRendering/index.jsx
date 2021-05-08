@@ -138,7 +138,6 @@ test('Smart server-sider rendering', async () => {
 });
 
 describe('Test `getSsrContext()` function', () => {
-  /* eslint-disable react/prop-types */
   function SceneUsingSsrContext({ throwWithoutSsrContext }) {
     const ssrContext = LIB.getSsrContext(throwWithoutSsrContext);
     return (
@@ -147,7 +146,6 @@ describe('Test `getSsrContext()` function', () => {
       </div>
     );
   }
-  /* eslint-enable react/prop-types */
 
   let consoleError;
   beforeAll(() => {

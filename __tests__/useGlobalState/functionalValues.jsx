@@ -2,7 +2,6 @@
  * Tests that if a function is used as the value, it is not called during
  * state update.
  */
-/* eslint-disable react/prop-types */
 
 import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
