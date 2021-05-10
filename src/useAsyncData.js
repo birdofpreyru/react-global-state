@@ -20,10 +20,13 @@ const DEFAULT_MAXAGE = 5 * 60 * 1000; // 5 minutes.
  * @param {any} [oldData] Optional. Previously fetched data, currently stored in
  *  the state, if already fetched by the caller; otherwise, they will be fetched
  *  by the load() function itself.
+ * @param {string} [opIdPrefix='C'] operationId prefix to use, which should be
+ * 'C' at the client-side (default), or 'S' at the server-side (within SSR
+ * context).
  * @return {Promise} Resolves once the operation is done.
  * @ignore
  */
-async function load(path, loader, globalState, oldData) {
+async function load(path, loader, globalState, oldData, opIdPrefix = 'C') {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
     console.log(
@@ -31,7 +34,7 @@ async function load(path, loader, globalState, oldData) {
     );
     /* eslint-enable no-console */
   }
-  const operationId = uuid();
+  const operationId = opIdPrefix + uuid();
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
   globalState.set(operationIdPath, operationId);
   const data = await loader(oldData || globalState.get(path).data);
@@ -72,6 +75,11 @@ async function load(path, loader, globalState, oldData) {
  * operation, if one is in progress. Changing this ID before the operation
  * completes effectively cancels the ongoing operation, and instructs related
  * hook to ignore the operation result.
+ *
+ * NOTE: Server-side and client-side operation UIDs start with `S` or `C` letter
+ * respectively. At the client side, if an envelop stores `operationId` starting
+ * with `S` letter, it is understood as a non-terminated data loading operation
+ * during SSR, and it is restarted at the client-side in this case.
  * @prop {number} timestamp Unix timestamp (in milliseconds) of the most
  * recently loaded `data`.
  */
@@ -162,7 +170,7 @@ export default function useAsyncData(
     const state = globalState.get(path);
     if (!state.timestamp && !state.operationId) {
       globalState.ssrContext.pending.push(
-        load(path, loader, globalState, state.data),
+        load(path, loader, globalState, state.data, 'S'),
       );
     }
   } else {
@@ -211,7 +219,8 @@ export default function useAsyncData(
     let loadTriggered = false;
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       const state = globalState.get(path);
-      if (refreshAge < Date.now() - state.timestamp && !state.operationId) {
+      if (refreshAge < Date.now() - state.timestamp
+      && (!state.operationId || state.operationId.charAt() === 'S')) {
         load(path, loader, globalState, state.data);
         loadTriggered = true; // eslint-disable-line react-hooks/exhaustive-deps
       }
