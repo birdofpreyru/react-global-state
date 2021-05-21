@@ -159,10 +159,19 @@ of some, or all async data at the server side.
 
     import SampleApp from 'path/to/app';
 
+    // As you want to keep server latency within a reason, it is a good idea
+    // to limit the maximum number of SSR rounds, or the maximum SSR time, or
+    // both, and perform any async operations which took too long at the client
+    // side.
+    const MAX_SSR_ROUNDS = 3;
+    const SSR_TIMEOUT = 1000; // 1 second (in milliseconds).
+
     async function renderServerSide() {
       let render;
+      const start = Date.now();
       const ssrContext = { state: {} };
-      for (let round = 0; round < 3; round += 1) {
+      for (let round = 0; round < MAX_SSR_ROUNDS; round += 1) {
+        // SSR round.
         render = ReactDOM.renderToString((
           <GlobalStateProvider
             initialState={ssrContext.state}
@@ -171,9 +180,17 @@ of some, or all async data at the server side.
             <SampleApp />
           </GlobalStateProvider>
         ));
-        if (ssrContext.dirty) {
-          await Promise.allSettled(ssrContext.pending);
-        } else break;
+
+        // SSR round did not altered the global state: we are done.
+        if (!ssrContext.dirty) break;
+
+        // Waiting for pending async operations to complete.
+        const timeout = SSR_TIMEOUT + start - Date.now();
+        const ok = timeout > 0 && await Promise.race([
+          Promise.allSettled(ssrContext.pending),
+          new Promise((x) => setTimeout(() => x(false), timeout)),
+        ]);
+        if (!ok) break; // SSR timeout.
       }
       return { render, state: ssrContext.state };
     }
@@ -184,10 +201,15 @@ of some, or all async data at the server side.
     `true`, and for any async operations, triggered by the library hooks,
     corresponding promises are added into the `ssrContext.pending` array.
     Thus, the block of code
-    ```
-    if (ssrContext.dirty) {
-      await Promise.allSettled(ssrContext.pending);
-    } else break;
+    ```js
+    if (!ssrContext.dirty) break;
+
+    const timeout = SSR_TIMEOUT + start - Date.now();
+    const ok = timeout > 0 && await Promise.race([
+      Promise.allSettled(ssrContext.pending),
+      new Promise((x) => setTimeout(() => x(false), timeout)),
+    ]);
+    if (!ok) break;
     ```
     in the case when last rendering pass triggered async operations, it waits
     for them to complete, and allows the rendering pass to be redone
@@ -201,7 +223,10 @@ of some, or all async data at the server side.
     The outer `for` loop serves to protect against possible long re-rendering
     loops: if after several re-renders the state has not become stable, it is
     fine to send to the client side the latest render and state results, and
-    finalize the rest of rendering at the client side.
+    finalize the rest of rendering at the client side. Similarly, the timeout
+    condition interrupts SSR and cause the code to serve the current render
+    and state, if any pending async operation takes too long, thus compromising
+    server latency.
 
     In case when some async operations are too long to wait for them during SSR,
     the async hooks accept `noSSR` option, to be ignored during SSR. Additional
