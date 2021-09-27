@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 // A very generic test of basic useAsyncCollection() functionality.
 
 import mockdate from 'mockdate';

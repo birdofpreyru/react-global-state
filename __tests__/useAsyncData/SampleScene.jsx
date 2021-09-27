@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 /**
  * Tests `useAsyncData(..)` on a sample scene: two components depend on loading
  * the same data into the same state segment.
@@ -103,7 +105,7 @@ test('Scenario I', async () => {
   /* Mounts ComponentA, checks the loading started. */
   await JU.act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    await JU.mockTimer(0);
+    await JU.mockTimer(1);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);

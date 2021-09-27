@@ -1,3 +1,8 @@
+/** @jest-environment jsdom */
+
+// ^^^ although it is strange to do SSR test in JSDom environment, the current
+// test organization requires it to verify results of SSR at client side.
+
 /**
  * Base test of the server-side rendering features.
  */
@@ -13,6 +18,10 @@ jest.mock('uuid');
 
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
+
+// TODO: Are we missing something here? Right now the test components A and B,
+// look identical along with their loaders. Were they intended to be slightly
+// different to test different SSR corner cases?
 
 const loaderA = jest.fn(async () => {
   await JU.timer(1000);
@@ -62,6 +71,12 @@ afterEach(() => {
     JU.unmount(scene);
     scene = null;
   }
+
+  // NOTE: Without this clearing some pending async updates from
+  // "Scene test in the front-end mode" get fired only after the
+  // later timer waiting in SSR test, which messes up the console
+  // log snapshot verification.
+  jest.clearAllTimers();
 });
 
 test('Scene test in the front-end mode', async () => {

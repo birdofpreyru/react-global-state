@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 // These tests cover useGlobalState behavior when its "path" argument value
 // changes.
 

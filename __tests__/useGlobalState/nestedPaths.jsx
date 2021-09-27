@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 /**
  * Updates of nested state paths should notify watchers of the wrapping paths.
  */

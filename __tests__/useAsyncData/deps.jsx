@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 /**
  * Tests that data reloading happens as expected when `deps` option is used.
  */

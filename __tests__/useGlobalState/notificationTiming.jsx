@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 /**
  * Tests that state notifications are delivered to dependent components
  * in an async manner.

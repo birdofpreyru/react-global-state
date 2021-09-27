@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 /**
  * Tests `useGlobalState(..)` functionality in the "CounterScene":
  * one component shows a value from the global state, another component

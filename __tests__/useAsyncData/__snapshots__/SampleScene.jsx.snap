@@ -15,7 +15,7 @@ exports[`Scenario I 3`] = `
 "<div>{
   \\"data\\": \\"data\\",
   \\"loading\\": false,
-  \\"timestamp\\": 1572220801000
+  \\"timestamp\\": 1572220801001
   }</div>
 <div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
 `;
@@ -24,12 +24,12 @@ exports[`Scenario I 4`] = `
 "<div>{
   \\"data\\": \\"data\\",
   \\"loading\\": false,
-  \\"timestamp\\": 1572220801000
+  \\"timestamp\\": 1572220801001
   }</div>
 <div>{
   \\"data\\": \\"data\\",
   \\"loading\\": false,
-  \\"timestamp\\": 1572220801000
+  \\"timestamp\\": 1572220801001
   }</div>
 <div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
 `;
@@ -38,7 +38,7 @@ exports[`Scenario I 5`] = `
 "<div>{
   \\"data\\": \\"data\\",
   \\"loading\\": false,
-  \\"timestamp\\": 1572220801000
+  \\"timestamp\\": 1572220801001
   }</div>
 <div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
 `;
@@ -49,7 +49,7 @@ exports[`Scenario I 7`] = `
 "<div>{
   \\"data\\": \\"data\\",
   \\"loading\\": false,
-  \\"timestamp\\": 1572220801000
+  \\"timestamp\\": 1572220801001
   }</div>
 <div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
 `;
@@ -58,12 +58,12 @@ exports[`Scenario I 8`] = `
 "<div>{
   \\"data\\": null,
   \\"loading\\": true,
-  \\"timestamp\\": 1572220801000
+  \\"timestamp\\": 1572220801001
   }</div>
 <div>{
   \\"data\\": null,
   \\"loading\\": true,
-  \\"timestamp\\": 1572220801000
+  \\"timestamp\\": 1572220801001
   }</div>
 <div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
 `;
@@ -72,12 +72,12 @@ exports[`Scenario I 9`] = `
 "<div>{
   \\"data\\": \\"data\\",
   \\"loading\\": false,
-  \\"timestamp\\": 1572221162050
+  \\"timestamp\\": 1572221162051
   }</div>
 <div>{
   \\"data\\": \\"data\\",
   \\"loading\\": false,
-  \\"timestamp\\": 1572221162050
+  \\"timestamp\\": 1572221162051
   }</div>
 <div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
 `;
@@ -86,7 +86,7 @@ exports[`Scenario I 10`] = `
 "<div>{
   \\"data\\": null,
   \\"loading\\": true,
-  \\"timestamp\\": 1572221162050
+  \\"timestamp\\": 1572221162051
   }</div>
 <div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
 `;
@@ -187,7 +187,7 @@ Array [
       "data": "data",
       "numRefs": 1,
       "operationId": "",
-      "timestamp": 1572220801000,
+      "timestamp": 1572220801001,
     },
   ],
   Array [
@@ -197,7 +197,7 @@ Array [
         "data": "data",
         "numRefs": 1,
         "operationId": "",
-        "timestamp": 1572220801000,
+        "timestamp": 1572220801001,
       },
     },
   ],
@@ -222,7 +222,7 @@ Array [
         "data": "data",
         "numRefs": 2,
         "operationId": "",
-        "timestamp": 1572220801000,
+        "timestamp": 1572220801001,
       },
     },
   ],
@@ -247,7 +247,7 @@ Array [
         "data": "data",
         "numRefs": 1,
         "operationId": "",
-        "timestamp": 1572220801000,
+        "timestamp": 1572220801001,
       },
     },
   ],
@@ -272,7 +272,7 @@ Array [
         "data": "data",
         "numRefs": 0,
         "operationId": "",
-        "timestamp": 1572220801000,
+        "timestamp": 1572220801001,
       },
     },
   ],
@@ -297,7 +297,7 @@ Array [
         "data": "data",
         "numRefs": 1,
         "operationId": "",
-        "timestamp": 1572220801000,
+        "timestamp": 1572220801001,
       },
     },
   ],
@@ -325,7 +325,7 @@ Array [
         "data": "data",
         "numRefs": 1,
         "operationId": "C00000000-0000-0000-0000-000000000002",
-        "timestamp": 1572220801000,
+        "timestamp": 1572220801001,
       },
     },
   ],
@@ -343,7 +343,7 @@ Array [
         "data": "data",
         "numRefs": 2,
         "operationId": "C00000000-0000-0000-0000-000000000002",
-        "timestamp": 1572220801000,
+        "timestamp": 1572220801001,
       },
     },
   ],
@@ -363,7 +363,7 @@ Array [
       "data": "data",
       "numRefs": 2,
       "operationId": "",
-      "timestamp": 1572221162050,
+      "timestamp": 1572221162051,
     },
   ],
   Array [
@@ -373,7 +373,7 @@ Array [
         "data": "data",
         "numRefs": 2,
         "operationId": "",
-        "timestamp": 1572221162050,
+        "timestamp": 1572221162051,
       },
     },
   ],
@@ -398,7 +398,7 @@ Array [
         "data": "data",
         "numRefs": 1,
         "operationId": "",
-        "timestamp": 1572221162050,
+        "timestamp": 1572221162051,
       },
     },
   ],
@@ -419,7 +419,7 @@ Array [
         "data": "data",
         "numRefs": 1,
         "operationId": "C00000000-0000-0000-0000-000000000003",
-        "timestamp": 1572221162050,
+        "timestamp": 1572221162051,
       },
     },
   ],
@@ -439,7 +439,7 @@ Array [
       "data": "data",
       "numRefs": 1,
       "operationId": "",
-      "timestamp": 1572221523060,
+      "timestamp": 1572221523061,
     },
   ],
   Array [
@@ -449,7 +449,7 @@ Array [
         "data": "data",
         "numRefs": 1,
         "operationId": "",
-        "timestamp": 1572221523060,
+        "timestamp": 1572221523061,
       },
     },
   ],
@@ -474,7 +474,7 @@ Array [
         "data": "data",
         "numRefs": 0,
         "operationId": "",
-        "timestamp": 1572221523060,
+        "timestamp": 1572221523061,
       },
     },
   ],

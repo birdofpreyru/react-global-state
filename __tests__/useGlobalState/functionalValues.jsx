@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 /**
  * Tests that if a function is used as the value, it is not called during
  * state update.

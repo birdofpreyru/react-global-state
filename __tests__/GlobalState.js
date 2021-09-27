@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 /**
  * Most of the functionality is already covered by other test cases, thus
  * in this module we only test for several corner-cases.
