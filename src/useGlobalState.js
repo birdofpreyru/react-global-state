@@ -7,9 +7,7 @@ import { getGlobalState } from './GlobalStateProvider';
 import { isDebugMode } from './utils';
 
 /**
- * @category Hooks
- * @func useGlobalState
- * @desc The primary hook for interacting with the global state, modeled after
+ * The primary hook for interacting with the global state, modeled after
  * the standard React's
  * [useState](https://reactjs.org/docs/hooks-reference.html#usestate).
  * It subscribes a component to a given `path` of global state, and provides

@@ -65,40 +65,7 @@ async function load(path, loader, globalState, oldData, opIdPrefix = 'C') {
 }
 
 /**
- * @typedef {object} AsyncDataEnvelope This type documents the structure of
- * global state segment, created by {@link useAsyncData} hook for storing of
- * loaded async data, and associated metadata.
- * @prop {any} data The actual loaded data.
- * @prop {number} numRefs The count of currently mounted components referencing
- * the data via `useAsyncData` hooks.
- * @prop {string} operationId A unique ID of the current data loading
- * operation, if one is in progress. Changing this ID before the operation
- * completes effectively cancels the ongoing operation, and instructs related
- * hook to ignore the operation result.
- *
- * NOTE: Server-side and client-side operation UIDs start with `S` or `C` letter
- * respectively. At the client side, if an envelop stores `operationId` starting
- * with `S` letter, it is understood as a non-terminated data loading operation
- * during SSR, and it is restarted at the client-side in this case.
- * @prop {number} timestamp Unix timestamp (in milliseconds) of the most
- * recently loaded `data`.
- */
-
-/**
- * @typedef {function} AsyncDataLoader This type documents the signature of
- * async data loader function, expected by {@link useAsyncData} hook.
- * @param {any} oldData Previously loaded data (_i.e._ the data currently stored
- * at the global state `path` managed by the corresponding `useAsyncData` hook,
- * which are assumed to be resolved from a previous call to the loader).
- * The loader does not have to use this argument, it is provided just for
- * convenience.
- * @return {Promise<any>} Async data to store to the state.
- */
-
-/**
- * @category Hooks
- * @func useAsyncData
- * @desc Resolves asynchronous data, and stores them at given `path` of global
+ * Resolves asynchronous data, and stores them at given `path` of global
  * state. When multiple components rely on asynchronous data at the same `path`,
  * the data are resolved once, and reused until their age is within specified
  * bounds. Once the data are stale, the hook allows to refresh them. It also

@@ -5,20 +5,7 @@
 import useAsyncData from './useAsyncData';
 
 /**
- * @typedef {function} AsyncCollectionLoader This is the signature of
- * `loader` function accepted by {@link useAsyncCollection} hook.
- * @param {string} id ID of the collection item to load.
- * @param {any} oldData Previously fetched data for this ID, if any. The loader
- * does not have to use it, it is provided just for convenience, when the newly
- * resolved data may depend on the previously fetched data.
- * @returns {Promise<any>} Resolves to data to be stored in the global state
- * for the given collection item ID.
- */
-
-/**
- * @category Hooks
- * @func useAsyncCollection
- * @desc Resolves and stores at the given `path` of global state elements of
+ * Resolves and stores at the given `path` of global state elements of
  * an asynchronous data collection. In other words, it is an auxiliar wrapper
  * around {@link useAsyncData}, which uses a loader which resolves to different
  * data, based on ID argument passed in, and stores data fetched for different

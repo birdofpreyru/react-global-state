@@ -24,9 +24,7 @@ function fullPath(statePath) {
 
 export default class GlobalState {
   /**
-   * @class GlobalState
-   * @classdesc Represents global state objects.
-   * @desc Creates a new global state object.
+   * Creates a new global state object.
    * @param {any} [initialState] Intial global state content.
    * @param {SsrContext} [ssrContext] Server-side rendering context.
    */
@@ -56,9 +54,7 @@ export default class GlobalState {
   }
 
   /**
-   * @instance
-   * @memberof GlobalState
-   * @desc Gets the value at given `path` of global state. If `path` is null or
+   * Gets the value at given `path` of global state. If `path` is null or
    * undefined, the entire state object is returned.
    * @param {string} [path] Dot-delimitered state path. If not given, entire
    * global state content is returned.
@@ -69,9 +65,7 @@ export default class GlobalState {
   }
 
   /**
-   * @instance
-   * @memberof GlobalState
-   * @desc Writes the `value` to given global state `path`.
+   * Writes the `value` to given global state `path`.
    * @param {string} [path] Dot-delimitered state path. If not given, entire
    * global state content is replaced by the `value`.
    * @param {any} value The value.
@@ -126,9 +120,7 @@ export default class GlobalState {
   }
 
   /**
-   * @instance
-   * @memberof GlobalState
-   * @desc Unsubscribes `callback` from watching state updates; no operation if
+   * Unsubscribes `callback` from watching state updates; no operation if
    * `callback` is not subscribed to the state updates.
    * @param {function} callback
    * @throws if {@link SsrContext} is attached to the state instance: the state
@@ -145,9 +137,7 @@ export default class GlobalState {
   }
 
   /**
-   * @instance
-   * @memberof GlobalState
-   * @desc Subscribes `callback` to watch state updates; no operation if
+   * Subscribes `callback` to watch state updates; no operation if
    * `callback` is already subscribed to this state instance.
    * @param {function} callback It will be called without any arguments every
    * time the state content changes (note, howhever, separate state updates can

@@ -1,22 +1,5 @@
 /* eslint-disable react/prop-types */
 
-/**
- * @typedef {object} SsrContext Holds global-state-related information,
- * which should be persistent across rendering iterations during server-side
- * rendering (SSR). For the first SSR iteration any object, including an empty
- * `{}`, may be provided to {@link &lt;GlobalStateProvider&gt;}: in either case
- * all its fields listed below will be (re-)initialized as needed, and any other
- * fields contained in the object won't be touched by the library (thus, you may
- * use it to keep other data you need across SSR iterations, and you can access
- * it from React components via {@link getSsrContext} hook).
- * @prop {boolean} dirty `true` if the global state has been modified in
- * the last SSR iteration; `false` otherwise.
- * @prop {Promise[]} pending An array of promises waiting for completion of
- * asynchronous state operations (like {@link useAsyncData}), initiated during
- * the last SSR iteration.
- * @prop {any} state The global state content at the end of last SSR iteration.
- */
-
 import { createContext, useContext, useState } from 'react';
 
 import GlobalState from './GlobalState';
@@ -24,8 +7,7 @@ import GlobalState from './GlobalState';
 const context = createContext();
 
 /**
- * @category Hooks
- * @desc Gets {@link GlobalState} instance from the context. In most cases
+ * Gets {@link GlobalState} instance from the context. In most cases
  * you should use {@link useGlobalState}, and other hooks to interact with
  * the global state, instead of accessing it directly.
  * @return {GlobalState}
@@ -66,9 +48,7 @@ export function getSsrContext(throwWithoutSsrContext = true) {
 }
 
 /**
- * @category Components
- * @name &lt;GlobalStateProvider&gt;
- * @desc Provides global state to its children.
+ * Provides global state to its children.
  * @prop {ReactNode} [children] Component children, which will be provided with
  * the global state, and rendered in place of the provider.
  * @prop {any} [initialState] Initial content of the global state.
