@@ -17,6 +17,8 @@ jobs:
             - node_modules
       - restore_cache:
           key: docs-node-modules-{{ checksum "docs/package-lock.json" }}
+      - run: npm test
+      - run: npm run build && npm pack
       - run:
           command: npm install ../dr.pogodin-react-global-state-*.tgz && npm install
           working_directory: docs
@@ -24,8 +26,6 @@ jobs:
           key: docs-node-modules-{{ checksum "docs/package-lock.json" }}
           paths:
             - docs/node_modules
-      - run: npm test
-      - run: npm run build && npm pack
       - run:
           name: Documentation build
           command: npm run build
