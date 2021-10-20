@@ -15,8 +15,6 @@ jobs:
           key: node-modules-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-      - run: npm test
-      - run: npm run build && npm pack
       - restore_cache:
           key: docs-node-modules-{{ checksum "docs/package-lock.json" }}
       - run:
@@ -26,6 +24,8 @@ jobs:
           key: docs-node-modules-{{ checksum "docs/package-lock.json" }}
           paths:
             - docs/node_modules
+      - run: npm test
+      - run: npm run build && npm pack
       - run:
           name: Documentation build
           command: npm run build
