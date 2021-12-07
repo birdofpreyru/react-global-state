@@ -12,7 +12,7 @@ GlobalState {
 
 exports[`State set & get 2`] = `
 GlobalState {
-  "nextNotifierId": 1,
+  "nextNotifierId": 1000000000000,
   "state": Object {
     "": "value2",
     "key": "value",

@@ -1,6 +1,12 @@
 {
   "extends": ["airbnb", "airbnb/hooks"],
+  "parser": "@babel/eslint-parser",
+  "plugins": ["@babel"],
   "rules": {
+    "react/function-component-definition": ["error", {
+      "namedComponents": "function-declaration",
+      "unnamedComponents": "arrow-function"
+    }],
     "react/jsx-one-expression-per-line": 0,
     "react/jsx-uses-react": 0,
     "react/react-in-jsx-scope": 0
