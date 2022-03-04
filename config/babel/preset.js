@@ -1,20 +1,13 @@
 /**
  * Creates a Babel preset config.
  * @param {object} api Babel compiler API.
- * @param {options} [options] Optional. Preset options.
- * @param {string|string[]|object} [options.targets] Optional. Targets for
- *  Babel env preset.
+ * @param {object} envPresetOption Preset options.
  * @return {object} Babel preset config.
  */
-module.exports = function preset(api, options = {}) {
-  const { targets } = options;
-
-  let envPreset = '@babel/env';
-  if (targets) envPreset = [envPreset, { targets }];
-
+module.exports = function preset(api, envPresetOption) {
   return {
     presets: [
-      envPreset,
+      ['@babel/env', envPresetOption],
 
       // TODO: Starting from Babel 8, "automatic" will be the default runtime,
       // thus once upgraded to Babel 8, runtime should be removed from
