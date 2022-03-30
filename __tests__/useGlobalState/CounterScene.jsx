@@ -9,7 +9,7 @@
 import pretty from 'pretty';
 
 import GlobalState from 'GlobalState';
-import { act, mount, unmount } from 'jest/utils';
+import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
 jest.useFakeTimers();
@@ -54,7 +54,7 @@ function TestScene({ stateProxy }) {
 let scene = null;
 afterEach(() => {
   if (scene) {
-    unmount(scene);
+    scene.destroy();
     scene = null;
   }
 });
@@ -73,9 +73,7 @@ test('Throws if GlobalStateProvider is missing', () => {
 });
 
 test('The scene works as expected', () => {
-  act(() => {
-    scene = mount(<TestScene />);
-  });
+  scene = mount(<TestScene />);
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   let button = document.querySelector('[data-testid=button-1]');
   act(() => {
@@ -92,9 +90,7 @@ test('The scene works as expected', () => {
 });
 
 test('Test of `stateProxy` prop of the state provider', () => {
-  act(() => {
-    scene = mount(<TestScene stateProxy />);
-  });
+  scene = mount(<TestScene stateProxy />);
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   let button = document.querySelector('[data-testid=button-1]');
   act(() => {
@@ -112,9 +108,7 @@ test('Test of `stateProxy` prop of the state provider', () => {
 
 test('Test of `stateProxy` prop of the state provider II', () => {
   const innerGlobalState = new GlobalState();
-  act(() => {
-    scene = mount(<TestScene stateProxy={innerGlobalState} />);
-  });
+  scene = mount(<TestScene stateProxy={innerGlobalState} />);
   expect(innerGlobalState).toMatchSnapshot();
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   let button = document.querySelector('[data-testid=button-1]');

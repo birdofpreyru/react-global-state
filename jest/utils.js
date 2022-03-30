@@ -4,10 +4,12 @@
 
 import { cloneDeep } from 'lodash';
 import mockdate from 'mockdate';
-import { render, unmountComponentAtNode } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
 
 export { act };
+
+global.IS_REACT_ACT_ENVIRONMENT = true;
 
 /**
  * Generates a mock UUID.
@@ -48,12 +50,21 @@ export async function mockTimer(time) {
 /**
  * Mounts `Scene` to the DOM, and returns the root scene element.
  * @param {React.ReactNode} scene
- * @return {HTMLElement}
+ * @return {HTMLElement} Created container DOM element with unmount
+ *  function attached.
  */
 export function mount(scene) {
+  let root;
   const res = document.createElement('div');
   document.body.appendChild(res);
-  render(scene, res);
+  res.destroy = () => {
+    act(() => root.unmount());
+    res.remove();
+  };
+  act(() => {
+    root = createRoot(res);
+    root.render(scene);
+  });
   return res;
 }
 
@@ -66,15 +77,6 @@ export async function timer(time) {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
-}
-
-/**
- * Unmounts `scene` from the DOM.
- * @param {HTMLElement} scene
- */
-export function unmount(scene) {
-  unmountComponentAtNode(scene);
-  scene.remove();
 }
 
 /**

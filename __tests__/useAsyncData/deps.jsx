@@ -13,7 +13,6 @@ import {
   mockTimer,
   mount,
   timer,
-  unmount,
 } from 'jest/utils';
 
 import { GlobalStateProvider, useAsyncData } from 'src';
@@ -79,7 +78,7 @@ beforeEach(async () => {
 
 afterEach(() => {
   if (scene) {
-    unmount(scene);
+    scene.destroy();
     button = null;
     scene = null;
   }

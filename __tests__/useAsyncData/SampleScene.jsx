@@ -85,7 +85,7 @@ beforeEach(() => {
 
 afterEach(() => {
   if (scene) {
-    JU.unmount(scene);
+    scene.destroy();
     scene = null;
     button = null;
   }

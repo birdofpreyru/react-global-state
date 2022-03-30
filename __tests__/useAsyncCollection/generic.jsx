@@ -42,12 +42,9 @@ function Scene({ globalState }) {
 }
 
 it('works as expected', async () => {
-  let scene;
   const globalState = new GlobalState();
-  await act(async () => {
-    scene = mount(<Scene globalState={globalState} />);
-    return timer(10);
-  });
+  const scene = mount(<Scene globalState={globalState} />);
+  await act(() => timer(10));
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(globalState.state).toMatchSnapshot();
 

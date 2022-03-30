@@ -68,7 +68,7 @@ beforeEach(() => {
 
 afterEach(() => {
   if (scene) {
-    JU.unmount(scene);
+    scene.destroy();
     scene = null;
   }
 
@@ -170,7 +170,7 @@ describe('Test `getSsrContext()` function', () => {
   afterEach(() => {
     console.error = consoleError;
     if (scene) {
-      JU.unmount(scene);
+      scene.destroy();
       scene = null;
     }
   });
