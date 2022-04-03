@@ -26,7 +26,7 @@ exports[`Scene test in the front-end mode 1`] = `
     }</div>
   <div>{
     \\"data\\": null,
-    \\"loading\\": false,
+    \\"loading\\": true,
     \\"timestamp\\": 0
     }</div>
 </div>"

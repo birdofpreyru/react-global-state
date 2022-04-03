@@ -49,10 +49,10 @@ it('works as expected', async () => {
   expect(globalState.state).toMatchSnapshot();
 
   const button = document.getElementsByTagName('button')[0];
-  await act(async () => {
+  act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    return timer(10);
   });
+  await act(() => timer(10));
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(globalState.state).toMatchSnapshot();
 });

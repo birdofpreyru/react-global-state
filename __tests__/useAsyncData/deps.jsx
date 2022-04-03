@@ -94,7 +94,9 @@ test('Scenario I', async () => {
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 
   /* Press of button forces data refresh via "deps" option. */
-  button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  });
   await wait(10);
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 });
