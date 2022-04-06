@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Naive server-side rendering 1`] = `
+exports[`React 17 style (renderToString()) Naive server-side rendering 1`] = `
 "<div>
   <h1>defaultValue</h1>
   <div>{
@@ -64,7 +64,7 @@ exports[`Scene test in the front-end mode 3`] = `
 </div>"
 `;
 
-exports[`Smart server-sider rendering 1`] = `
+exports[`React 17 style (renderToString()) Smart server-sider rendering 1`] = `
 "<div><h1>defaultValue</h1><div>{
   &quot;data&quot;: &quot;data&quot;,
   &quot;loading&quot;: false,
@@ -76,7 +76,7 @@ exports[`Smart server-sider rendering 1`] = `
 }</div></div>"
 `;
 
-exports[`Smart server-sider rendering 2`] = `
+exports[`React 17 style (renderToString()) Smart server-sider rendering 2`] = `
 Array [
   Array [
     "New ReactGlobalState created (SSR mode)",

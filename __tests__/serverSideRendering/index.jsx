@@ -104,52 +104,54 @@ test('Scene test in the front-end mode', async () => {
   expect(loaderB).toHaveBeenCalledTimes(0);
 });
 
-test('Naive server-side rendering', () => {
-  LIB = require('src');
-  const render = ReactDOM.renderToString((
-    <LIB.GlobalStateProvider>
-      <Scene />
-    </LIB.GlobalStateProvider>
-  ));
-  expect(pretty(render)).toMatchSnapshot();
-});
-
-/**
- * This is the sample SSR code assembly.
- */
-async function serverSideRender() {
-  LIB = require('src');
-  let render;
-  serverSideRender.round = 0;
-  const ssrContext = { state: {} };
-  for (; serverSideRender.round < 10; serverSideRender.round += 1) {
-    /* eslint-disable no-await-in-loop */
-    render = ReactDOM.renderToString((
-      <LIB.GlobalStateProvider
-        initialState={ssrContext.state}
-        ssrContext={ssrContext}
-      >
+describe('React 17 style (renderToString())', () => {
+  test('Naive server-side rendering', () => {
+    LIB = require('src');
+    const render = ReactDOM.renderToString((
+      <LIB.GlobalStateProvider>
         <Scene />
       </LIB.GlobalStateProvider>
     ));
-    if (ssrContext.dirty) {
-      await Promise.allSettled(ssrContext.pending);
-    } else break;
-    /* eslint-disable no-await-in-loop */
-  }
-  return render;
-}
+    expect(pretty(render)).toMatchSnapshot();
+  });
 
-test('Smart server-sider rendering', async () => {
-  process.env.REACT_GLOBAL_STATE_DEBUG = true;
-  LIB = require('src');
-  JU.mockConsoleLog();
-  let render = serverSideRender();
-  await jest.runAllTimers();
-  render = await render;
-  expect(serverSideRender.round).toBe(1);
-  expect(render).toMatchSnapshot();
-  expect(console.log.logs).toMatchSnapshot();
+  /**
+   * This is the sample SSR code assembly.
+   */
+  async function serverSideRender() {
+    LIB = require('src');
+    let render;
+    serverSideRender.round = 0;
+    const ssrContext = { state: {} };
+    for (; serverSideRender.round < 10; serverSideRender.round += 1) {
+      /* eslint-disable no-await-in-loop */
+      render = ReactDOM.renderToString((
+        <LIB.GlobalStateProvider
+          initialState={ssrContext.state}
+          ssrContext={ssrContext}
+        >
+          <Scene />
+        </LIB.GlobalStateProvider>
+      ));
+      if (ssrContext.dirty) {
+        await Promise.allSettled(ssrContext.pending);
+      } else break;
+      /* eslint-disable no-await-in-loop */
+    }
+    return render;
+  }
+
+  test('Smart server-sider rendering', async () => {
+    process.env.REACT_GLOBAL_STATE_DEBUG = true;
+    LIB = require('src');
+    JU.mockConsoleLog();
+    let render = serverSideRender();
+    await jest.runAllTimers();
+    render = await render;
+    expect(serverSideRender.round).toBe(1);
+    expect(render).toMatchSnapshot();
+    expect(console.log.logs).toMatchSnapshot();
+  });
 });
 
 describe('Test `getSsrContext()` function', () => {
