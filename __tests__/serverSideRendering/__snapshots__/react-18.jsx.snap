@@ -1,0 +1,156 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Naive server-side rendering 1`] = `
+"<div>
+  <h1>defaultValue</h1>
+  <div>{
+    &quot;data&quot;: null,
+    &quot;loading&quot;: false,
+    &quot;timestamp&quot;: 0
+    }</div>
+  <div>{
+    &quot;data&quot;: null,
+    &quot;loading&quot;: false,
+    &quot;timestamp&quot;: 0
+    }</div>
+</div>"
+`;
+
+exports[`Smart server-sider rendering 1`] = `
+"<div><h1>defaultValue</h1><div>{
+  &quot;data&quot;: &quot;data&quot;,
+  &quot;loading&quot;: false,
+  &quot;timestamp&quot;: 1573084800000
+}</div><div>{
+  &quot;data&quot;: &quot;data&quot;,
+  &quot;loading&quot;: false,
+  &quot;timestamp&quot;: 1573084800000
+}</div></div>"
+`;
+
+exports[`Smart server-sider rendering 2`] = `
+Array [
+  Array [
+    "New ReactGlobalState created (SSR mode)",
+  ],
+  Array [
+    "Initial state:",
+    Object {},
+  ],
+  Array [
+    "ReactGlobalState update. Path: \\"value.path\\"",
+  ],
+  Array [
+    "New value:",
+    "defaultValue",
+  ],
+  Array [
+    "New state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+    },
+  ],
+  Array [
+    "ReactGlobalState update. Path: \\"x\\"",
+  ],
+  Array [
+    "New value:",
+    Object {
+      "data": null,
+      "numRefs": 0,
+      "operationId": "",
+      "timestamp": 0,
+    },
+  ],
+  Array [
+    "New state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+      "x": Object {
+        "data": null,
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 0,
+      },
+    },
+  ],
+  Array [
+    "ReactGlobalState: useAsyncData data (re-)loading. Path: \\"x\\"",
+  ],
+  Array [
+    "ReactGlobalState update. Path: \\"x.operationId\\"",
+  ],
+  Array [
+    "New value:",
+    "S00000000-0000-0000-0000-000000000001",
+  ],
+  Array [
+    "New state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+      "x": Object {
+        "data": null,
+        "numRefs": 0,
+        "operationId": "S00000000-0000-0000-0000-000000000001",
+        "timestamp": 0,
+      },
+    },
+  ],
+  Array [
+    "ReactGlobalState: useAsyncData data (re-)loaded. Path: \\"x\\"",
+  ],
+  Array [
+    "Data:",
+    "data",
+  ],
+  Array [
+    "ReactGlobalState update. Path: \\"x\\"",
+  ],
+  Array [
+    "New value:",
+    Object {
+      "data": "data",
+      "numRefs": 0,
+      "operationId": "",
+      "timestamp": 1573084800000,
+    },
+  ],
+  Array [
+    "New state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+      "x": Object {
+        "data": "data",
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 1573084800000,
+      },
+    },
+  ],
+  Array [
+    "New ReactGlobalState created (SSR mode)",
+  ],
+  Array [
+    "Initial state:",
+    Object {
+      "value": Object {
+        "path": "defaultValue",
+      },
+      "x": Object {
+        "data": "data",
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 1573084800000,
+      },
+    },
+  ],
+]
+`;
