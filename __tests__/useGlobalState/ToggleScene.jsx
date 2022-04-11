@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 
 import pretty from 'pretty';
-import { act, mount, unmount } from 'jest/utils';
+import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
 jest.useFakeTimers();
@@ -31,15 +31,13 @@ function Scene() {
 let scene = null;
 afterEach(() => {
   if (scene) {
-    unmount(scene);
+    scene.destroy();
     scene = null;
   }
 });
 
 test('The scene works as expected', () => {
-  act(() => {
-    scene = mount(<Scene />);
-  });
+  scene = mount(<Scene />);
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   const button = document.getElementsByTagName('button')[0];
   act(() => {

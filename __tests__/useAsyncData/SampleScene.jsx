@@ -63,10 +63,10 @@ let button = null;
  */
 async function clickButton() {
   const event = new MouseEvent('click', { bubbles: true });
-  return JU.act(() => {
+  JU.act(() => {
     button.dispatchEvent(event);
-    return JU.mockTimer(10);
   });
+  return JU.act(() => JU.mockTimer(10));
 }
 
 function initTestScene() {
@@ -85,7 +85,7 @@ beforeEach(() => {
 
 afterEach(() => {
   if (scene) {
-    JU.unmount(scene);
+    scene.destroy();
     scene = null;
     button = null;
   }
@@ -103,10 +103,10 @@ test('Scenario I', async () => {
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 
   /* Mounts ComponentA, checks the loading started. */
-  await JU.act(async () => {
+  JU.act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    await JU.mockTimer(1);
   });
+  await JU.act(() => JU.mockTimer(1));
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);

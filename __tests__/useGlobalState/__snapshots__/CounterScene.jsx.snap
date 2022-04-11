@@ -23,7 +23,7 @@ exports[`Test of \`stateProxy\` prop of the state provider 3`] = `
 
 exports[`Test of \`stateProxy\` prop of the state provider II 1`] = `
 GlobalState {
-  "nextNotifierId": 1000000000012,
+  "nextNotifierId": 1000000000006,
   "state": Object {
     "counter": 0,
   },

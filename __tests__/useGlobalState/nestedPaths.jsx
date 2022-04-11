@@ -5,14 +5,7 @@
  */
 
 import pretty from 'pretty';
-
-import {
-  act,
-  mount,
-  timer,
-  unmount,
-} from 'jest/utils';
-
+import { act, mount, timer } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
 /* Test with the state containing only objects. */
@@ -53,16 +46,14 @@ function Scene1() {
 let scene;
 afterEach(() => {
   if (scene) {
-    unmount(scene);
+    scene.destroy();
     scene = null;
   }
 });
 
 test('Test with objects', async () => {
-  await act(async () => {
-    scene = mount(<Scene1 />);
-    await timer(0);
-  });
+  scene = mount(<Scene1 />);
+  await act(() => timer(0));
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   const button = scene.querySelector('#button');
   await act(async () => {
@@ -117,10 +108,8 @@ function Scene2() {
 }
 
 test('Test with arrays', async () => {
-  await act(async () => {
-    scene = mount(<Scene2 />);
-    await timer(0);
-  });
+  scene = mount(<Scene2 />);
+  await act(() => timer(0));
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   const button = scene.querySelector('#button');
   await act(async () => {
@@ -171,10 +160,8 @@ function Scene3() {
 }
 
 test('Test with strings', async () => {
-  await act(async () => {
-    scene = mount(<Scene3 />);
-    await timer(0);
-  });
+  scene = mount(<Scene3 />);
+  await act(() => timer(0));
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   const button = scene.querySelector('#button');
   await act(async () => {

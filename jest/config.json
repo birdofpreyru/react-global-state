@@ -3,6 +3,10 @@
   "collectCoverageFrom": ["src/**/*.{js,jsx}"],
   "coverageDirectory": "__coverage__",
   "rootDir": "..",
+  "testPathIgnorePatterns": [
+    "/__assets__/",
+    "/node_modules/"
+  ],
   "transform": {
     "\\.jsx?$": "babel-jest"
   }

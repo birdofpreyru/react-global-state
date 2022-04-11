@@ -42,11 +42,8 @@ function Scene({ globalState }) {
 }
 
 it('works as expected', () => {
-  let scene;
   const globalState = new GlobalState();
-  act(() => {
-    scene = mount(<Scene globalState={globalState} />);
-  });
+  const scene = mount(<Scene globalState={globalState} />);
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   expect(globalState.state).toMatchSnapshot();
 

@@ -1,6 +1,6 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "Hook-based global state for React",
   "main": "./build/node/index.js",
   "exports": {
@@ -34,38 +34,36 @@
   },
   "homepage": "https://dr.pogodin.studio/docs/react-global-state/index.html",
   "dependencies": {
-    "@babel/runtime": "^7.17.2",
+    "@babel/runtime": "^7.17.9",
     "lodash": "^4.17.21",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
-    "@babel/core": "^7.17.5",
+    "@babel/core": "^7.17.9",
     "@babel/eslint-parser": "^7.17.0",
-    "@babel/eslint-plugin": "^7.16.5",
+    "@babel/eslint-plugin": "^7.17.7",
     "@babel/node": "^7.16.8",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "babel-jest": "^27.5.1",
     "babel-plugin-module-resolver": "^4.1.0",
-    "eslint": "^8.10.0",
+    "eslint": "^8.13.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-import-resolver-babel-module": "^5.3.1",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jest": "^26.1.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.1.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.29.3",
-    "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
     "jest": "^27.5.1",
     "mockdate": "^3.0.5",
     "pretty": "^2.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "rimraf": "^3.0.2"
   },
   "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   }
 }
