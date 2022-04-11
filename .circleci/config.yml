@@ -19,7 +19,7 @@ jobs:
       - restore_cache:
           key: docs-node-modules-{{ checksum "docs/package-lock.json" }}
       - run:
-          command: npm install ../dr.pogodin-react-global-state-*.tgz && npm install
+          command: npm install
           working_directory: docs
       - save_cache:
           key: docs-node-modules-{{ checksum "docs/package-lock.json" }}
