@@ -58,6 +58,21 @@ test('Naive server-side rendering', (done) => {
   jest.runAllTimers();
 });
 
+async function renderPass(ssrContext) {
+  return new Promise((resolve) => {
+    const stream = ReactDOM.renderToPipeableStream(
+      <LIB.GlobalStateProvider
+        initialState={ssrContext.state}
+        ssrContext={ssrContext}
+      >
+        <Scene />
+      </LIB.GlobalStateProvider>,
+      { onAllReady: () => resolve(stream) },
+    );
+    jest.runAllTimers();
+  });
+}
+
 /**
  * This is the sample SSR code assembly.
  */
@@ -68,21 +83,7 @@ async function serverSideRender() {
   const ssrContext = { state: {} };
   for (; serverSideRender.round < 10; serverSideRender.round += 1) {
     /* eslint-disable no-await-in-loop */
-    let onAllReady;
-    const barrier = new Promise((resolve) => {
-      onAllReady = resolve;
-    });
-    stream = ReactDOM.renderToPipeableStream(
-      <LIB.GlobalStateProvider
-        initialState={ssrContext.state}
-        ssrContext={ssrContext}
-      >
-        <Scene />
-      </LIB.GlobalStateProvider>,
-      { onAllReady },
-    );
-    jest.runAllTimers();
-    await barrier;
+    stream = await renderPass(ssrContext);
     if (ssrContext.dirty) {
       await Promise.allSettled(ssrContext.pending);
     } else break;
