@@ -2,7 +2,7 @@
 ```jsx
 import { useGlobalState } from '@dr.pogodin/react-global-state';
 
-useGlobalState(path, initialValue): GlobalState;
+useGlobalState(path, initialValue): [any, function];
 ```
 The primary hook for interacting with the global state, modeled after
 the standard React's
