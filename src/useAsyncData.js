@@ -125,16 +125,21 @@ export default function useAsyncData(
   if (refreshAge === undefined) refreshAge = maxage;
   if (garbageCollectAge === undefined) garbageCollectAge = maxage;
 
+  // Note: here we can't depend on useGlobalState() to init the initial value,
+  // because that way we'll have issues with SSR (see details below).
   const globalState = getGlobalState();
-  const [localState] = useGlobalState(path, {
-    data: null,
-    numRefs: 0,
-    operationId: '',
-    timestamp: 0,
-  });
+  let state = globalState.get(path);
+  if (state === undefined) {
+    state = {
+      data: null,
+      numRefs: 0,
+      operationId: '',
+      timestamp: 0,
+    };
+    globalState.set(path, state);
+  }
 
   if (globalState.ssrContext && !options.noSSR) {
-    const state = globalState.get(path);
     if (!state.timestamp && !state.operationId) {
       globalState.ssrContext.pending.push(
         load(path, loader, globalState, state.data, 'S'),
@@ -155,10 +160,10 @@ export default function useAsyncData(
       const numRefs = globalState.get(numRefsPath);
       globalState.set(numRefsPath, numRefs + 1);
       return () => {
-        const state = globalState.get(path);
+        const state2 = globalState.get(path);
         if (
-          state.numRefs === 1
-          && garbageCollectAge < Date.now() - state.timestamp
+          state2.numRefs === 1
+          && garbageCollectAge < Date.now() - state2.timestamp
         ) {
           if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
             /* eslint-disable no-console */
@@ -170,12 +175,12 @@ export default function useAsyncData(
             /* eslint-enable no-console */
           }
           globalState.set(path, {
-            ...state,
+            ...state2,
             data: null,
             numRefs: 0,
             timestamp: 0,
           });
-        } else globalState.set(numRefsPath, state.numRefs - 1);
+        } else globalState.set(numRefsPath, state2.numRefs - 1);
       };
     }, [garbageCollectAge, globalState, path]);
 
@@ -185,10 +190,10 @@ export default function useAsyncData(
     // Data loading and refreshing.
     let loadTriggered = false;
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      const state = globalState.get(path);
-      if (refreshAge < Date.now() - state.timestamp
-      && (!state.operationId || state.operationId.charAt() === 'S')) {
-        load(path, loader, globalState, state.data);
+      const state2 = globalState.get(path);
+      if (refreshAge < Date.now() - state2.timestamp
+      && (!state2.operationId || state2.operationId.charAt() === 'S')) {
+        load(path, loader, globalState, state2.data);
         loadTriggered = true; // eslint-disable-line react-hooks/exhaustive-deps
       }
     });
@@ -198,6 +203,13 @@ export default function useAsyncData(
       if (!loadTriggered && deps.length) load(path, loader, globalState);
     }, deps); // eslint-disable-line react-hooks/exhaustive-deps
   }
+
+  // Note: this subscription to updates of the global state segment must be
+  // here, after the possible initialization of the loading operation, to take
+  // into effect the resulting loading state. This mostly ensures the correct
+  // SSR in the edge case when the loading starts, but times out, and incomplete
+  // render has to be served.
+  const [localState] = useGlobalState(path);
 
   return {
     data: maxage < Date.now() - localState.timestamp ? null : localState.data,

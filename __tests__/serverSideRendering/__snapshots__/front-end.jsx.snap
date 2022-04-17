@@ -5,7 +5,7 @@ exports[`Scene test in the front-end mode 1`] = `
   <h1>defaultValue</h1>
   <div>{
     \\"data\\": null,
-    \\"loading\\": false,
+    \\"loading\\": true,
     \\"timestamp\\": 0
     }</div>
   <div>{

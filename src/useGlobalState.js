@@ -1,6 +1,6 @@
 // Hook for updates of global state.
 
-import { cloneDeep, isFunction, isUndefined } from 'lodash';
+import { cloneDeep, isFunction } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 
 import { getGlobalState } from './GlobalStateProvider';
@@ -59,7 +59,7 @@ import { isDebugMode } from './utils';
 export default function useGlobalState(path, initialValue) {
   const globalState = getGlobalState();
   let state = globalState.get(path);
-  if (isUndefined(state) && !isUndefined(initialValue)) {
+  if (state === undefined && initialValue !== undefined) {
     const value = isFunction(initialValue) ? initialValue() : initialValue;
     state = globalState.set(path, value);
   }
