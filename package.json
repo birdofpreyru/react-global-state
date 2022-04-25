@@ -1,13 +1,13 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Hook-based global state for React",
   "main": "./build/node/index.js",
   "exports": {
-    "default": "./build/node/index.js",
     "module": "./build/module/index.js",
     "node": "./build/node/index.js",
-    "types": "./index.d.ts"
+    "types": "./index.d.ts",
+    "default": "./build/node/index.js"
   },
   "scripts": {
     "build": "rimraf build && npm run build:module && npm run build:node",
