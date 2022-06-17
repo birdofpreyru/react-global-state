@@ -84,8 +84,8 @@ export default class GlobalState {
         /* eslint-enable no-console */
       }
 
-      let pos = this;
       let segIdx = 0;
+      let pos = this;
       const pathSegments = toPath(p);
       for (; segIdx < pathSegments.length - 1; segIdx += 1) {
         const seg = pathSegments[segIdx];

@@ -5,7 +5,7 @@
  * in this module we only test for several corner-cases.
  */
 
-import { mockConsoleLog, mockTimer, unMockConsoleLog } from 'jest/utils';
+import { mockConsoleLog, unMockConsoleLog } from 'jest/utils';
 
 jest.useFakeTimers();
 
@@ -48,9 +48,9 @@ describe('.watch() and .unWatch() logic', () => {
   // the GlobalState to call all connected watchers. As they are called async,
   // the touch should be awaited.
   let counter = 0;
-  const test = async (w1, w2, w3) => {
+  const test = (w1, w2, w3) => {
     state.set('test', ++counter);
-    await mockTimer(3);
+    jest.runAllTimers();
     expect(watcher1).toHaveBeenCalledTimes(w1);
     expect(watcher2).toHaveBeenCalledTimes(w2);
     expect(watcher3).toHaveBeenCalledTimes(w3);
@@ -65,43 +65,43 @@ describe('.watch() and .unWatch() logic', () => {
     jest.resetAllMocks();
   });
 
-  it('subscribes watcher1', async () => {
+  it('subscribes watcher1', () => {
     state.watch(watcher1);
-    await test(1, 0, 0);
+    test(1, 0, 0);
   });
 
-  it('does not subscribe watcher1 multiple times', async () => {
+  it('does not subscribe watcher1 multiple times', () => {
     state.watch(watcher1);
-    await test(1, 0, 0);
+    test(1, 0, 0);
   });
 
-  it('subscribes watcher2', async () => {
+  it('subscribes watcher2', () => {
     state.watch(watcher2);
-    await test(1, 1, 0);
+    test(1, 1, 0);
   });
 
-  it('does nothing on attempt to unsubscribe unknown watcher', async () => {
+  it('does nothing on attempt to unsubscribe unknown watcher', () => {
     state.unWatch(watcher3);
-    await test(1, 1, 0);
+    test(1, 1, 0);
   });
 
-  it('subscribes watcher3', async () => {
+  it('subscribes watcher3', () => {
     state.watch(watcher3);
-    await test(1, 1, 1);
+    test(1, 1, 1);
   });
 
-  it('unsubscribes watcher1', async () => {
+  it('unsubscribes watcher1', () => {
     state.unWatch(watcher1);
-    await test(0, 1, 1);
+    test(0, 1, 1);
   });
 
-  it('re-subscribes watcher1', async () => {
+  it('re-subscribes watcher1', () => {
     state.watch(watcher1);
-    await test(1, 1, 1);
+    test(1, 1, 1);
   });
 
-  it('unsubscribes watcher1 again', async () => {
+  it('unsubscribes watcher1 again', () => {
     state.unWatch(watcher1);
-    await test(0, 1, 1);
+    test(0, 1, 1);
   });
 });
