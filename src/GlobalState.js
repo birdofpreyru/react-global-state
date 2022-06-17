@@ -1,7 +1,6 @@
 import {
   cloneDeep,
   get,
-  isArray,
   isObject,
   isNil,
   set,
@@ -34,7 +33,7 @@ export default class GlobalState {
    */
   constructor(initialState, ssrContext) {
     /* eslint-disable no-param-reassign */
-    this.state = cloneDeep(initialState);
+    this.state = initialState;
 
     if (ssrContext) {
       ssrContext.dirty = false;
@@ -86,21 +85,33 @@ export default class GlobalState {
       }
       let pos = this;
       const pathSegments = toPath(p);
+
+      // Special case: entire state to be replaced by the value.
+      // The following loop won't be entered in this case.
+      if (pathSegments.length === 1) this.state = value;
+
       for (let i = 0; i < pathSegments.length - 1; i += 1) {
         const seg = pathSegments[i];
         const next = pos[seg];
-        if (isArray(next)) pos[seg] = [...next];
+        if (Array.isArray(next)) pos[seg] = [...next];
         else if (isObject(next)) pos[seg] = { ...next };
-        else break;
-        pos = pos[seg];
-      }
+        else {
+          // We arrived to a state sub-segment, where the remaining part of
+          // the update path does not exist yet. We rely on lodash's set()
+          // function to create the remaining path, and set the value.
+          set(pos, pathSegments.slice(i), value);
+          break;
+        }
 
-      // TODO: With such naive use of _.set, the state is mutated in place,
-      // which may cause tons of unexpected side effects for dependants.
-      // It will be better to partially clone the state, so that any existing
-      // references are not mutated, while the full deep clonning is also
-      // avoided.
-      set(this, p, value);
+        pos = pos[seg];
+
+        // We arrived to the normal loop end, as the remaining path segment
+        // is the leaf, where no shallow-clonning of the segment needed. So,
+        // we just set the value here, no need for lodash help in this case.
+        if (i === pathSegments.length - 2) {
+          pos[pathSegments[pathSegments.length - 1]] = value;
+        }
+      }
 
       if (this.ssrContext) {
         this.ssrContext.dirty = true;
