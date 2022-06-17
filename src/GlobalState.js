@@ -83,15 +83,12 @@ export default class GlobalState {
         console.log('New value:', cloneDeep(value));
         /* eslint-enable no-console */
       }
+
       let pos = this;
+      let segIdx = 0;
       const pathSegments = toPath(p);
-
-      // Special case: entire state to be replaced by the value.
-      // The following loop won't be entered in this case.
-      if (pathSegments.length === 1) this.state = value;
-
-      for (let i = 0; i < pathSegments.length - 1; i += 1) {
-        const seg = pathSegments[i];
+      for (; segIdx < pathSegments.length - 1; segIdx += 1) {
+        const seg = pathSegments[segIdx];
         const next = pos[seg];
         if (Array.isArray(next)) pos[seg] = [...next];
         else if (isObject(next)) pos[seg] = { ...next };
@@ -99,18 +96,14 @@ export default class GlobalState {
           // We arrived to a state sub-segment, where the remaining part of
           // the update path does not exist yet. We rely on lodash's set()
           // function to create the remaining path, and set the value.
-          set(pos, pathSegments.slice(i), value);
+          set(pos, pathSegments.slice(segIdx), value);
           break;
         }
-
         pos = pos[seg];
+      }
 
-        // We arrived to the normal loop end, as the remaining path segment
-        // is the leaf, where no shallow-clonning of the segment needed. So,
-        // we just set the value here, no need for lodash help in this case.
-        if (i === pathSegments.length - 2) {
-          pos[pathSegments[pathSegments.length - 1]] = value;
-        }
+      if (segIdx === pathSegments.length - 1) {
+        pos[pathSegments[segIdx]] = value;
       }
 
       if (this.ssrContext) {
