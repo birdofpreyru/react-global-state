@@ -2,59 +2,47 @@
 
 exports[`State set & get 1`] = `
 GlobalState {
-  "nextNotifierId": null,
   "state": Object {
     "key": "value",
   },
-  "watchers": Array [],
 }
 `;
 
 exports[`State set & get 2`] = `
 GlobalState {
-  "nextNotifierId": 1000000000000,
   "state": Object {
     "": "value2",
     "key": "value",
   },
-  "watchers": Array [],
 }
 `;
 
 exports[`State set & get 3`] = `
 GlobalState {
-  "nextNotifierId": null,
   "state": Object {
     "": "value2",
     "key": "value",
   },
-  "watchers": Array [],
 }
 `;
 
 exports[`State set & get 4`] = `
 GlobalState {
-  "nextNotifierId": null,
   "state": "value3",
-  "watchers": Array [],
 }
 `;
 
 exports[`State set & get 5`] = `
 GlobalState {
-  "nextNotifierId": null,
   "state": "value4",
-  "watchers": Array [],
 }
 `;
 
 exports[`State set & get 6`] = `
 GlobalState {
-  "nextNotifierId": null,
   "state": Object {
     "": "value5",
   },
-  "watchers": Array [],
 }
 `;
 
@@ -117,18 +105,6 @@ Array [
     Object {
       "": "value5",
     },
-  ],
-]
-`;
-
-exports[`Watch & unWatch logic 1`] = `
-Array [
-  Array [
-    "New ReactGlobalState created",
-  ],
-  Array [
-    "Initial state:",
-    undefined,
   ],
 ]
 `;

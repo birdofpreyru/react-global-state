@@ -23,6 +23,10 @@ function fullPath(statePath) {
 }
 
 export default class GlobalState {
+  #nextNotifierId = null;
+
+  #watchers = [];
+
   /**
    * Creates a new global state object.
    * @param {any} [initialState] Intial global state content.
@@ -31,8 +35,6 @@ export default class GlobalState {
   constructor(initialState, ssrContext) {
     /* eslint-disable no-param-reassign */
     this.state = cloneDeep(initialState);
-    this.nextNotifierId = null;
-    this.watchers = [];
 
     if (ssrContext) {
       ssrContext.dirty = false;
@@ -103,10 +105,10 @@ export default class GlobalState {
       if (this.ssrContext) {
         this.ssrContext.dirty = true;
         this.ssrContext.state = this.state;
-      } else if (!this.nextNotifierId) {
-        this.nextNotifierId = setTimeout(() => {
-          this.nextNotifierId = null;
-          [...this.watchers].forEach((w) => w());
+      } else if (!this.#nextNotifierId) {
+        this.#nextNotifierId = setTimeout(() => {
+          this.#nextNotifierId = null;
+          [...this.#watchers].forEach((w) => w());
         });
       }
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
@@ -128,7 +130,8 @@ export default class GlobalState {
    */
   unWatch(callback) {
     if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
-    const { watchers } = this;
+
+    const watchers = this.#watchers;
     const pos = watchers.indexOf(callback);
     if (pos >= 0) {
       watchers[pos] = watchers[watchers.length - 1];
@@ -148,7 +151,8 @@ export default class GlobalState {
    */
   watch(callback) {
     if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
-    const { watchers } = this;
+
+    const watchers = this.#watchers;
     if (watchers.indexOf(callback) < 0) {
       watchers.push(callback);
     }

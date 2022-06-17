@@ -103,13 +103,6 @@ Array [
     undefined,
   ],
   Array [
-    "New ReactGlobalState created",
-  ],
-  Array [
-    "Initial state:",
-    undefined,
-  ],
-  Array [
     "ReactGlobalState update. Path: \\"x\\"",
   ],
   Array [
@@ -202,13 +195,6 @@ Array [
     },
   ],
   Array [
-    "New ReactGlobalState created",
-  ],
-  Array [
-    "Initial state:",
-    undefined,
-  ],
-  Array [
     "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
@@ -227,13 +213,6 @@ Array [
     },
   ],
   Array [
-    "New ReactGlobalState created",
-  ],
-  Array [
-    "Initial state:",
-    undefined,
-  ],
-  Array [
     "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
@@ -250,13 +229,6 @@ Array [
         "timestamp": 1572220801001,
       },
     },
-  ],
-  Array [
-    "New ReactGlobalState created",
-  ],
-  Array [
-    "Initial state:",
-    undefined,
   ],
   Array [
     "ReactGlobalState update. Path: \\"x.numRefs\\"",
@@ -277,13 +249,6 @@ Array [
     },
   ],
   Array [
-    "New ReactGlobalState created",
-  ],
-  Array [
-    "Initial state:",
-    undefined,
-  ],
-  Array [
     "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
@@ -300,13 +265,6 @@ Array [
         "timestamp": 1572220801001,
       },
     },
-  ],
-  Array [
-    "New ReactGlobalState created",
-  ],
-  Array [
-    "Initial state:",
-    undefined,
   ],
   Array [
     "ReactGlobalState: useAsyncData data (re-)loading. Path: \\"x\\"",
@@ -378,13 +336,6 @@ Array [
     },
   ],
   Array [
-    "New ReactGlobalState created",
-  ],
-  Array [
-    "Initial state:",
-    undefined,
-  ],
-  Array [
     "ReactGlobalState update. Path: \\"x.numRefs\\"",
   ],
   Array [
@@ -452,13 +403,6 @@ Array [
         "timestamp": 1572221523061,
       },
     },
-  ],
-  Array [
-    "New ReactGlobalState created",
-  ],
-  Array [
-    "Initial state:",
-    undefined,
   ],
   Array [
     "ReactGlobalState update. Path: \\"x.numRefs\\"",

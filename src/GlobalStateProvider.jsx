@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useRef } from 'react';
 
 import GlobalState from './GlobalState';
 
@@ -66,18 +66,14 @@ export default function GlobalStateProvider({
   ssrContext,
   stateProxy,
 }) {
-  let state;
-  // Here Rules of Hooks are violated because hooks are called conditionally,
-  // however we assume that these properties should not change at runtime, thus
-  // the actual hook order is preserved. Probably, it should be handled better,
-  // though.
-  /* eslint-disable react-hooks/rules-of-hooks */
-  if (stateProxy instanceof GlobalState) state = stateProxy;
-  else if (stateProxy) state = getGlobalState();
-  else [state] = useState(new GlobalState(initialState, ssrContext));
-  /* eslint-enable react-hooks/rules-of-hooks */
+  const state = useRef();
+  if (!state.current) {
+    if (stateProxy instanceof GlobalState) state.current = stateProxy;
+    else if (stateProxy) state.current = getGlobalState();
+    else state.current = new GlobalState(initialState, ssrContext);
+  }
   return (
-    <context.Provider value={state}>
+    <context.Provider value={state.current}>
       {children}
     </context.Provider>
   );

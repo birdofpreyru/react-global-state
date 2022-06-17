@@ -5,7 +5,7 @@
  * in this module we only test for several corner-cases.
  */
 
-import { mockConsoleLog, unMockConsoleLog } from 'jest/utils';
+import { mockConsoleLog, mockTimer, unMockConsoleLog } from 'jest/utils';
 
 jest.useFakeTimers();
 
@@ -37,29 +37,71 @@ test('State set & get', () => {
   expect(console.log.logs).toMatchSnapshot();
 });
 
-test('Watch & unWatch logic', () => {
-  mockConsoleLog();
-  process.env.REACT_GLOBAL_STATE_DEBUG = true;
-  const GlobalState = require('src/GlobalState').default;
-  const state = new GlobalState();
-  const watcher1 = () => null;
-  const watcher2 = () => null;
-  const watcher3 = () => null;
-  state.watch(watcher1);
-  expect(state.watchers).toEqual([watcher1]);
-  state.watch(watcher1);
-  expect(state.watchers).toEqual([watcher1]);
-  state.watch(watcher2);
-  expect(state.watchers).toEqual([watcher1, watcher2]);
-  state.unWatch(watcher3);
-  expect(state.watchers).toEqual([watcher1, watcher2]);
-  state.watch(watcher3);
-  expect(state.watchers).toEqual([watcher1, watcher2, watcher3]);
-  state.unWatch(watcher1);
-  expect(state.watchers).toEqual([watcher3, watcher2]);
-  state.watch(watcher1);
-  expect(state.watchers).toEqual([watcher3, watcher2, watcher1]);
-  state.unWatch(watcher1);
-  expect(state.watchers).toEqual([watcher3, watcher2]);
-  expect(console.log.logs).toMatchSnapshot();
+describe('.watch() and .unWatch() logic', () => {
+  let state;
+
+  const watcher1 = jest.fn();
+  const watcher2 = jest.fn();
+  const watcher3 = jest.fn();
+
+  // These counter and function do a mock update of the state, which causes
+  // the GlobalState to call all connected watchers. As they are called async,
+  // the touch should be awaited.
+  let counter = 0;
+  const test = async (w1, w2, w3) => {
+    state.set('test', ++counter);
+    await mockTimer(3);
+    expect(watcher1).toHaveBeenCalledTimes(w1);
+    expect(watcher2).toHaveBeenCalledTimes(w2);
+    expect(watcher3).toHaveBeenCalledTimes(w3);
+  };
+
+  beforeAll(() => {
+    const GlobalState = require('src/GlobalState').default;
+    state = new GlobalState();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('subscribes watcher1', async () => {
+    state.watch(watcher1);
+    await test(1, 0, 0);
+  });
+
+  it('does not subscribe watcher1 multiple times', async () => {
+    state.watch(watcher1);
+    await test(1, 0, 0);
+  });
+
+  it('subscribes watcher2', async () => {
+    state.watch(watcher2);
+    await test(1, 1, 0);
+  });
+
+  it('does nothing on attempt to unsubscribe unknown watcher', async () => {
+    state.unWatch(watcher3);
+    await test(1, 1, 0);
+  });
+
+  it('subscribes watcher3', async () => {
+    state.watch(watcher3);
+    await test(1, 1, 1);
+  });
+
+  it('unsubscribes watcher1', async () => {
+    state.unWatch(watcher1);
+    await test(0, 1, 1);
+  });
+
+  it('re-subscribes watcher1', async () => {
+    state.watch(watcher1);
+    await test(1, 1, 1);
+  });
+
+  it('unsubscribes watcher1 again', async () => {
+    state.unWatch(watcher1);
+    await test(0, 1, 1);
+  });
 });
