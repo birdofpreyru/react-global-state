@@ -12,7 +12,11 @@ import { isDebugMode } from './utils';
 const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
 
 export default class GlobalState {
+  #iState;
+
   #nextNotifierId = null;
+
+  #ssrContext;
 
   #state;
 
@@ -24,14 +28,17 @@ export default class GlobalState {
    * @param {SsrContext} [ssrContext] Server-side rendering context.
    */
   constructor(initialState, ssrContext) {
-    /* eslint-disable no-param-reassign */
     this.#state = initialState;
+    this.#iState = initialState;
 
     if (ssrContext) {
+      /* eslint-disable no-param-reassign */
       ssrContext.dirty = false;
       ssrContext.pending = [];
       ssrContext.state = this.#state;
-      this.ssrContext = ssrContext;
+      /* eslint-enable no-param-reassign */
+
+      this.#ssrContext = ssrContext;
     }
 
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
@@ -43,7 +50,6 @@ export default class GlobalState {
       console.groupEnd();
       /* eslint-enable no-console */
     }
-    /* eslint-enable no-param-reassign */
   }
 
   /**
@@ -51,10 +57,14 @@ export default class GlobalState {
    * undefined, the entire state object is returned.
    * @param {string} [path] Dot-delimitered state path. If not given, entire
    * global state content is returned.
+   * @param {boolean} [initial] If set "true" the value will be taken from
+   *  the initial state used for this GlobalState instance construction,
+   *  instead of the current state.
    * @return {any}
    */
-  get(path) {
-    return isNil(path) ? this.#state : get(this.#state, path);
+  get(path, initial) {
+    const state = initial ? this.#iState : this.#state;
+    return isNil(path) ? state : get(state, path);
   }
 
   /**
@@ -103,9 +113,9 @@ export default class GlobalState {
         this.#state = root.state;
       }
 
-      if (this.ssrContext) {
-        this.ssrContext.dirty = true;
-        this.ssrContext.state = this.#state;
+      if (this.#ssrContext) {
+        this.#ssrContext.dirty = true;
+        this.#ssrContext.state = this.#state;
       } else if (!this.#nextNotifierId) {
         this.#nextNotifierId = setTimeout(() => {
           this.#nextNotifierId = null;
@@ -130,7 +140,7 @@ export default class GlobalState {
    * watching functionality is intended for client-side (non-SSR) only.
    */
   unWatch(callback) {
-    if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
+    if (this.#ssrContext) throw new Error(ERR_NO_SSR_WATCH);
 
     const watchers = this.#watchers;
     const pos = watchers.indexOf(callback);
@@ -139,6 +149,8 @@ export default class GlobalState {
       watchers.pop();
     }
   }
+
+  get ssrContext() { return this.#ssrContext; }
 
   /**
    * Subscribes `callback` to watch state updates; no operation if
@@ -151,7 +163,7 @@ export default class GlobalState {
    * watching functionality is intended for client-side (non-SSR) only.
    */
   watch(callback) {
-    if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
+    if (this.#ssrContext) throw new Error(ERR_NO_SSR_WATCH);
 
     const watchers = this.#watchers;
     if (watchers.indexOf(callback) < 0) {
