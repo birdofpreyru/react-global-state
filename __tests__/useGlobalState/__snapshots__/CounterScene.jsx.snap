@@ -22,10 +22,8 @@ exports[`Test of \`stateProxy\` prop of the state provider 3`] = `
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider II 1`] = `
-GlobalState {
-  "state": Object {
-    "counter": 0,
-  },
+Object {
+  "counter": 0,
 }
 `;
 
@@ -37,10 +35,8 @@ exports[`Test of \`stateProxy\` prop of the state provider II 2`] = `
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider II 3`] = `
-GlobalState {
-  "state": Object {
-    "counter": 0,
-  },
+Object {
+  "counter": 0,
 }
 `;
 
@@ -52,10 +48,8 @@ exports[`Test of \`stateProxy\` prop of the state provider II 4`] = `
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider II 5`] = `
-GlobalState {
-  "state": Object {
-    "counter": 1,
-  },
+Object {
+  "counter": 1,
 }
 `;
 

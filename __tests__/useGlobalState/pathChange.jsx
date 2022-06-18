@@ -45,7 +45,7 @@ it('works as expected', async () => {
   const globalState = new GlobalState();
   const scene = mount(<Scene globalState={globalState} />);
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  expect(globalState.state).toMatchSnapshot();
+  expect(globalState.get()).toMatchSnapshot();
 
   let button = document.querySelector('#changePath');
   await act(() => {
@@ -53,7 +53,7 @@ it('works as expected', async () => {
     return timer(10);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  expect(globalState.state).toMatchSnapshot();
+  expect(globalState.get()).toMatchSnapshot();
 
   button = document.querySelector('#changeValue');
   await act(() => {
@@ -61,5 +61,5 @@ it('works as expected', async () => {
     return timer(10);
   });
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  expect(globalState.state).toMatchSnapshot();
+  expect(globalState.get()).toMatchSnapshot();
 });

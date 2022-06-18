@@ -11,18 +11,10 @@ import { isDebugMode } from './utils';
 
 const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
 
-/**
- * Transform state path into the full path inside GlobalState object.
- * @param {string} statePath
- * @return {string}
- * @ignore
- */
-function fullPath(statePath) {
-  return isNil(statePath) ? 'state' : `state.${statePath}`;
-}
-
 export default class GlobalState {
   #nextNotifierId = null;
+
+  #state;
 
   #watchers = [];
 
@@ -33,12 +25,12 @@ export default class GlobalState {
    */
   constructor(initialState, ssrContext) {
     /* eslint-disable no-param-reassign */
-    this.state = initialState;
+    this.#state = initialState;
 
     if (ssrContext) {
       ssrContext.dirty = false;
       ssrContext.pending = [];
-      ssrContext.state = this.state;
+      ssrContext.state = this.#state;
       this.ssrContext = ssrContext;
     }
 
@@ -62,7 +54,7 @@ export default class GlobalState {
    * @return {any}
    */
   get(path) {
-    return get(this, fullPath(path));
+    return isNil(path) ? this.#state : get(this.#state, path);
   }
 
   /**
@@ -73,8 +65,7 @@ export default class GlobalState {
    * @return {any} Given `value` itself.
    */
   set(path, value) {
-    const p = fullPath(path);
-    if (value !== get(this, p)) {
+    if (value !== this.get(path)) {
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
         console.groupCollapsed(
@@ -84,31 +75,37 @@ export default class GlobalState {
         /* eslint-enable no-console */
       }
 
-      let segIdx = 0;
-      let pos = this;
-      const pathSegments = toPath(p);
-      for (; segIdx < pathSegments.length - 1; segIdx += 1) {
-        const seg = pathSegments[segIdx];
-        const next = pos[seg];
-        if (Array.isArray(next)) pos[seg] = [...next];
-        else if (isObject(next)) pos[seg] = { ...next };
-        else {
-          // We arrived to a state sub-segment, where the remaining part of
-          // the update path does not exist yet. We rely on lodash's set()
-          // function to create the remaining path, and set the value.
-          set(pos, pathSegments.slice(segIdx), value);
-          break;
+      if (isNil(path)) this.#state = value;
+      else {
+        const root = { state: this.#state };
+        let segIdx = 0;
+        let pos = root;
+        const pathSegments = toPath(`state.${path}`);
+        for (; segIdx < pathSegments.length - 1; segIdx += 1) {
+          const seg = pathSegments[segIdx];
+          const next = pos[seg];
+          if (Array.isArray(next)) pos[seg] = [...next];
+          else if (isObject(next)) pos[seg] = { ...next };
+          else {
+            // We arrived to a state sub-segment, where the remaining part of
+            // the update path does not exist yet. We rely on lodash's set()
+            // function to create the remaining path, and set the value.
+            set(pos, pathSegments.slice(segIdx), value);
+            break;
+          }
+          pos = pos[seg];
         }
-        pos = pos[seg];
-      }
 
-      if (segIdx === pathSegments.length - 1) {
-        pos[pathSegments[segIdx]] = value;
+        if (segIdx === pathSegments.length - 1) {
+          pos[pathSegments[segIdx]] = value;
+        }
+
+        this.#state = root.state;
       }
 
       if (this.ssrContext) {
         this.ssrContext.dirty = true;
-        this.ssrContext.state = this.state;
+        this.ssrContext.state = this.#state;
       } else if (!this.#nextNotifierId) {
         this.#nextNotifierId = setTimeout(() => {
           this.#nextNotifierId = null;
@@ -117,7 +114,7 @@ export default class GlobalState {
       }
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
-        console.log('New state:', cloneDeep(this.state));
+        console.log('New state:', cloneDeep(this.#state));
         console.groupEnd();
         /* eslint-enable no-console */
       }

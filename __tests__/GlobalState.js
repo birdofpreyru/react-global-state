@@ -20,20 +20,20 @@ test('State set & get', () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
   const GlobalState = require('src/GlobalState').default;
   const state = new GlobalState({ key: 'value' });
-  expect(state).toMatchSnapshot();
+  expect(state.get()).toMatchSnapshot();
   state.set('', 'value2');
-  expect(state).toMatchSnapshot();
+  expect(state.get()).toMatchSnapshot();
   jest.runAllTimers();
-  expect(state).toMatchSnapshot();
+  expect(state.get()).toMatchSnapshot();
   state.set(undefined, 'value3');
   jest.runAllTimers();
-  expect(state).toMatchSnapshot();
+  expect(state.get()).toMatchSnapshot();
   state.set(null, 'value4');
   jest.runAllTimers();
-  expect(state).toMatchSnapshot();
+  expect(state.get()).toMatchSnapshot();
   state.set('', 'value5');
   jest.runAllTimers();
-  expect(state).toMatchSnapshot();
+  expect(state.get()).toMatchSnapshot();
   expect(console.log.logs).toMatchSnapshot();
 });
 

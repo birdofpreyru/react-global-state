@@ -1,48 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`State set & get 1`] = `
-GlobalState {
-  "state": Object {
-    "key": "value",
-  },
+Object {
+  "key": "value",
 }
 `;
 
 exports[`State set & get 2`] = `
-GlobalState {
-  "state": Object {
-    "": "value2",
-    "key": "value",
-  },
+Object {
+  "": "value2",
+  "key": "value",
 }
 `;
 
 exports[`State set & get 3`] = `
-GlobalState {
-  "state": Object {
-    "": "value2",
-    "key": "value",
-  },
+Object {
+  "": "value2",
+  "key": "value",
 }
 `;
 
-exports[`State set & get 4`] = `
-GlobalState {
-  "state": "value3",
-}
-`;
+exports[`State set & get 4`] = `"value3"`;
 
-exports[`State set & get 5`] = `
-GlobalState {
-  "state": "value4",
-}
-`;
+exports[`State set & get 5`] = `"value4"`;
 
 exports[`State set & get 6`] = `
-GlobalState {
-  "state": Object {
-    "": "value5",
-  },
+Object {
+  "": "value5",
 }
 `;
 

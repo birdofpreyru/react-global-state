@@ -109,20 +109,20 @@ test('Test of `stateProxy` prop of the state provider', () => {
 test('Test of `stateProxy` prop of the state provider II', () => {
   const innerGlobalState = new GlobalState();
   scene = mount(<TestScene stateProxy={innerGlobalState} />);
-  expect(innerGlobalState).toMatchSnapshot();
+  expect(innerGlobalState.get()).toMatchSnapshot();
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   let button = document.querySelector('[data-testid=button-1]');
   act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
-  expect(innerGlobalState).toMatchSnapshot();
+  expect(innerGlobalState.get()).toMatchSnapshot();
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
   button = document.querySelector('[data-testid=button-2]');
   act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
-  expect(innerGlobalState).toMatchSnapshot();
+  expect(innerGlobalState.get()).toMatchSnapshot();
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
 });

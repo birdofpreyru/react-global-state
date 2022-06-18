@@ -46,7 +46,7 @@ it('works as expected', async () => {
   const scene = mount(<Scene globalState={globalState} />);
   await act(() => timer(10));
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  expect(globalState.state).toMatchSnapshot();
+  expect(globalState.get()).toMatchSnapshot();
 
   const button = document.getElementsByTagName('button')[0];
   act(() => {
@@ -54,5 +54,5 @@ it('works as expected', async () => {
   });
   await act(() => timer(10));
   expect(pretty(scene.innerHTML)).toMatchSnapshot();
-  expect(globalState.state).toMatchSnapshot();
+  expect(globalState.get()).toMatchSnapshot();
 });
