@@ -1,32 +1,39 @@
 # GlobalState
 
-A [GlobalState] object holds and manages the global state content.
-
-:::info
-[GlobalState] objects are instancess of **GlobalState** class. Library users are
-not supposed to create new [GlobalState] instances themselves, however they may
-access the current [GlobalState] object using the [getGlobalState()] hook. Note,
-that is not the normal way to interact with the global state, and it is intended
-for advanced, special usecases.
-:::
-
-[**Methods**](#methods):
-- [get()](#get) - Gets a value from [GlobalState].
-- [set()](#set) - Writes a value into [GlobalState].
-- [unWatch()](#unwatch) - Unsubscribes a listener from global state update
-  notifications.
-- [watch()](#watch) - Adds a listener for global state update notifications.
+A [GlobalState] object is an instance of the **GlobalState** class, which
+holds and manages the global state content. Users are not supposed to create
+new [GlobalState] instances explicitly, but they may access the current instance
+via the [getGlobalState()] hook. It allows imperative interactions with
+the global state, instead of the normal declarative state access via
+the [useGlobalState()] hook.
 
 ## Methods
+- [get()](#get) - Reads a value from the [GlobalState].
+- [set()](#set) - Writes a value into the [GlobalState].
+- [unWatch()](#unwatch) - Unsubscribes a listener from global state update
+  notifications.
+- [watch()](#watch) - Subscribes a listener for global state update
+  notifications.
 
 ### get()
 ```jsx
-globalState.get(path): any
+globalState.get(path, options): any
 ```
-Gets the value at the given `path` of the global state. If `path` is **null** or
-**undefined**, the entire state content is returned.
-- `path` - **string** - Optional. Dot-delimitered state path.
-  Without it the entire global state content is returned.
+Gets current or initial value at the specified `path` of the global state.
+It allows to get the entire global state, and automatically sets default value
+at the `path`.
+- `path` - **string** - Optional. Dot-delimitered state path. If **null** or
+  **undefined** the entire global state is returned.
+- `options` - **object** - Optional. Additional parameters.
+  - `initialState` - **boolean** - If **true** the value will be read from
+    the initial global state (at the moment of the [GlobalState] construction),
+    instead of the current global state.
+  - `initialValue` - **any** - Optional. Intended initial value at `path`.
+    In case **undefined** value was read from the state `path` (either from
+    the current, or initial state, depending on the `initialState` flag), this
+    `initialValue` will be returned to the caller instead. `initialValue` will
+    be also written to the `path` of the current state, provided the current
+    value there is **undefined**.
 - Returns **any** - The result value.
 
 ### set()
@@ -70,5 +77,6 @@ the state watching functionlity is intended for the client-side only.
 :::
 
 [getGlobalState()]: /docs/api/hooks/getglobalstate
+[useGlobalState()]: /docs/api/hooks/useglobalstate
 [GlobalState]: /docs/api/objects/globalstate
 [SsrContext]: /docs/api/objects/ssrcontext

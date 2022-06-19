@@ -8,6 +8,10 @@ Provides [GlobalState] to its children tree.
 - `children` - **React.Node** - Component children, if any, are rendered
   in-place of [GlobalStateProvider] and provided with [GlobalState] instance.
 - `initialState` - **any** - Optional. The initial global state content.
+  :::caution BEWARE
+  The library assumes the `initialState` is never mutated after it has
+  been provided to the [GlobalStateProvider].
+  :::
 - `ssrContext` - [SsrContext] - Optional. SSR (server-side rendering) context.
 - `stateProxy` - **boolean** | [GlobalState] - Enables "proxy" mode, intended
   for code-splitting and SSR implementation:
