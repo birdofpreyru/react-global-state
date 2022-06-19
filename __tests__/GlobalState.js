@@ -9,32 +9,91 @@ import { mockConsoleLog, unMockConsoleLog } from 'jest/utils';
 
 jest.useFakeTimers();
 
+let GlobalState;
+
 beforeEach(() => {
   jest.resetModules();
   delete process.env.REACT_GLOBAL_STATE_DEBUG;
   unMockConsoleLog();
+  GlobalState = require('src/GlobalState').default;
 });
 
-test('State set & get', () => {
-  mockConsoleLog();
-  process.env.REACT_GLOBAL_STATE_DEBUG = true;
-  const GlobalState = require('src/GlobalState').default;
-  const state = new GlobalState({ key: 'value' });
-  expect(state.get()).toMatchSnapshot();
-  state.set('', 'value2');
-  expect(state.get()).toMatchSnapshot();
-  jest.runAllTimers();
-  expect(state.get()).toMatchSnapshot();
-  state.set(undefined, 'value3');
-  jest.runAllTimers();
-  expect(state.get()).toMatchSnapshot();
-  state.set(null, 'value4');
-  jest.runAllTimers();
-  expect(state.get()).toMatchSnapshot();
-  state.set('', 'value5');
-  jest.runAllTimers();
-  expect(state.get()).toMatchSnapshot();
-  expect(console.log.logs).toMatchSnapshot();
+describe('State set & get', () => {
+  it('passes basic test', () => {
+    mockConsoleLog();
+    process.env.REACT_GLOBAL_STATE_DEBUG = true;
+    const state = new GlobalState({ key: 'value' });
+    expect(state.get()).toMatchSnapshot();
+    state.set('', 'value2');
+    expect(state.get()).toMatchSnapshot();
+    jest.runAllTimers();
+    expect(state.get()).toMatchSnapshot();
+    state.set(undefined, 'value3');
+    jest.runAllTimers();
+    expect(state.get()).toMatchSnapshot();
+    state.set(null, 'value4');
+    jest.runAllTimers();
+    expect(state.get()).toMatchSnapshot();
+    state.set('', 'value5');
+    jest.runAllTimers();
+    expect(state.get()).toMatchSnapshot();
+    expect(console.log.logs).toMatchSnapshot();
+  });
+
+  it('.get() respects "initialState" and "initialValue" options', () => {
+    const state = new GlobalState({ iKey: 'iValue' });
+    state.set('iKey', 'newValue');
+    expect(state.get('iKey')).toBe('newValue');
+    expect(state.get('iKey', { initialState: true })).toBe('iValue');
+    expect(state.get('aKey', { initialValue: 'a' })).toBe('a');
+    expect(state.get('aKey')).toBe('a');
+    expect(state.get('bKey', {
+      initialState: true,
+      initialValue: 'b',
+    })).toBe('b');
+    expect(state.get('bKey')).toBe('b');
+  });
+});
+
+describe('ssrContext', () => {
+  it('correctly inits upon GlobalState construction', () => {
+    const ssrContext = { name: 'SSR Context' };
+    const state = new GlobalState({ key: 'value' }, ssrContext);
+    expect(state.ssrContext).toBe(ssrContext);
+    expect(ssrContext).toEqual({
+      dirty: false,
+      name: 'SSR Context',
+      pending: [],
+      state: { key: 'value' },
+    });
+  });
+
+  it('correctly resets upon GlobalState construction', () => {
+    const ssrContext = {
+      name: 'SSR Context',
+      dirty: true,
+      pending: ['A', 'B', 'C'],
+      state: { oldKey: 'oldValue' },
+    };
+    const state = new GlobalState(['newValue'], ssrContext);
+    expect(state.ssrContext).toBe(ssrContext);
+    expect(ssrContext).toEqual({
+      dirty: false,
+      name: 'SSR Context',
+      pending: [],
+      state: ['newValue'],
+    });
+  });
+
+  it('forbids to .watch() and .unWatch() the state', () => {
+    const state = new GlobalState(undefined, {});
+    expect(() => {
+      state.watch(jest.fn());
+    }).toThrowErrorMatchingSnapshot();
+    expect(() => {
+      state.unWatch(jest.fn());
+    }).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('.watch() and .unWatch() logic', () => {
@@ -57,7 +116,6 @@ describe('.watch() and .unWatch() logic', () => {
   };
 
   beforeAll(() => {
-    const GlobalState = require('src/GlobalState').default;
     state = new GlobalState();
   });
 

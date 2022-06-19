@@ -128,16 +128,14 @@ export default function useAsyncData(
   // Note: here we can't depend on useGlobalState() to init the initial value,
   // because that way we'll have issues with SSR (see details below).
   const globalState = getGlobalState();
-  let state = globalState.get(path);
-  if (state === undefined) {
-    state = {
+  const state = globalState.get(path, {
+    initialValue: {
       data: null,
       numRefs: 0,
       operationId: '',
       timestamp: 0,
-    };
-    globalState.set(path, state);
-  }
+    },
+  });
 
   if (globalState.ssrContext && !options.noSSR) {
     if (!state.timestamp && !state.operationId) {
@@ -204,19 +202,7 @@ export default function useAsyncData(
     }, deps); // eslint-disable-line react-hooks/exhaustive-deps
   }
 
-  // NOTE: The note below is probably not accurate after the move
-  // to useSyncExternalStore() hook in useGlobalState().
-  //
-  // Note: this subscription to updates of the global state segment must be
-  // here, after the possible initialization of the loading operation, to take
-  // into effect the resulting loading state. This mostly ensures the correct
-  // SSR in the edge case when the loading starts, but times out, and incomplete
-  // render has to be served.
   const [localState] = useGlobalState(path, {
-    // Note: these are the same defaults set in the beginning of the hook,
-    // but here they serve as a fallback for the naive SSR (where the static
-    // initial state is used, thus defaults applied in the beginning of
-    // the hook do not have effect on useGlobalState() return).
     data: null,
     numRefs: 0,
     operationId: '',

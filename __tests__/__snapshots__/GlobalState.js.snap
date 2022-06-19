@@ -1,36 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`State set & get 1`] = `
+exports[`State set & get passes basic test 1`] = `
 Object {
   "key": "value",
 }
 `;
 
-exports[`State set & get 2`] = `
-Object {
-  "": "value2",
-  "key": "value",
-}
-`;
-
-exports[`State set & get 3`] = `
+exports[`State set & get passes basic test 2`] = `
 Object {
   "": "value2",
   "key": "value",
 }
 `;
 
-exports[`State set & get 4`] = `"value3"`;
+exports[`State set & get passes basic test 3`] = `
+Object {
+  "": "value2",
+  "key": "value",
+}
+`;
 
-exports[`State set & get 5`] = `"value4"`;
+exports[`State set & get passes basic test 4`] = `"value3"`;
 
-exports[`State set & get 6`] = `
+exports[`State set & get passes basic test 5`] = `"value4"`;
+
+exports[`State set & get passes basic test 6`] = `
 Object {
   "": "value5",
 }
 `;
 
-exports[`State set & get 7`] = `
+exports[`State set & get passes basic test 7`] = `
 Array [
   Array [
     "New ReactGlobalState created",
@@ -92,3 +92,7 @@ Array [
   ],
 ]
 `;
+
+exports[`ssrContext forbids to .watch() and .unWatch() the state 1`] = `"GlobalState must not be watched at server side"`;
+
+exports[`ssrContext forbids to .watch() and .unWatch() the state 2`] = `"GlobalState must not be watched at server side"`;

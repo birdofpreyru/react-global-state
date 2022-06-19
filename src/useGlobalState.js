@@ -61,24 +61,6 @@ export default function useGlobalState(path, initialValue) {
   if (!ref.current) {
     ref.current = {
       callbacks: [],
-
-      // Note: During SSR React always call this function with "initial" true
-      // (i.e. it always uses SSR method passed into useSyncExternalStore(),
-      // and it will prevent our "smart SSR", so for smart one we just ignore
-      // this flag in SSR context, and act the same as on the client side),
-      // effectively we then only use useSyncExternalStore() to ensure
-      // the correct initial state is used for hydration.
-      getState: (initial) => {
-        const rc = ref.current;
-        const ssr = !!rc.globalState.ssrContext;
-        let state = rc.globalState.get(rc.path, initial && !ssr);
-        if (state === undefined && rc.iValue !== undefined) {
-          state = isFunction(rc.iValue) ? rc.iValue() : rc.iValue;
-          if (ssr || !initial) rc.globalState.set(rc.path, state);
-        }
-        return state;
-      },
-
       setter: (value) => {
         const rc = ref.current;
         const newState = isFunction(value) ? value(rc.state) : value;
@@ -110,13 +92,12 @@ export default function useGlobalState(path, initialValue) {
   const rc = ref.current;
   const globalState = getGlobalState();
   rc.globalState = globalState;
-  rc.iValue = initialValue;
   rc.path = path;
 
   rc.state = useSyncExternalStore(
     (cb) => { rc.callbacks.push(cb); },
-    () => rc.getState(false),
-    () => rc.getState(true),
+    () => rc.globalState.get(rc.path, { initialValue }),
+    () => rc.globalState.get(rc.path, { initialValue, initialState: true }),
   );
 
   useEffect(() => {

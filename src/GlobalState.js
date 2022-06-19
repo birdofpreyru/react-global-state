@@ -1,6 +1,7 @@
 import {
   cloneDeep,
   get,
+  isFunction,
   isObject,
   isNil,
   set,
@@ -12,13 +13,13 @@ import { isDebugMode } from './utils';
 const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
 
 export default class GlobalState {
-  #iState;
+  #initialState;
 
   #nextNotifierId = null;
 
   #ssrContext;
 
-  #state;
+  #currentState;
 
   #watchers = [];
 
@@ -28,14 +29,14 @@ export default class GlobalState {
    * @param {SsrContext} [ssrContext] Server-side rendering context.
    */
   constructor(initialState, ssrContext) {
-    this.#state = initialState;
-    this.#iState = initialState;
+    this.#currentState = initialState;
+    this.#initialState = initialState;
 
     if (ssrContext) {
       /* eslint-disable no-param-reassign */
       ssrContext.dirty = false;
       ssrContext.pending = [];
-      ssrContext.state = this.#state;
+      ssrContext.state = this.#currentState;
       /* eslint-enable no-param-reassign */
 
       this.#ssrContext = ssrContext;
@@ -53,18 +54,28 @@ export default class GlobalState {
   }
 
   /**
-   * Gets the value at given `path` of global state. If `path` is null or
-   * undefined, the entire state object is returned.
-   * @param {string} [path] Dot-delimitered state path. If not given, entire
-   * global state content is returned.
-   * @param {boolean} [initial] If set "true" the value will be taken from
-   *  the initial state used for this GlobalState instance construction,
-   *  instead of the current state.
-   * @return {any}
+   * Gets current or initial value at the specified "path" of the global state.
+   * Allows to get the entire global state, and automatically set default value
+   * at the "path".
+   * @param {string} [path] Dot-delimitered state path. Pass it "null",
+   *  or "undefined" to refer the entire global state.
+   * @param {object} [options={}] Additional options.
+   * @param {boolean} [options.initialState] If "true" the value will be read
+   *  from the initial state instead of the current one.
+   * @param {any} [options.initialValue] If the value read from the "path" is
+   *  "undefined", this "initialValue" will be returned instead. In such case
+   *  "initialValue" will also be written to the "path" of the current global
+   *  state (no matter "initialState" flag), if "undefined" is stored there.
+   * @return {any} Retrieved value.
    */
-  get(path, initial) {
-    const state = initial ? this.#iState : this.#state;
-    return isNil(path) ? state : get(state, path);
+  get(path, { initialState, initialValue } = {}) {
+    const state = initialState ? this.#initialState : this.#currentState;
+    let value = isNil(path) ? state : get(state, path);
+    if (value === undefined && initialValue !== undefined) {
+      value = isFunction(initialValue) ? initialValue() : initialValue;
+      if (!initialState || this.get(path) === undefined) this.set(path, value);
+    }
+    return value;
   }
 
   /**
@@ -85,9 +96,9 @@ export default class GlobalState {
         /* eslint-enable no-console */
       }
 
-      if (isNil(path)) this.#state = value;
+      if (isNil(path)) this.#currentState = value;
       else {
-        const root = { state: this.#state };
+        const root = { state: this.#currentState };
         let segIdx = 0;
         let pos = root;
         const pathSegments = toPath(`state.${path}`);
@@ -110,12 +121,12 @@ export default class GlobalState {
           pos[pathSegments[segIdx]] = value;
         }
 
-        this.#state = root.state;
+        this.#currentState = root.state;
       }
 
       if (this.#ssrContext) {
         this.#ssrContext.dirty = true;
-        this.#ssrContext.state = this.#state;
+        this.#ssrContext.state = this.#currentState;
       } else if (!this.#nextNotifierId) {
         this.#nextNotifierId = setTimeout(() => {
           this.#nextNotifierId = null;
@@ -124,7 +135,7 @@ export default class GlobalState {
       }
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
-        console.log('New state:', cloneDeep(this.#state));
+        console.log('New state:', cloneDeep(this.#currentState));
         console.groupEnd();
         /* eslint-enable no-console */
       }
