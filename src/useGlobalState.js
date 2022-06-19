@@ -1,7 +1,7 @@
 // Hook for updates of global state.
 
 import { cloneDeep, isFunction } from 'lodash';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 
 import { getGlobalState } from './GlobalStateProvider';
 import { isDebugMode } from './utils';
@@ -57,65 +57,77 @@ import { isDebugMode } from './utils';
  *   stable function: it does not change between component re-renders.
  */
 export default function useGlobalState(path, initialValue) {
-  const globalState = getGlobalState();
-  let state = globalState.get(path);
-  if (state === undefined && initialValue !== undefined) {
-    const value = isFunction(initialValue) ? initialValue() : initialValue;
-    state = globalState.set(path, value);
-  }
-  const [
-    localState,
-    setLocalState,
-  ] = useState(() => state);
-
-  useEffect(() => {
-    const callback = () => {
-      const newState = globalState.get(path);
-      if (newState !== localState) setLocalState(() => newState);
-    };
-    globalState.watch(callback);
-    callback();
-    return () => globalState.unWatch(callback);
-  }, [globalState, localState, path]);
-
   const ref = useRef();
   if (!ref.current) {
     ref.current = {
-      localState,
-      path,
+      callbacks: [],
+
+      // Note: During SSR React always call this function with "initial" true
+      // (i.e. it always uses SSR method passed into useSyncExternalStore(),
+      // and it will prevent our "smart SSR", so for smart one we just ignore
+      // this flag in SSR context, and act the same as on the client side),
+      // effectively we then only use useSyncExternalStore() to ensure
+      // the correct initial state is used for hydration.
+      getState: (initial) => {
+        const rc = ref.current;
+        const ssr = !!rc.globalState.ssrContext;
+        let state = rc.globalState.get(rc.path, initial && !ssr);
+        if (state === undefined && rc.iValue !== undefined) {
+          state = isFunction(rc.iValue) ? rc.iValue() : rc.iValue;
+          if (ssr || !initial) rc.globalState.set(rc.path, state);
+        }
+        return state;
+      },
+
       setter: (value) => {
-        const newValue = isFunction(value)
-          ? value(ref.current.localState) : value;
+        const rc = ref.current;
+        const newState = isFunction(value) ? value(rc.state) : value;
         if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
           /* eslint-disable no-console */
           console.groupCollapsed(
             `ReactGlobalState - useGlobalState setter triggered for path ${
-              ref.current.path || ''
+              rc.path || ''
             }`,
           );
-          console.log('New value:', cloneDeep(newValue));
+          console.log('New value:', cloneDeep(newState));
           console.groupEnd();
           /* eslint-enable no-console */
         }
-
-        globalState.set(ref.current.path, newValue);
-
-        // The update of local state here is important for managed inputs:
-        // if we wait until the global state change notification is delivered
-        // (which happens after the next React render), React won't conserve
-        // the text cursor inside the currently focused input field (the cursor
-        // will jump to the field end, like if the value was changed not by
-        // keyboard input).
-        setLocalState(() => newValue);
+        rc.globalState.set(rc.path, newState);
+      },
+      watcher: () => {
+        const rc = ref.current;
+        const state = rc.globalState.get(rc.path);
+        if (state !== rc.state) {
+          for (let i = 0; i < rc.callbacks.length; ++i) {
+            rc.callbacks[i]();
+          }
+        }
       },
     };
-  } else {
-    ref.current.localState = localState;
-    ref.current.path = path;
   }
 
-  return [
-    localState,
-    ref.current.setter,
-  ];
+  const rc = ref.current;
+  const globalState = getGlobalState();
+  rc.globalState = globalState;
+  rc.iValue = initialValue;
+  rc.path = path;
+
+  rc.state = useSyncExternalStore(
+    (cb) => { rc.callbacks.push(cb); },
+    () => rc.getState(false),
+    () => rc.getState(true),
+  );
+
+  useEffect(() => {
+    globalState.watch(rc.watcher);
+    rc.watcher();
+    return () => globalState.unWatch(rc.watcher);
+  }, [globalState, rc]);
+
+  useEffect(() => {
+    rc.watcher();
+  }, [path, rc]);
+
+  return [rc.state, rc.setter];
 }

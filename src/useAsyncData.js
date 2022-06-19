@@ -204,12 +204,24 @@ export default function useAsyncData(
     }, deps); // eslint-disable-line react-hooks/exhaustive-deps
   }
 
+  // NOTE: The note below is probably not accurate after the move
+  // to useSyncExternalStore() hook in useGlobalState().
+  //
   // Note: this subscription to updates of the global state segment must be
   // here, after the possible initialization of the loading operation, to take
   // into effect the resulting loading state. This mostly ensures the correct
   // SSR in the edge case when the loading starts, but times out, and incomplete
   // render has to be served.
-  const [localState] = useGlobalState(path);
+  const [localState] = useGlobalState(path, {
+    // Note: these are the same defaults set in the beginning of the hook,
+    // but here they serve as a fallback for the naive SSR (where the static
+    // initial state is used, thus defaults applied in the beginning of
+    // the hook do not have effect on useGlobalState() return).
+    data: null,
+    numRefs: 0,
+    operationId: '',
+    timestamp: 0,
+  });
 
   return {
     data: maxage < Date.now() - localState.timestamp ? null : localState.data,
