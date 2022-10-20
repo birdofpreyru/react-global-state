@@ -4,14 +4,14 @@ exports[`Scene test in the front-end mode 1`] = `
 "<div>
   <h1>defaultValue</h1>
   <div>{
-    \\"data\\": null,
-    \\"loading\\": true,
-    \\"timestamp\\": 0
+    "data": null,
+    "loading": true,
+    "timestamp": 0
     }</div>
   <div>{
-    \\"data\\": null,
-    \\"loading\\": true,
-    \\"timestamp\\": 0
+    "data": null,
+    "loading": true,
+    "timestamp": 0
     }</div>
 </div>"
 `;
@@ -20,14 +20,14 @@ exports[`Scene test in the front-end mode 2`] = `
 "<div>
   <h1>defaultValue</h1>
   <div>{
-    \\"data\\": null,
-    \\"loading\\": true,
-    \\"timestamp\\": 0
+    "data": null,
+    "loading": true,
+    "timestamp": 0
     }</div>
   <div>{
-    \\"data\\": null,
-    \\"loading\\": true,
-    \\"timestamp\\": 0
+    "data": null,
+    "loading": true,
+    "timestamp": 0
     }</div>
 </div>"
 `;
@@ -36,19 +36,17 @@ exports[`Scene test in the front-end mode 3`] = `
 "<div>
   <h1>defaultValue</h1>
   <div>{
-    \\"data\\": \\"data\\",
-    \\"loading\\": false,
-    \\"timestamp\\": 1573084801100
+    "data": "data",
+    "loading": false,
+    "timestamp": 1573084801100
     }</div>
   <div>{
-    \\"data\\": \\"data\\",
-    \\"loading\\": false,
-    \\"timestamp\\": 1573084801100
+    "data": "data",
+    "loading": false,
+    "timestamp": 1573084801100
     }</div>
 </div>"
 `;
-
-
 
 exports[`Test \`getSsrContext()\` function Get SSR context when does not exist 1`] = `"No SSR context found"`;
 
@@ -56,9 +54,9 @@ exports[`Test \`getSsrContext()\` function Get SSR context when does not exist, 
 
 exports[`Test \`getSsrContext()\` function Get SSR context when exists 1`] = `
 "<div>{
-  \\"key\\": \\"Dummy SSR Context\\",
-  \\"dirty\\": false,
-  \\"pending\\": []
+  "key": "Dummy SSR Context",
+  "dirty": false,
+  "pending": []
   }</div>"
 `;
 

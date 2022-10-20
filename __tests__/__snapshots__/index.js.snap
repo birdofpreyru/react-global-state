@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Library exports match expectations 1`] = `
-Object {
+{
   "GlobalStateProvider": [Function],
   "getGlobalState": [Function],
   "getSsrContext": [Function],

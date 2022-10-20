@@ -1,123 +1,123 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Scenario I 1`] = `"<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"`;
+exports[`Scenario I 1`] = `"<div><button data-testid="button" type="button">Move</button></div>"`;
 
 exports[`Scenario I 2`] = `
 "<div>{
-  \\"data\\": null,
-  \\"loading\\": true,
-  \\"timestamp\\": 0
+  "data": null,
+  "loading": true,
+  "timestamp": 0
   }</div>
-<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+<div><button data-testid="button" type="button">Move</button></div>"
 `;
 
 exports[`Scenario I 3`] = `
 "<div>{
-  \\"data\\": \\"data\\",
-  \\"loading\\": false,
-  \\"timestamp\\": 1572220801001
+  "data": "data",
+  "loading": false,
+  "timestamp": 1572220801001
   }</div>
-<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+<div><button data-testid="button" type="button">Move</button></div>"
 `;
 
 exports[`Scenario I 4`] = `
 "<div>{
-  \\"data\\": \\"data\\",
-  \\"loading\\": false,
-  \\"timestamp\\": 1572220801001
+  "data": "data",
+  "loading": false,
+  "timestamp": 1572220801001
   }</div>
 <div>{
-  \\"data\\": \\"data\\",
-  \\"loading\\": false,
-  \\"timestamp\\": 1572220801001
+  "data": "data",
+  "loading": false,
+  "timestamp": 1572220801001
   }</div>
-<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+<div><button data-testid="button" type="button">Move</button></div>"
 `;
 
 exports[`Scenario I 5`] = `
 "<div>{
-  \\"data\\": \\"data\\",
-  \\"loading\\": false,
-  \\"timestamp\\": 1572220801001
+  "data": "data",
+  "loading": false,
+  "timestamp": 1572220801001
   }</div>
-<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+<div><button data-testid="button" type="button">Move</button></div>"
 `;
 
-exports[`Scenario I 6`] = `"<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"`;
+exports[`Scenario I 6`] = `"<div><button data-testid="button" type="button">Move</button></div>"`;
 
 exports[`Scenario I 7`] = `
 "<div>{
-  \\"data\\": \\"data\\",
-  \\"loading\\": false,
-  \\"timestamp\\": 1572220801001
+  "data": "data",
+  "loading": false,
+  "timestamp": 1572220801001
   }</div>
-<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+<div><button data-testid="button" type="button">Move</button></div>"
 `;
 
 exports[`Scenario I 8`] = `
 "<div>{
-  \\"data\\": null,
-  \\"loading\\": true,
-  \\"timestamp\\": 1572220801001
+  "data": null,
+  "loading": true,
+  "timestamp": 1572220801001
   }</div>
 <div>{
-  \\"data\\": null,
-  \\"loading\\": true,
-  \\"timestamp\\": 1572220801001
+  "data": null,
+  "loading": true,
+  "timestamp": 1572220801001
   }</div>
-<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+<div><button data-testid="button" type="button">Move</button></div>"
 `;
 
 exports[`Scenario I 9`] = `
 "<div>{
-  \\"data\\": \\"data\\",
-  \\"loading\\": false,
-  \\"timestamp\\": 1572221162051
+  "data": "data",
+  "loading": false,
+  "timestamp": 1572221162051
   }</div>
 <div>{
-  \\"data\\": \\"data\\",
-  \\"loading\\": false,
-  \\"timestamp\\": 1572221162051
+  "data": "data",
+  "loading": false,
+  "timestamp": 1572221162051
   }</div>
-<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+<div><button data-testid="button" type="button">Move</button></div>"
 `;
 
 exports[`Scenario I 10`] = `
 "<div>{
-  \\"data\\": null,
-  \\"loading\\": true,
-  \\"timestamp\\": 1572221162051
+  "data": null,
+  "loading": true,
+  "timestamp": 1572221162051
   }</div>
-<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"
+<div><button data-testid="button" type="button">Move</button></div>"
 `;
 
-exports[`Scenario I 11`] = `"<div><button data-testid=\\"button\\" type=\\"button\\">Move</button></div>"`;
+exports[`Scenario I 11`] = `"<div><button data-testid="button" type="button">Move</button></div>"`;
 
 exports[`Scenario I 12`] = `
-Array [
-  Array [
+[
+  [
     "New ReactGlobalState created",
   ],
-  Array [
+  [
     "Initial state:",
     undefined,
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x\\"",
+  [
+    "ReactGlobalState update. Path: "x"",
   ],
-  Array [
+  [
     "New value:",
-    Object {
+    {
       "data": null,
       "numRefs": 0,
       "operationId": "",
       "timestamp": 0,
     },
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": null,
         "numRefs": 0,
         "operationId": "",
@@ -125,17 +125,17 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.numRefs\\"",
+  [
+    "ReactGlobalState update. Path: "x.numRefs"",
   ],
-  Array [
+  [
     "New value:",
     1,
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": null,
         "numRefs": 1,
         "operationId": "",
@@ -143,20 +143,20 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState: useAsyncData data (re-)loading. Path: \\"x\\"",
+  [
+    "ReactGlobalState: useAsyncData data (re-)loading. Path: "x"",
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.operationId\\"",
+  [
+    "ReactGlobalState update. Path: "x.operationId"",
   ],
-  Array [
+  [
     "New value:",
     "C00000000-0000-0000-0000-000000000001",
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": null,
         "numRefs": 1,
         "operationId": "C00000000-0000-0000-0000-000000000001",
@@ -164,29 +164,29 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState: useAsyncData data (re-)loaded. Path: \\"x\\"",
+  [
+    "ReactGlobalState: useAsyncData data (re-)loaded. Path: "x"",
   ],
-  Array [
+  [
     "Data:",
     "data",
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x\\"",
+  [
+    "ReactGlobalState update. Path: "x"",
   ],
-  Array [
+  [
     "New value:",
-    Object {
+    {
       "data": "data",
       "numRefs": 1,
       "operationId": "",
       "timestamp": 1572220801001,
     },
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 1,
         "operationId": "",
@@ -194,17 +194,17 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.numRefs\\"",
+  [
+    "ReactGlobalState update. Path: "x.numRefs"",
   ],
-  Array [
+  [
     "New value:",
     2,
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 2,
         "operationId": "",
@@ -212,17 +212,17 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.numRefs\\"",
+  [
+    "ReactGlobalState update. Path: "x.numRefs"",
   ],
-  Array [
+  [
     "New value:",
     1,
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 1,
         "operationId": "",
@@ -230,17 +230,17 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.numRefs\\"",
+  [
+    "ReactGlobalState update. Path: "x.numRefs"",
   ],
-  Array [
+  [
     "New value:",
     0,
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 0,
         "operationId": "",
@@ -248,17 +248,17 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.numRefs\\"",
+  [
+    "ReactGlobalState update. Path: "x.numRefs"",
   ],
-  Array [
+  [
     "New value:",
     1,
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 1,
         "operationId": "",
@@ -266,20 +266,20 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState: useAsyncData data (re-)loading. Path: \\"x\\"",
+  [
+    "ReactGlobalState: useAsyncData data (re-)loading. Path: "x"",
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.operationId\\"",
+  [
+    "ReactGlobalState update. Path: "x.operationId"",
   ],
-  Array [
+  [
     "New value:",
     "C00000000-0000-0000-0000-000000000002",
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 1,
         "operationId": "C00000000-0000-0000-0000-000000000002",
@@ -287,17 +287,17 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.numRefs\\"",
+  [
+    "ReactGlobalState update. Path: "x.numRefs"",
   ],
-  Array [
+  [
     "New value:",
     2,
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 2,
         "operationId": "C00000000-0000-0000-0000-000000000002",
@@ -305,29 +305,29 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState: useAsyncData data (re-)loaded. Path: \\"x\\"",
+  [
+    "ReactGlobalState: useAsyncData data (re-)loaded. Path: "x"",
   ],
-  Array [
+  [
     "Data:",
     "data",
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x\\"",
+  [
+    "ReactGlobalState update. Path: "x"",
   ],
-  Array [
+  [
     "New value:",
-    Object {
+    {
       "data": "data",
       "numRefs": 2,
       "operationId": "",
       "timestamp": 1572221162051,
     },
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 2,
         "operationId": "",
@@ -335,17 +335,17 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.numRefs\\"",
+  [
+    "ReactGlobalState update. Path: "x.numRefs"",
   ],
-  Array [
+  [
     "New value:",
     1,
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 1,
         "operationId": "",
@@ -353,20 +353,20 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState: useAsyncData data (re-)loading. Path: \\"x\\"",
+  [
+    "ReactGlobalState: useAsyncData data (re-)loading. Path: "x"",
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.operationId\\"",
+  [
+    "ReactGlobalState update. Path: "x.operationId"",
   ],
-  Array [
+  [
     "New value:",
     "C00000000-0000-0000-0000-000000000003",
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 1,
         "operationId": "C00000000-0000-0000-0000-000000000003",
@@ -374,29 +374,29 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState: useAsyncData data (re-)loaded. Path: \\"x\\"",
+  [
+    "ReactGlobalState: useAsyncData data (re-)loaded. Path: "x"",
   ],
-  Array [
+  [
     "Data:",
     "data",
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x\\"",
+  [
+    "ReactGlobalState update. Path: "x"",
   ],
-  Array [
+  [
     "New value:",
-    Object {
+    {
       "data": "data",
       "numRefs": 1,
       "operationId": "",
       "timestamp": 1572221523061,
     },
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 1,
         "operationId": "",
@@ -404,17 +404,17 @@ Array [
       },
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"x.numRefs\\"",
+  [
+    "ReactGlobalState update. Path: "x.numRefs"",
   ],
-  Array [
+  [
     "New value:",
     0,
   ],
-  Array [
+  [
     "New state:",
-    Object {
-      "x": Object {
+    {
+      "x": {
         "data": "data",
         "numRefs": 0,
         "operationId": "",

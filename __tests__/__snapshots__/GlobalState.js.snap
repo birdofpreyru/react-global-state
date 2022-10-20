@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`State set & get passes basic test 1`] = `
-Object {
+{
   "key": "value",
 }
 `;
 
 exports[`State set & get passes basic test 2`] = `
-Object {
+{
   "": "value2",
   "key": "value",
 }
 `;
 
 exports[`State set & get passes basic test 3`] = `
-Object {
+{
   "": "value2",
   "key": "value",
 }
@@ -25,68 +25,68 @@ exports[`State set & get passes basic test 4`] = `"value3"`;
 exports[`State set & get passes basic test 5`] = `"value4"`;
 
 exports[`State set & get passes basic test 6`] = `
-Object {
+{
   "": "value5",
 }
 `;
 
 exports[`State set & get passes basic test 7`] = `
-Array [
-  Array [
+[
+  [
     "New ReactGlobalState created",
   ],
-  Array [
+  [
     "Initial state:",
-    Object {
+    {
       "key": "value",
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"\\"",
+  [
+    "ReactGlobalState update. Path: """,
   ],
-  Array [
+  [
     "New value:",
     "value2",
   ],
-  Array [
+  [
     "New state:",
-    Object {
+    {
       "": "value2",
       "key": "value",
     },
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"\\"",
+  [
+    "ReactGlobalState update. Path: """,
   ],
-  Array [
+  [
     "New value:",
     "value3",
   ],
-  Array [
+  [
     "New state:",
     "value3",
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"\\"",
+  [
+    "ReactGlobalState update. Path: """,
   ],
-  Array [
+  [
     "New value:",
     "value4",
   ],
-  Array [
+  [
     "New state:",
     "value4",
   ],
-  Array [
-    "ReactGlobalState update. Path: \\"\\"",
+  [
+    "ReactGlobalState update. Path: """,
   ],
-  Array [
+  [
     "New value:",
     "value5",
   ],
-  Array [
+  [
     "New state:",
-    Object {
+    {
       "": "value5",
     },
   ],

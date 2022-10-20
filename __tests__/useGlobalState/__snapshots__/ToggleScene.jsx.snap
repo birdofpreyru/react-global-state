@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`The scene works as expected 1`] = `"<div><button type=\\"button\\">false</button></div>"`;
+exports[`The scene works as expected 1`] = `"<div><button type="button">false</button></div>"`;
 
-exports[`The scene works as expected 2`] = `"<div><button type=\\"button\\">true</button></div>"`;
+exports[`The scene works as expected 2`] = `"<div><button type="button">true</button></div>"`;
 
-exports[`The scene works as expected 3`] = `"<div><button type=\\"button\\">false</button></div>"`;
+exports[`The scene works as expected 3`] = `"<div><button type="button">false</button></div>"`;
