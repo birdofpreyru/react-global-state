@@ -12,6 +12,8 @@ full server-side rendering (SSR) support.
 [Library Reference](https://dr.pogodin.studio/docs/react-global-state/index.html) &bull;
 [Blog Article](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
 
+[![Sponsor](.README/sponsor.png)](https://github.com/sponsors/birdofpreyru)
+
 ### Motivation
 
 The motivation and vision is to bring to the table all useful features

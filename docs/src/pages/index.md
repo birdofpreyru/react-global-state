@@ -5,6 +5,8 @@ asynchronous data management in [React] applications, powered by [hooks] and
 [Context API]. It is simple, efficient, and features a full SSR (server-side
 rendering) support.
 
+[![Sponsor](../../static/img/sponsor.png)](https://github.com/sponsors/birdofpreyru)
+
 ## Motivation
 
 The motivation and vision behind this project is to bring to the table all
