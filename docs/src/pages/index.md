@@ -1,5 +1,10 @@
 # React Global State
 
+[![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/react-global-state.svg)](https://www.npmjs.com/package/@dr.pogodin/react-global-state)
+[![NPM monthly downloads](https://img.shields.io/npm/dm/@dr.pogodin/react-global-state)](https://www.npmjs.com/package/@dr.pogodin/react-global-state)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/birdofpreyru/react-global-state/tree/master.svg?style=shield)](https://app.circleci.com/pipelines/github/birdofpreyru/react-global-state)
+[![GitHub Repo stars](https://img.shields.io/github/stars/birdofpreyru/react-global-state?style=social)](https://github.com/birdofpreyru/react-global-state)
+
 **React Global State** is a state of the art library for the global state and
 asynchronous data management in [React] applications, powered by [hooks] and
 [Context API]. It is simple, efficient, and features a full SSR (server-side
