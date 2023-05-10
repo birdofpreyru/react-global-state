@@ -1,6 +1,6 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.9.3",
+  "version": "0.10.0",
   "description": "Hook-based global state for React",
   "main": "./build/node/index.js",
   "exports": {
@@ -33,22 +33,22 @@
   },
   "homepage": "https://dr.pogodin.studio/docs/react-global-state/index.html",
   "dependencies": {
-    "@babel/runtime": "^7.21.0",
+    "@babel/runtime": "^7.21.5",
     "lodash": "^4.17.21",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.21.0",
-    "@babel/core": "^7.21.4",
-    "@babel/eslint-parser": "^7.21.3",
+    "@babel/cli": "^7.21.5",
+    "@babel/core": "^7.21.8",
+    "@babel/eslint-parser": "^7.21.8",
     "@babel/eslint-plugin": "^7.19.1",
     "@babel/node": "^7.20.7",
     "@babel/plugin-transform-runtime": "^7.21.4",
-    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-env": "^7.21.5",
     "@babel/preset-react": "^7.18.6",
     "babel-jest": "^29.5.0",
     "babel-plugin-module-resolver": "^5.0.0",
-    "eslint": "^8.37.0",
+    "eslint": "^8.40.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-import-resolver-babel-module": "^5.3.2",
     "eslint-plugin-import": "^2.27.5",
@@ -60,7 +60,7 @@
     "jest-environment-jsdom": "^29.5.0",
     "mockdate": "^3.0.5",
     "pretty": "^2.0.0",
-    "rimraf": "^4.4.1"
+    "rimraf": "^5.0.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",
