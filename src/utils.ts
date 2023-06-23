@@ -20,5 +20,3 @@ export function isDebugMode() {
     return false;
   }
 }
-
-export default null;

@@ -4,5 +4,6 @@ module.exports = {
       modules: false,
       targets: 'defaults',
     }],
+    '@babel/preset-typescript',
   ],
 };

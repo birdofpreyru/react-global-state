@@ -1,6 +1,12 @@
 {
-  "extends": ["airbnb", "airbnb/hooks"],
-  "parser": "@babel/eslint-parser",
+  "extends": [
+    "airbnb",
+    "airbnb/hooks",
+    "airbnb-typescript"
+  ],
+  "parserOptions": {
+    "project": "tsconfig.json"
+  },
   "plugins": ["@babel"],
   "rules": {
     "no-plusplus": 0,
