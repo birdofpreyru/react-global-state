@@ -3,8 +3,13 @@
     "browser": true,
     "jest": true
   },
+  "extends": ["airbnb-typescript"],
+  "parserOptions": {
+    "project": "__tests__/tsconfig.json"
+  },
   "plugins": ["jest"],
   "rules": {
+    "global-require": 0,
     "import/no-extraneous-dependencies": 0,
     "no-console": 0
   }

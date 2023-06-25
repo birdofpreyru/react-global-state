@@ -1,0 +1,156 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Naive server-side rendering 1`] = `
+"<div>
+  <h1>defaultValue</h1>
+  <div>{
+    &quot;data&quot;: null,
+    &quot;loading&quot;: false,
+    &quot;timestamp&quot;: 0
+    }</div>
+  <div>{
+    &quot;data&quot;: null,
+    &quot;loading&quot;: false,
+    &quot;timestamp&quot;: 0
+    }</div>
+</div>"
+`;
+
+exports[`Smart server-sider rendering 1`] = `
+"<div><h1>defaultValue</h1><div>{
+  &quot;data&quot;: &quot;data&quot;,
+  &quot;loading&quot;: false,
+  &quot;timestamp&quot;: 1573084800000
+}</div><div>{
+  &quot;data&quot;: &quot;data&quot;,
+  &quot;loading&quot;: false,
+  &quot;timestamp&quot;: 1573084800000
+}</div></div>"
+`;
+
+exports[`Smart server-sider rendering 2`] = `
+[
+  [
+    "New ReactGlobalState created (SSR mode)",
+  ],
+  [
+    "Initial state:",
+    {},
+  ],
+  [
+    "ReactGlobalState update. Path: "value.path"",
+  ],
+  [
+    "New value:",
+    "defaultValue",
+  ],
+  [
+    "New state:",
+    {
+      "value": {
+        "path": "defaultValue",
+      },
+    },
+  ],
+  [
+    "ReactGlobalState update. Path: "x"",
+  ],
+  [
+    "New value:",
+    {
+      "data": null,
+      "numRefs": 0,
+      "operationId": "",
+      "timestamp": 0,
+    },
+  ],
+  [
+    "New state:",
+    {
+      "value": {
+        "path": "defaultValue",
+      },
+      "x": {
+        "data": null,
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 0,
+      },
+    },
+  ],
+  [
+    "ReactGlobalState: useAsyncData data (re-)loading. Path: "x"",
+  ],
+  [
+    "ReactGlobalState update. Path: "x.operationId"",
+  ],
+  [
+    "New value:",
+    "S00000000-0000-0000-0000-000000000001",
+  ],
+  [
+    "New state:",
+    {
+      "value": {
+        "path": "defaultValue",
+      },
+      "x": {
+        "data": null,
+        "numRefs": 0,
+        "operationId": "S00000000-0000-0000-0000-000000000001",
+        "timestamp": 0,
+      },
+    },
+  ],
+  [
+    "ReactGlobalState: useAsyncData data (re-)loaded. Path: "x"",
+  ],
+  [
+    "Data:",
+    "data",
+  ],
+  [
+    "ReactGlobalState update. Path: "x"",
+  ],
+  [
+    "New value:",
+    {
+      "data": "data",
+      "numRefs": 0,
+      "operationId": "",
+      "timestamp": 1573084800000,
+    },
+  ],
+  [
+    "New state:",
+    {
+      "value": {
+        "path": "defaultValue",
+      },
+      "x": {
+        "data": "data",
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 1573084800000,
+      },
+    },
+  ],
+  [
+    "New ReactGlobalState created (SSR mode)",
+  ],
+  [
+    "Initial state:",
+    {
+      "value": {
+        "path": "defaultValue",
+      },
+      "x": {
+        "data": "data",
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 1573084800000,
+      },
+    },
+  ],
+]
+`;

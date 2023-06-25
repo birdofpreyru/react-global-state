@@ -1,6 +1,6 @@
 {
   "collectCoverage": true,
-  "collectCoverageFrom": ["src/**/*.{js,jsx}"],
+  "collectCoverageFrom": ["src/**/*.{js,jsx,ts,tsx}"],
   "coverageDirectory": "__coverage__",
   "rootDir": "..",
   "testPathIgnorePatterns": [
@@ -8,6 +8,6 @@
     "/node_modules/"
   ],
   "transform": {
-    "\\.jsx?$": "babel-jest"
+    "\\.(j|t)sx?$": "babel-jest"
   }
 }

@@ -1,0 +1,54 @@
+/** @jest-environment jsdom */
+
+import pretty from 'pretty';
+import { type DestroyableHtmlElement, act, mount } from 'jest/utils';
+import { GlobalStateProvider, useGlobalState } from 'src/index';
+
+jest.useFakeTimers();
+
+function Component() {
+  const [value, setValue] = useGlobalState('path', false);
+  return (
+    <div>
+      <button
+        onClick={() => setValue(!value)}
+        type="button"
+      >
+        {value.toString()}
+      </button>
+    </div>
+  );
+}
+
+function Scene() {
+  return (
+    <GlobalStateProvider initialState={undefined}>
+      <Component />
+    </GlobalStateProvider>
+  );
+}
+
+let scene: DestroyableHtmlElement | undefined;
+
+afterEach(() => {
+  if (scene) {
+    scene.destroy();
+    scene = undefined;
+  }
+});
+
+test('The scene works as expected', () => {
+  scene = mount(<Scene />);
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  const button = document.getElementsByTagName('button')[0];
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    jest.runAllTimers();
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  act(() => {
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    jest.runAllTimers();
+  });
+  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+});

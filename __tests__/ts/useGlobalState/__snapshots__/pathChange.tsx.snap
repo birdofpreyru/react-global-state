@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works as expected 1`] = `"<div>pathA: Default at pathA<button id="changePath" type="button">Change Path</button><button id="changeValue" type="button">Change Value</button></div>"`;
+
+exports[`works as expected 2`] = `
+{
+  "pathA": "Default at pathA",
+}
+`;
+
+exports[`works as expected 3`] = `"<div>pathB: Default at pathB<button id="changePath" type="button">Change Path</button><button id="changeValue" type="button">Change Value</button></div>"`;
+
+exports[`works as expected 4`] = `
+{
+  "pathA": "Default at pathA",
+  "pathB": "Default at pathB",
+}
+`;
+
+exports[`works as expected 5`] = `"<div>pathB: New value at pathB<button id="changePath" type="button">Change Path</button><button id="changeValue" type="button">Change Value</button></div>"`;
+
+exports[`works as expected 6`] = `
+{
+  "pathA": "Default at pathA",
+  "pathB": "New value at pathB",
+}
+`;
