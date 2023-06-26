@@ -9,29 +9,29 @@
 
 import mockdate from 'mockdate';
 import pretty from 'pretty';
-import { type JSXElementConstructor } from 'react';
 
-import { type DestroyableHtmlElement } from 'jest/utils';
+import {
+  type DestroyableHtmlElement,
+  act,
+  mockTimer,
+  mount,
+  unMockConsoleLog,
+} from 'jest/utils';
 
-let JU: any;
-let LIB: any;
+import { GlobalStateProvider, getSsrContext, SsrContext } from 'src/index';
+
+import Scene, { loaderA, loaderB } from './__assets__/TestScene';
 
 jest.mock('uuid');
 
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
 
-let loaderA: jest.Mock;
-let loaderB: jest.Mock;
-let Scene: JSXElementConstructor<unknown>;
 let scene: DestroyableHtmlElement | undefined;
 
 beforeEach(() => {
-  jest.resetModules();
   delete process.env.REACT_GLOBAL_STATE_DEBUG;
-  JU = require('jest/utils');
-  JU.unMockConsoleLog();
-  ({ default: Scene, loaderA, loaderB } = require('./__assets__/TestScene'));
+  unMockConsoleLog();
   loaderA.mockClear();
   loaderB.mockClear();
 });
@@ -50,24 +50,23 @@ afterEach(() => {
 });
 
 test('Scene test in the front-end mode', async () => {
-  LIB = require('src');
-  scene = JU.mount((
-    <LIB.GlobalStateProvider>
+  scene = mount((
+    <GlobalStateProvider initialState={undefined}>
       <Scene />
-    </LIB.GlobalStateProvider>
+    </GlobalStateProvider>
   ));
   expect(pretty(scene!.innerHTML)).toMatchSnapshot();
-  await JU.act(async () => {
-    await JU.mockTimer(100);
+  await act(async () => {
+    await mockTimer(100);
   });
   expect(pretty(scene!.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
-  await JU.act(async () => {
-    await JU.mockTimer(1000);
+  await act(async () => {
+    await mockTimer(1000);
   });
-  await JU.act(async () => {
-    await JU.mockTimer(0);
+  await act(async () => {
+    await mockTimer(0);
   });
   expect(pretty(scene!.innerHTML)).toMatchSnapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
@@ -78,7 +77,7 @@ describe('Test `getSsrContext()` function', () => {
   function SceneUsingSsrContext(
     { throwWithoutSsrContext }: { throwWithoutSsrContext?: boolean },
   ) {
-    const ssrContext = LIB.getSsrContext(throwWithoutSsrContext);
+    const ssrContext = getSsrContext(throwWithoutSsrContext);
     return (
       <div>
         {JSON.stringify(ssrContext, null, 2)}
@@ -104,11 +103,10 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Missing GlobalStateProvider', () => {
-    LIB = require('src');
     console.error = () => null;
     let message;
     try {
-      JU.mount(<SceneUsingSsrContext />);
+      mount(<SceneUsingSsrContext />);
     } catch (error) {
       ({ message } = error as Error);
     }
@@ -116,24 +114,34 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when exists', () => {
-    LIB = require('src');
-    scene = JU.mount((
-      <LIB.GlobalStateProvider ssrContext={{ key: 'Dummy SSR Context' }}>
+    class SceneSsrContext extends SsrContext<any> {
+      key: string;
+
+      constructor(value: string) {
+        super();
+        this.key = value;
+      }
+    }
+
+    scene = mount((
+      <GlobalStateProvider
+        initialState={undefined}
+        ssrContext={new SceneSsrContext('Dummy SSR Context')}
+      >
         <SceneUsingSsrContext />
-      </LIB.GlobalStateProvider>
+      </GlobalStateProvider>
     ));
     expect(pretty(scene!.innerHTML)).toMatchSnapshot();
   });
 
   test('Get SSR context when does not exist', () => {
-    LIB = require('src');
     console.error = () => null;
     let message;
     try {
-      JU.mount((
-        <LIB.GlobalStateProvider>
+      mount((
+        <GlobalStateProvider initialState={undefined}>
           <SceneUsingSsrContext />
-        </LIB.GlobalStateProvider>
+        </GlobalStateProvider>
       ));
     } catch (error) {
       ({ message } = error as Error);
@@ -142,11 +150,10 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when does not exist, but no throw is opted in', () => {
-    LIB = require('src');
-    scene = JU.mount((
-      <LIB.GlobalStateProvider>
+    scene = mount((
+      <GlobalStateProvider initialState={undefined}>
         <SceneUsingSsrContext throwWithoutSsrContext={false} />
-      </LIB.GlobalStateProvider>
+      </GlobalStateProvider>
     ));
     expect(pretty(scene!.innerHTML)).toMatchSnapshot();
   });

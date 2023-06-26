@@ -54,9 +54,9 @@ exports[`Test \`getSsrContext()\` function Get SSR context when does not exist, 
 
 exports[`Test \`getSsrContext()\` function Get SSR context when exists 1`] = `
 "<div>{
-  "key": "Dummy SSR Context",
   "dirty": false,
-  "pending": []
+  "pending": [],
+  "key": "Dummy SSR Context"
   }</div>"
 `;
 
