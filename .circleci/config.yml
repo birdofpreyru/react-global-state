@@ -16,22 +16,25 @@ jobs:
     docker:
       - image: cimg/node:16.20
     steps:
-      - *install-and-test
+      *install-and-test
   test-node-18:
     docker:
       - image: cimg/node:18.16
     steps:
-      - *install-and-test
+      *install-and-test
   test-node-20:
     docker:
       - image: cimg/node:20.3
     steps:
-      - *install-and-test
+      *install-and-test
   test-node-lts:
     docker:
       - image: cimg/node:lts
     steps:
-      - *install-and-test
+      - when:
+          condition: true
+          steps:
+            *install-and-test
       - npm: npm run build && cd docs && npm run build
       - persist_to_workspace:
           root: .
