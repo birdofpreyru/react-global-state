@@ -20,7 +20,7 @@ import {
   wait,
 } from 'jest/utils';
 
-let LIB;
+import { GlobalStateProvider, useAsyncData } from 'src/index';
 
 jest.useFakeTimers();
 mockdate.set('2019-10-28Z');
@@ -36,19 +36,19 @@ const loaderB = jest.fn(async () => {
 });
 
 function ComponentA() {
-  const envelop = LIB.useAsyncData('x', loaderA);
+  const envelop = useAsyncData('x', loaderA);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 
 function ComponentB() {
-  const envelop = LIB.useAsyncData('x', loaderB);
+  const envelop = useAsyncData('x', loaderB);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 
 function Scene() {
   const [value, setValue] = useState(0);
   return (
-    <LIB.GlobalStateProvider>
+    <GlobalStateProvider>
       { value % 4 === 1 || value % 4 === 2 ? <ComponentA /> : null }
       { value % 4 === 2 || value % 4 === 3 ? <ComponentB /> : null }
       <div>
@@ -60,7 +60,7 @@ function Scene() {
           Move
         </button>
       </div>
-    </LIB.GlobalStateProvider>
+    </GlobalStateProvider>
   );
 }
 
@@ -80,7 +80,6 @@ async function clickButton() {
 }
 
 function initTestScene() {
-  LIB = require('src');
   scene = mount(<Scene />);
   button = document.querySelector('[data-testid=button]');
 }
