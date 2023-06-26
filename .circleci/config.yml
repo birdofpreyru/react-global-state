@@ -35,7 +35,7 @@ jobs:
           condition: true
           steps:
             *install-and-test
-      - npm: npm run build && cd docs && npm run build
+      - run: npm run build && cd docs && npm run build
       - persist_to_workspace:
           root: .
           paths:
