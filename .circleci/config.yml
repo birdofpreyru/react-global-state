@@ -41,14 +41,14 @@ jobs:
           paths:
             - build
             - docs/build
-
-  # release:
-  #  <<: *defaults
-  #  steps:
-  #    - checkout
-  #    - attach_workspace:
-  #        at: .
-  #    - run: ./bin/release.sh
+  release:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: ./bin/release.sh
 
 test-filters: &test-filters
   filters:
@@ -67,16 +67,15 @@ workflows:
           <<: *test-filters
       - test-node-lts:
           <<: *test-filters
-
-       # - test:
-        #  filters:
-        #    tags:
-        #      only: /.*/
-      #- release:
-      #    filters:
-      #      branches:
-      #        ignore: /.*/
-      #      tags:
-      #        only: /v[0-9]+(\.[0-9]+)*/
-      #    requires:
-      #      - test
+          requires:
+            - test-node-16
+            - test-node-18
+            - test-node-20
+      - release:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*(-(alpha|beta)\.[0-9]+)?/
+          requires:
+            - test-node-lts
