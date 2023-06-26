@@ -10,7 +10,7 @@ install-and-test: &install-and-test
         - docs/node_modules
   - run: npm test
 
-version: 2
+version: 2.1
 jobs:
   test-node-16:
     docker:
