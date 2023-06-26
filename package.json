@@ -3,6 +3,8 @@
   "version": "0.10.0",
   "description": "Hook-based global state for React",
   "main": "./build/node/index.js",
+  "react-native": "src/index.ts",
+  "source": "src/index.ts",
   "exports": {
     "module": "./build/module/index.js",
     "node": "./build/node/index.js",
@@ -34,6 +36,9 @@
     "url": "https://github.com/birdofpreyru/react-global-state.git/issues"
   },
   "homepage": "https://dr.pogodin.studio/docs/react-global-state/index.html",
+  "engines": {
+    "node": ">=16"
+  },
   "dependencies": {
     "@babel/runtime": "^7.22.5",
     "@dr.pogodin/js-utils": "^0.0.6",
