@@ -6,8 +6,12 @@ import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 jest.useFakeTimers();
 
+const PATH = 'path';
+
+type StateT = { [PATH]: boolean };
+
 function Component() {
-  const [value, setValue] = useGlobalState('path', false);
+  const [value, setValue] = useGlobalState<StateT, typeof PATH>('path');
   return (
     <div>
       <button
@@ -22,7 +26,7 @@ function Component() {
 
 function Scene() {
   return (
-    <GlobalStateProvider initialState={undefined}>
+    <GlobalStateProvider<StateT> initialState={{ path: false }}>
       <Component />
     </GlobalStateProvider>
   );

@@ -6,24 +6,20 @@ import { cloneDeep } from 'lodash';
 import { useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 
+import { MIN_MS } from '@dr.pogodin/js-utils';
+
+import AsyncDataEnvelope from './AsyncDataEnvelope';
 import { getGlobalState } from './GlobalStateProvider';
 import useGlobalState from './useGlobalState';
 import { isDebugMode } from './utils';
 
-import type GlobalState from './GlobalState';
+import GlobalState from './GlobalState';
 
-const DEFAULT_MAXAGE = 5 * 60 * 1000; // 5 minutes.
+const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
-export type AsyncDataLoader<T> = (oldData: null | T) => Promise<T>;
+export type AsyncDataLoaderT<DataT> = (oldData: null | DataT) => Promise<DataT>;
 
-export type AsyncDataEnvelope<T> = {
-  data: null | T;
-  numRefs: number;
-  operationId: string;
-  timestamp: number;
-};
-
-export type AsyncDataOptions = {
+export type UseAsyncDataOptionsT = {
   deps?: unknown[];
   garbageCollectAge?: number;
   maxage?: number;
@@ -45,13 +41,13 @@ export type AsyncDataOptions = {
  * @return Resolves once the operation is done.
  * @ignore
  */
-async function load<StateT, DataT>(
-  path: string,
-  loader: AsyncDataLoader<DataT>,
-  globalState: GlobalState<StateT>,
+async function load<DataT>(
+  path: null | string | undefined,
+  loader: AsyncDataLoaderT<DataT>,
+  globalState: GlobalState<unknown>,
   oldData: DataT | null,
   opIdPrefix: 'C' | 'S' = 'C',
-) {
+): Promise<void> {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
     console.log(
@@ -61,11 +57,11 @@ async function load<StateT, DataT>(
   }
   const operationId = opIdPrefix + uuid();
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
-  globalState.set(operationIdPath, operationId);
+  globalState.set<1, string>(operationIdPath, operationId);
   const data = await loader(
-    oldData || globalState.get<AsyncDataEnvelope<DataT>>(path).data,
+    oldData || (globalState.get(path) as AsyncDataEnvelope<DataT>).data,
   );
-  const state = globalState.get<AsyncDataEnvelope<DataT>>(path);
+  const state: AsyncDataEnvelope<DataT> = globalState.get(path);
   if (operationId === state.operationId) {
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
       /* eslint-disable no-console */
@@ -133,15 +129,16 @@ async function load<StateT, DataT>(
  *
  * Note that loaded data, if any, are stored at the given `path` of global state
  * along with related meta-information, using slightly different state segment
- * structure (see {@link AsyncDataEnvelope}). That segment of the global state
+ * structure (see {@link AsyncDataEnvelopeT}). That segment of the global state
  * can be accessed, and even modified using other hooks,
  * _e.g._ {@link useGlobalState}, but doing so you may interfere with related
  * `useAsyncData()` hooks logic.
  */
+
 export default function useAsyncData<DataT>(
-  path: string,
-  loader: AsyncDataLoader<DataT>,
-  options: AsyncDataOptions = {},
+  path: null | string | undefined,
+  loader: AsyncDataLoaderT<DataT>,
+  options: UseAsyncDataOptionsT = {},
 ): { data: null | DataT; loading: boolean; timestamp: number } {
   const maxage: number = options.maxage === undefined
     ? DEFAULT_MAXAGE : options.maxage;
@@ -155,7 +152,7 @@ export default function useAsyncData<DataT>(
   // Note: here we can't depend on useGlobalState() to init the initial value,
   // because that way we'll have issues with SSR (see details below).
   const globalState = getGlobalState();
-  const state = globalState.get(path, {
+  const state = globalState.get<1, AsyncDataEnvelope<DataT>>(path, {
     initialValue: {
       data: null,
       numRefs: 0,
@@ -182,10 +179,10 @@ export default function useAsyncData<DataT>(
     // The same applies to other useEffect() hooks below.
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       const numRefsPath = path ? `${path}.numRefs` : 'numRefs';
-      const numRefs = globalState.get<number>(numRefsPath);
-      globalState.set(numRefsPath, numRefs + 1);
+      const numRefs = globalState.get<1, number>(numRefsPath);
+      globalState.set<1, number>(numRefsPath, numRefs + 1);
       return () => {
-        const state2 = globalState.get<AsyncDataEnvelope<DataT>>(path);
+        const state2: AsyncDataEnvelope<DataT> = globalState.get(path);
         if (
           state2.numRefs === 1
           && garbageCollectAge < Date.now() - state2.timestamp
@@ -205,7 +202,7 @@ export default function useAsyncData<DataT>(
             numRefs: 0,
             timestamp: 0,
           });
-        } else globalState.set(numRefsPath, state2.numRefs - 1);
+        } else globalState.set<1, number>(numRefsPath, state2.numRefs - 1);
       };
     }, [garbageCollectAge, globalState, path]);
 
@@ -215,7 +212,7 @@ export default function useAsyncData<DataT>(
     // Data loading and refreshing.
     let loadTriggered = false;
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      const state2 = globalState.get<AsyncDataEnvelope<DataT>>(path);
+      const state2: AsyncDataEnvelope<DataT> = globalState.get(path);
       if (refreshAge < Date.now() - state2.timestamp
       && (!state2.operationId || state2.operationId.charAt(0) === 'S')) {
         load(path, loader, globalState, state2.data);
@@ -229,7 +226,7 @@ export default function useAsyncData<DataT>(
     }, deps); // eslint-disable-line react-hooks/exhaustive-deps
   }
 
-  const [localState] = useGlobalState(path, {
+  const [localState] = useGlobalState<1, AsyncDataEnvelope<DataT>>(path, {
     data: null,
     numRefs: 0,
     operationId: '',

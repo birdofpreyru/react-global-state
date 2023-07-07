@@ -26,7 +26,7 @@ function ComponentB() {
 }
 
 export default function Scene() {
-  const [globalValue] = useGlobalState('value.path', 'defaultValue');
+  const [globalValue] = useGlobalState<1, string>('value.path', 'defaultValue');
   return (
     <div>
       <h1>{globalValue}</h1>

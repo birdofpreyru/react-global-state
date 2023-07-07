@@ -1,3 +1,5 @@
+export { default as AsyncDataEnvelope } from './AsyncDataEnvelope';
+
 export { default as SsrContext } from './SsrContext';
 
 export {
@@ -12,8 +14,7 @@ export {
 } from './useAsyncCollection';
 
 export {
-  type AsyncDataEnvelope,
-  type AsyncDataLoader,
+  type AsyncDataLoaderT as AsyncDataLoader,
   default as useAsyncData,
 } from './useAsyncData';
 

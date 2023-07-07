@@ -2,7 +2,7 @@
  * Loads and uses an item in an async collection.
  */
 
-import useAsyncData, { type AsyncDataOptions } from './useAsyncData';
+import useAsyncData, { type UseAsyncDataOptionsT } from './useAsyncData';
 
 export type AsyncCollectionLoader<T> =
   (id: string, oldData: null | T) => Promise<T>;
@@ -49,16 +49,16 @@ export type AsyncCollectionLoader<T> =
  * _e.g._ {@link useGlobalState}, but doing so you may interfere with related
  * `useAsyncData()` hooks logic.
  */
-export default function useAsyncCollection<T>(
+export default function useAsyncCollection<DataT>(
   id: string,
   path: string,
-  loader: AsyncCollectionLoader<T>,
-  options: AsyncDataOptions = {},
+  loader: AsyncCollectionLoader<DataT>,
+  options: UseAsyncDataOptionsT = {},
 ) {
   const itemPath = path ? `${path}.${id}` : id;
   return useAsyncData(
     itemPath,
-    (oldData: null | T) => loader(id, oldData),
+    (oldData: null | DataT) => loader(id, oldData),
     options,
   );
 }

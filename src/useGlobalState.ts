@@ -5,22 +5,28 @@ import { useEffect, useRef, useSyncExternalStore } from 'react';
 
 import { Emitter } from '@dr.pogodin/js-utils';
 
-import type GlobalState from './GlobalState';
+import GlobalState, {
+  type CallbackT,
+  type TypeLock,
+  type ValueAtPathT,
+  type ValueOrInitializerT,
+} from './GlobalState';
+
 import { getGlobalState } from './GlobalStateProvider';
 import { isDebugMode } from './utils';
 
-type Callback = () => void;
-
 export type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 
-type GlobalStateRef<T> = {
+type GlobalStateRef = {
   emitter: Emitter<[]>;
-  globalState: GlobalState<T>;
-  path?: null | string;
-  setter: Setter<T>;
-  state: T;
-  watcher: Callback;
+  globalState: GlobalState<unknown>;
+  path: null | string | undefined;
+  setter: Setter<unknown>;
+  state: unknown;
+  watcher: CallbackT;
 };
+
+type UseGlobalStateResT<StateT> = [StateT, Setter<StateT>];
 
 /**
  * The primary hook for interacting with the global state, modeled after
@@ -72,16 +78,38 @@ type GlobalStateRef<T> = {
  *   Also, similar to the standard React's state setters, `setValue()` is
  *   stable function: it does not change between component re-renders.
  */
-export default function useGlobalState<T>(
-  path: null | string | undefined,
-  initialValue: T | (() => T),
-): [T, Setter<T>] {
-  const globalState = getGlobalState<T>();
 
-  const ref = useRef<GlobalStateRef<T>>();
-  const rc: GlobalStateRef<T> = ref.current || {
+function useGlobalState<StateT>(): UseGlobalStateResT<StateT>;
+
+function useGlobalState<
+  StateT,
+  PathT extends null | string | undefined,
+  ValueT extends ValueAtPathT<StateT, PathT, void>
+  = ValueAtPathT<StateT, PathT, void>,
+>(
+  path: PathT,
+  initialValue?: ValueOrInitializerT<ValueT>
+): UseGlobalStateResT<ValueT>;
+
+function useGlobalState<
+  Unlocked extends 0 | 1 = 0,
+  ValueT = void,
+>(
+  path: null | string | undefined,
+  initialValue?: ValueOrInitializerT<TypeLock<Unlocked, never, ValueT>>,
+): UseGlobalStateResT<TypeLock<Unlocked, void, ValueT>>;
+
+function useGlobalState(
+  path?: null | string,
+  initialValue?: ValueOrInitializerT<unknown>,
+): UseGlobalStateResT<unknown> {
+  const globalState = getGlobalState();
+
+  const ref = useRef<GlobalStateRef>();
+  const rc: GlobalStateRef = ref.current || {
     emitter: new Emitter(),
     globalState,
+    path,
     setter: (value) => {
       const newState = isFunction(value) ? value(rc.state) : value;
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
@@ -127,3 +155,5 @@ export default function useGlobalState<T>(
 
   return [rc.state, rc.setter];
 }
+
+export default useGlobalState;

@@ -56,7 +56,7 @@ exports[`State set & get passes basic test 7`] = `
     },
   ],
   [
-    "ReactGlobalState update. Path: """,
+    "ReactGlobalState update. Path: none (entire state update)",
   ],
   [
     "New value:",
@@ -67,7 +67,7 @@ exports[`State set & get passes basic test 7`] = `
     "value3",
   ],
   [
-    "ReactGlobalState update. Path: """,
+    "ReactGlobalState update. Path: none (entire state update)",
   ],
   [
     "New value:",

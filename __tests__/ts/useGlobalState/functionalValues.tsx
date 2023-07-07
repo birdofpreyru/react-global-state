@@ -10,9 +10,15 @@ import { type ReactNode } from 'react';
 import { mount } from 'jest/utils';
 import { type Setter, GlobalStateProvider, useGlobalState } from 'src/index';
 
+const PATH = 'path';
+
+type ValueT = jest.Mock | string | undefined;
+
+type StateT = { [PATH]?: ValueT };
+
 function Wrapper({ children }: { children: ReactNode }) {
   return (
-    <GlobalStateProvider initialState={undefined}>
+    <GlobalStateProvider<StateT> initialState={{}}>
       {children}
     </GlobalStateProvider>
   );
@@ -20,7 +26,7 @@ function Wrapper({ children }: { children: ReactNode }) {
 
 function TestComponent01() {
   TestComponent01.pass += 1;
-  const [value] = useGlobalState('path', 'value-01');
+  const [value] = useGlobalState<StateT, typeof PATH>(PATH, 'value-01');
   expect(value).toBe('value-01');
   return null;
 }
@@ -34,7 +40,7 @@ test('Non-functional initial value', () => {
 
 function TestComponent02() {
   TestComponent02.pass += 1;
-  const [value] = useGlobalState('path', () => 'value-02');
+  const [value] = useGlobalState<StateT, typeof PATH>(PATH, () => 'value-02');
   expect(value).toBe('value-02');
   return null;
 }
@@ -48,7 +54,10 @@ test('Functional initial value', () => {
 
 function TestComponent03() {
   TestComponent03.pass += 1;
-  const [value] = useGlobalState('path', () => TestComponent03.func);
+  const [value] = useGlobalState<StateT, typeof PATH>(
+    PATH,
+    () => TestComponent03.func,
+  );
   expect(value === TestComponent03.func).toBe(true);
   return null;
 }
@@ -64,7 +73,7 @@ test('Functional initial value, returing a function', () => {
 
 function TestComponent04() {
   TestComponent04.pass += 1;
-  const [value, set] = useGlobalState('path', 'value-04');
+  const [value, set] = useGlobalState<StateT, typeof PATH>(PATH, 'value-04');
   setTimeout(() => set('value-04-2'));
   switch (TestComponent04.pass) {
     case 1: expect(value).toBe('value-04'); break;
@@ -82,8 +91,13 @@ test('Setting a non-functional value', () => {
 
 function TestComponent05() {
   TestComponent05.pass += 1;
-  const [value, set] = useGlobalState<string>('path', () => 'value-05');
-  if (value.endsWith('05')) set((v) => `${v}-2`);
+  const [value, set] = useGlobalState<StateT, typeof PATH>(
+    PATH,
+    () => 'value-05',
+  );
+  if (typeof value === 'string' && value.endsWith('05')) {
+    set((v: ValueT) => `${v}-2`);
+  }
   switch (TestComponent05.pass) {
     case 1: expect(value).toBe('value-05'); break;
     case 2: expect(value).toBe('value-05-2'); break;
@@ -100,7 +114,10 @@ test('Functional update', () => {
 
 function TestComponent06() {
   TestComponent06.pass += 1;
-  const [value, set] = useGlobalState('path', () => TestComponent06.func);
+  const [value, set] = useGlobalState<StateT, typeof PATH>(
+    'path',
+    () => TestComponent06.func,
+  );
   setTimeout(() => set(() => TestComponent06.func2));
   switch (TestComponent06.pass) {
     case 1: expect(value === TestComponent06.func).toBe(true); break;
@@ -120,15 +137,21 @@ test('Functional update to a function value', () => {
   expect(TestComponent06.func2).not.toHaveBeenCalled();
 });
 
-let t07Set: Setter<string>;
+let t07Set: Setter<ValueT>;
 
 function TestComponent07() {
   TestComponent07.pass += 1;
-  const [value, set] = useGlobalState('path', () => 'value-07');
+  const [value, set] = useGlobalState<StateT, typeof PATH>(
+    PATH,
+    () => 'value-07',
+  );
   if (!t07Set) t07Set = set;
   else expect(set === t07Set).toBe(true);
-  if (value.endsWith('07')) set((v) => `${v}-2`);
-  else if (value.endsWith('-2')) set((v) => `${v}-3`);
+  if (typeof value === 'string' && value.endsWith('07')) {
+    set((v: ValueT) => `${v}-2`);
+  } else if (typeof value === 'string' && value.endsWith('-2')) {
+    set((v: ValueT) => `${v}-3`);
+  }
   switch (TestComponent07.pass) {
     case 1: expect(value).toBe('value-07'); break;
     case 2: expect(value).toBe('value-07-2'); break;

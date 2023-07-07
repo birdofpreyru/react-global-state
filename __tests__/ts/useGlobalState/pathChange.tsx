@@ -12,9 +12,17 @@ import { useState } from 'react';
 import { GlobalStateProvider, useGlobalState } from 'src/index';
 import GlobalState from 'src/GlobalState';
 
+type StateT = {
+  pathA?: string;
+  pathB?: string;
+};
+
 function Component() {
-  const [path, setPath] = useState('pathA');
-  const [value, setValue] = useGlobalState(path, `Default at ${path}`);
+  const [path, setPath] = useState<keyof StateT>('pathA');
+  const [value, setValue] = useGlobalState<StateT, typeof path>(
+    path,
+    `Default at ${path}`,
+  );
   return (
     <div>
       {path}: {value}

@@ -12,8 +12,10 @@ import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 /* Test with the state containing only objects. */
 
+type StateT1 = { path?: { nested?: number } };
+
 function ComponentA1() {
-  const [state] = useGlobalState('path', {});
+  const [state] = useGlobalState<StateT1, 'path'>('path', {});
   return (
     <div>
       {JSON.stringify(state)}
@@ -22,7 +24,10 @@ function ComponentA1() {
 }
 
 function ComponentB1() {
-  const [state, setState] = useGlobalState('path.nested', 0);
+  const [state, setState] = useGlobalState<StateT1, 'path.nested', number>(
+    'path.nested',
+    0,
+  );
   return (
     <div>
       <button
@@ -38,7 +43,7 @@ function ComponentB1() {
 
 function Scene1() {
   return (
-    <GlobalStateProvider initialState={undefined}>
+    <GlobalStateProvider<StateT1> initialState={{}}>
       <ComponentA1 />
       <ComponentB1 />
     </GlobalStateProvider>
@@ -74,8 +79,14 @@ test('Test with objects', async () => {
 
 /* Test with the state containing an array. */
 
+type StateT2 = {
+  path?: {
+    [key: string]: string;
+  }[];
+};
+
 function ComponentA2() {
-  const [state] = useGlobalState(
+  const [state] = useGlobalState<StateT2, 'path'>(
     'path',
     [
       { key0: 'value0' },
@@ -91,8 +102,9 @@ function ComponentA2() {
 }
 
 function ComponentB2() {
-  const [state, setState] = useGlobalState<string | undefined>(
-    'path[1].key1',
+  const P = 'path[1].key1';
+  const [state, setState] = useGlobalState<StateT2, typeof P>(
+    P,
     undefined,
   );
   return (
@@ -110,7 +122,7 @@ function ComponentB2() {
 
 function Scene2() {
   return (
-    <GlobalStateProvider initialState={undefined}>
+    <GlobalStateProvider<StateT2> initialState={{}}>
       <ComponentA2 />
       <ComponentB2 />
     </GlobalStateProvider>
@@ -131,11 +143,13 @@ test('Test with arrays', async () => {
 
 /* Test with strings in the path. */
 
+type StateT3 = {
+  path?: string;
+};
+
 function ComponentA3() {
-  const [state] = useGlobalState(
-    'path',
-    'value',
-  );
+  const P = 'path';
+  const [state] = useGlobalState<StateT3, typeof P>(P, 'value');
   return (
     <div>
       {JSON.stringify(state)}
@@ -144,10 +158,8 @@ function ComponentA3() {
 }
 
 function ComponentB3() {
-  const [state, setState] = useGlobalState<string | undefined>(
-    'path[1]',
-    undefined,
-  );
+  const P = 'path[1]';
+  const [state, setState] = useGlobalState<StateT3, typeof P>(P);
   return (
     <div>
       <button

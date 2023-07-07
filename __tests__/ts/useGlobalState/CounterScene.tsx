@@ -14,15 +14,22 @@ import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 jest.useFakeTimers();
 
+const COUNTER_PATH = 'counter';
+
+type StateT = {
+  [COUNTER_PATH]: number;
+};
+
 function CounterView() {
-  const [count] = useGlobalState('counter', 0);
+  const [count] = useGlobalState<StateT, typeof COUNTER_PATH>(COUNTER_PATH);
   return <div>{count}</div>;
 }
 
-type StateT = { counter: number };
-
 function CounterButton({ testButtonId }: { testButtonId: string }) {
-  const [count, setCount] = useGlobalState('counter', 0);
+  const [
+    count,
+    setCount,
+  ] = useGlobalState<StateT, typeof COUNTER_PATH>('counter');
   return (
     <div>
       <button
@@ -43,17 +50,21 @@ function TestScene(
   { stateProxy }: { stateProxy?: boolean | GlobalState<StateT> },
 ) {
   return (
-    <GlobalStateProvider initialState={undefined}>
+    <GlobalStateProvider<StateT>
+      initialState={{ counter: 0 }}
+    >
       <CounterView />
       <CounterButton testButtonId="button-1" />
       {
         stateProxy ? (
-          <GlobalStateProvider stateProxy={stateProxy}>
+          <GlobalStateProvider<StateT> stateProxy={stateProxy}>
             <CounterView />
             <CounterButton testButtonId="button-2" />
           </GlobalStateProvider>
         ) : (
-          <GlobalStateProvider initialState={undefined}>
+          <GlobalStateProvider<StateT>
+            initialState={{ counter: 0 }}
+          >
             <CounterView />
             <CounterButton testButtonId="button-2" />
           </GlobalStateProvider>

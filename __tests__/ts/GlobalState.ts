@@ -27,13 +27,22 @@ beforeEach(() => {
   unMockConsoleLog();
 });
 
+type StateT1 = string | {
+  ''?: string;
+  key: string;
+};
+
+type StateT2 = {
+  [key: string]: string;
+};
+
 describe('State set & get', () => {
   it('passes basic test', () => {
     mockConsoleLog();
     process.env.REACT_GLOBAL_STATE_DEBUG = '1';
-    const state = new GlobalState({ key: 'value' });
+    const state = new GlobalState<StateT1>({ key: 'value' });
     expect(state.get()).toMatchSnapshot();
-    state.set('', 'value2');
+    state.set<1, string>('', 'value2');
     expect(state.get()).toMatchSnapshot();
     jest.runAllTimers();
     expect(state.get()).toMatchSnapshot();
@@ -43,14 +52,14 @@ describe('State set & get', () => {
     state.set(null, 'value4');
     jest.runAllTimers();
     expect(state.get()).toMatchSnapshot();
-    state.set('', 'value5');
+    state.set<1, string>('', 'value5');
     jest.runAllTimers();
     expect(state.get()).toMatchSnapshot();
     expect(consoleLogs).toMatchSnapshot();
   });
 
   it('.get() respects "initialState" and "initialValue" options', () => {
-    const state = new GlobalState({ iKey: 'iValue' });
+    const state = new GlobalState<StateT2>({ iKey: 'iValue' });
     state.set('iKey', 'newValue');
     expect(state.get('iKey')).toBe('newValue');
     expect(state.get('iKey', { initialState: true })).toBe('iValue');

@@ -13,14 +13,18 @@ import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 jest.useFakeTimers();
 
+type StateT = string;
+
 function ComponentA() {
-  const [value, setValue] = useGlobalState<string>(null, '');
+  const P = null;
+  const [value, setValue] = useGlobalState<StateT, typeof P>(P, '');
   if (value === 'B') setTimeout(() => setValue('A'));
   return <div>{value}</div>;
 }
 
 function ComponentB() {
-  const [value, setValue] = useGlobalState<string>(null, '');
+  const P = null;
+  const [value, setValue] = useGlobalState<StateT, typeof P>(P, '');
   if (value !== 'C') {
     setTimeout(() => {
       setValue('B');

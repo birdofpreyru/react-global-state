@@ -1,4 +1,5 @@
 import {
+  type GetFieldType,
   cloneDeep,
   get,
   isFunction,
@@ -14,22 +15,59 @@ import { isDebugMode } from './utils';
 
 const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
 
-type Callback = () => void;
+export type CallbackT = () => void;
 
-export default class GlobalState<StateType> {
-  readonly ssrContext?: SsrContext<StateType>;
+export type ValueOrInitializerT<T> = T | (() => T);
 
-  #initialState: StateType;
+type GetOptsT<T> = {
+  initialState?: boolean;
+  initialValue?: ValueOrInitializerT<T>;
+};
+
+/**
+ * Given the type of state, `StateT`, and the type of state path, `PathT`,
+ * it evaluates the type of value at that path of the state, if it can be
+ * evaluated from the path type (it is possible when `PathT` is a string
+ * literal type, and `StateT` elements along this path have appropriate
+ * types); otherwise it falls back to the specified `UnknownT` type,
+ * which should be set either `never` (for input arguments), or `void`
+ * (for return types) - `never` and `void` in those places forbid assignments,
+ * and are not auto-inferred to more permissible types.
+ */
+export type ValueAtPathT<
+  StateT,
+  PathT extends null | string | undefined,
+  UnknownT extends never | void,
+> = PathT extends string
+  ? (
+    // Note: Don't try to move GetFieldType<StateT, PathT>
+    // to generic parameters as a variable definition - in certain cases
+    // it will allow TypeScript to extend it in a way we don't want to.
+    GetFieldType<StateT, PathT> extends undefined
+      ? UnknownT : GetFieldType<StateT, PathT>
+  )
+  : (PathT extends null | undefined ? StateT : UnknownT);
+
+export type TypeLock<
+  Unlocked extends 0 | 1,
+  LockedT extends never | void,
+  UnlockedT,
+> = Unlocked extends 0 ? LockedT : UnlockedT;
+
+export default class GlobalState<StateT> {
+  readonly ssrContext?: SsrContext<StateT>;
+
+  #initialState: StateT;
 
   // TODO: It is tempting to replace watchers here by
   // Emitter from @dr.pogodin/js-utils, but we need to clone
   // current watchers for emitting later, and this is not something
   // Emitter supports right now.
-  #watchers: Callback[] = [];
+  #watchers: CallbackT[] = [];
 
   #nextNotifierId?: NodeJS.Timeout;
 
-  #currentState: StateType;
+  #currentState: StateT;
 
   /**
    * Creates a new global state object.
@@ -37,8 +75,8 @@ export default class GlobalState<StateType> {
    * @param ssrContext Server-side rendering context.
    */
   constructor(
-    initialState: StateType,
-    ssrContext?: SsrContext<StateType>,
+    initialState: StateT,
+    ssrContext?: SsrContext<StateT>,
   ) {
     this.#currentState = initialState;
     this.#initialState = initialState;
@@ -50,7 +88,7 @@ export default class GlobalState<StateType> {
       ssrContext.state = this.#currentState;
       /* eslint-enable no-param-reassign */
 
-      this.ssrContext = ssrContext as SsrContext<StateType>;
+      this.ssrContext = ssrContext;
     }
 
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
@@ -65,11 +103,64 @@ export default class GlobalState<StateType> {
   }
 
   /**
+   * Gets entire state, the same way as .get(null, opts) would do.
+   * @param opts.initialState
+   * @param opts.initialValue
+   */
+  getEntireState(opts?: GetOptsT<StateT>): StateT {
+    let state = opts?.initialState ? this.#initialState : this.#currentState;
+    if (state !== undefined || opts?.initialValue === undefined) return state;
+
+    const iv = opts.initialValue;
+    state = isFunction(iv) ? iv() : iv;
+    if (this.#currentState === undefined) this.setEntireState(state);
+    return state;
+  }
+
+  /**
+   * Notifies all connected state watchers that a state update has happened.
+   */
+  private notifyStateUpdate(path: null | string | undefined, value: unknown) {
+    if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+      /* eslint-disable no-console */
+      const p = typeof path === 'string'
+        ? `"${path}"` : 'none (entire state update)';
+      console.groupCollapsed(`ReactGlobalState update. Path: ${p}`);
+      console.log('New value:', cloneDeep(value));
+      console.log('New state:', cloneDeep(this.#currentState));
+      console.groupEnd();
+      /* eslint-enable no-console */
+    }
+
+    if (this.ssrContext) {
+      this.ssrContext.dirty = true;
+      this.ssrContext.state = this.#currentState;
+    } else if (!this.#nextNotifierId) {
+      this.#nextNotifierId = setTimeout(() => {
+        this.#nextNotifierId = undefined;
+        const watchers = [...this.#watchers];
+        for (let i = 0; i < watchers.length; ++i) {
+          watchers[i]();
+        }
+      });
+    }
+  }
+
+  /**
+   * Sets entire state, the same way as .set(null, value) would do.
+   * @param value
+   */
+  setEntireState(value: StateT): StateT {
+    if (this.#currentState !== value) {
+      this.#currentState = value;
+      this.notifyStateUpdate(null, value);
+    }
+    return value;
+  }
+
+  /**
    * Gets current or initial value at the specified "path" of the global state.
-   * Allows to get the entire global state, and automatically set default value
-   * at the "path".
-   * @param path Dot-delimitered state path. Pass it "null",
-   *  or "undefined" to refer the entire global state.
+   * @param path Dot-delimitered state path.
    * @param options Additional options.
    * @param options.initialState If "true" the value will be read
    *  from the initial state instead of the current one.
@@ -79,23 +170,44 @@ export default class GlobalState<StateType> {
    *  state (no matter "initialState" flag), if "undefined" is stored there.
    * @return Retrieved value.
    */
-  get<ResT>(
+
+  // .get() without arguments just falls back to .getEntireState().
+  get(): StateT;
+
+  // This variant attempts to automatically resolve and check the type of value
+  // at the given path, as precise as the actual state and path types permit.
+  // If the automatic path resolution is not possible, the ValueT fallsback
+  // to `never` (or to `undefined` in some cases), effectively forbidding
+  // to use this .get() variant.
+  get<
+    PathT extends null | string | undefined,
+    ValueArgT extends ValueAtPathT<StateT, PathT, never>,
+    ValueResT extends ValueAtPathT<StateT, PathT, void>,
+  >(path: PathT, opts?: GetOptsT<ValueArgT>): ValueResT;
+
+  // This variant is not callable by default (without generic arguments),
+  // otherwise it allows to set the correct ValueT directly.
+  get<Unlocked extends 0 | 1 = 0, ValueT = void>(
     path?: null | string,
-    {
-      initialState,
-      initialValue,
-    }: {
-      initialState?: boolean;
-      initialValue?: ResT | (() => ResT),
-    } = {},
-  ): ResT {
-    const state: StateType = initialState ? this.#initialState : this.#currentState;
-    let value: ResT = isNil(path) ? state : get(state, path);
-    if (value === undefined && initialValue !== undefined) {
-      value = isFunction(initialValue) ? initialValue() : initialValue;
-      if (!initialState || this.get(path) === undefined) this.set(path, value);
+    opts?: GetOptsT<TypeLock<Unlocked, never, ValueT>>,
+  ): TypeLock<Unlocked, void, ValueT>;
+
+  get(path?: null | string, opts?: GetOptsT<unknown>): unknown {
+    if (isNil(path)) return this.getEntireState(opts as GetOptsT<StateT>);
+
+    const state = opts?.initialState ? this.#initialState : this.#currentState;
+
+    let res = get(state, path);
+    if (res !== undefined || opts?.initialValue === undefined) return res;
+
+    const iv = opts.initialValue;
+    res = isFunction(iv) ? iv() : iv;
+
+    if (!opts?.initialState || this.get(path) === undefined) {
+      this.set<1, unknown>(path, res);
     }
-    return value;
+
+    return res;
   }
 
   /**
@@ -105,60 +217,51 @@ export default class GlobalState<StateType> {
    * @param value The value.
    * @return Given `value` itself.
    */
-  set<V>(path: null | string | undefined, value: V): V {
+
+  // This variant attempts automatic value type resolution & checking.
+  set<
+    PathT extends null | string | undefined,
+    ValueArgT extends ValueAtPathT<StateT, PathT, never>,
+    ValueResT extends ValueAtPathT<StateT, PathT, void>,
+  >(path: PathT, value: ValueArgT): ValueResT;
+
+  // This variant is disabled by default, otherwise allows to give
+  // expected value type explicitly.
+  set<Unlocked extends 0 | 1 = 0, ValueT = never>(
+    path: null | string | undefined,
+    value: TypeLock<Unlocked, never, ValueT>,
+  ): TypeLock<Unlocked, void, ValueT>;
+
+  set(path: null | string | undefined, value: unknown): unknown {
+    if (isNil(path)) return this.setEntireState(value as StateT);
+
     if (value !== this.get(path)) {
-      if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-        /* eslint-disable no-console */
-        console.groupCollapsed(
-          `ReactGlobalState update. Path: "${path || ''}"`,
-        );
-        console.log('New value:', cloneDeep(value));
-        /* eslint-enable no-console */
-      }
-
-      if (isNil(path)) this.#currentState = (value as unknown) as StateType;
-      else {
-        const root = { state: this.#currentState };
-        let segIdx = 0;
-        let pos: any = root;
-        const pathSegments = toPath(`state.${path}`);
-        for (; segIdx < pathSegments.length - 1; segIdx += 1) {
-          const seg = pathSegments[segIdx];
-          const next = pos[seg];
-          if (Array.isArray(next)) pos[seg] = [...next];
-          else if (isObject(next)) pos[seg] = { ...next };
-          else {
-            // We arrived to a state sub-segment, where the remaining part of
-            // the update path does not exist yet. We rely on lodash's set()
-            // function to create the remaining path, and set the value.
-            set(pos, pathSegments.slice(segIdx), value);
-            break;
-          }
-          pos = pos[seg];
+      const root = { state: this.#currentState };
+      let segIdx = 0;
+      let pos: any = root;
+      const pathSegments = toPath(`state.${path}`);
+      for (; segIdx < pathSegments.length - 1; segIdx += 1) {
+        const seg = pathSegments[segIdx];
+        const next = pos[seg];
+        if (Array.isArray(next)) pos[seg] = [...next];
+        else if (isObject(next)) pos[seg] = { ...next };
+        else {
+          // We arrived to a state sub-segment, where the remaining part of
+          // the update path does not exist yet. We rely on lodash's set()
+          // function to create the remaining path, and set the value.
+          set(pos, pathSegments.slice(segIdx), value);
+          break;
         }
-
-        if (segIdx === pathSegments.length - 1) {
-          pos[pathSegments[segIdx]] = value;
-        }
-
-        this.#currentState = root.state;
+        pos = pos[seg];
       }
 
-      if (this.ssrContext) {
-        this.ssrContext.dirty = true;
-        this.ssrContext.state = this.#currentState;
-      } else if (!this.#nextNotifierId) {
-        this.#nextNotifierId = setTimeout(() => {
-          this.#nextNotifierId = undefined;
-          [...this.#watchers].forEach((w) => w());
-        });
+      if (segIdx === pathSegments.length - 1) {
+        pos[pathSegments[segIdx]] = value;
       }
-      if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-        /* eslint-disable no-console */
-        console.log('New state:', cloneDeep(this.#currentState));
-        console.groupEnd();
-        /* eslint-enable no-console */
-      }
+
+      this.#currentState = root.state;
+
+      this.notifyStateUpdate(path, value);
     }
     return value;
   }
@@ -170,7 +273,7 @@ export default class GlobalState<StateType> {
    * @throws if {@link SsrContext} is attached to the state instance: the state
    * watching functionality is intended for client-side (non-SSR) only.
    */
-  unWatch(callback: Callback) {
+  unWatch(callback: CallbackT) {
     if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
 
     const watchers = this.#watchers;
@@ -191,7 +294,7 @@ export default class GlobalState<StateType> {
    * @throws if {@link SsrContext} is attached to the state instance: the state
    * watching functionality is intended for client-side (non-SSR) only.
    */
-  watch(callback: Callback) {
+  watch(callback: CallbackT) {
     if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
 
     const watchers = this.#watchers;
