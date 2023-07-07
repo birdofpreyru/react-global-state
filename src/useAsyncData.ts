@@ -8,7 +8,6 @@ import { v4 as uuid } from 'uuid';
 
 import { MIN_MS } from '@dr.pogodin/js-utils';
 
-import AsyncDataEnvelope from './AsyncDataEnvelope';
 import { getGlobalState } from './GlobalStateProvider';
 import useGlobalState from './useGlobalState';
 import { isDebugMode } from './utils';
@@ -18,6 +17,24 @@ import GlobalState from './GlobalState';
 const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
 export type AsyncDataLoaderT<DataT> = (oldData: null | DataT) => Promise<DataT>;
+
+export type AsyncDataEnvelopeT<DataT> = {
+  data: null | DataT;
+  numRefs: number;
+  operationId: string;
+  timestamp: number;
+};
+
+function newAsyncDataEnvelope<DataT>(
+  initialData: DataT | null = null,
+): AsyncDataEnvelopeT<DataT> {
+  return {
+    data: initialData,
+    numRefs: 0,
+    operationId: '',
+    timestamp: 0,
+  };
+}
 
 export type UseAsyncDataOptionsT = {
   deps?: unknown[];
@@ -59,9 +76,9 @@ async function load<DataT>(
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
   globalState.set<1, string>(operationIdPath, operationId);
   const data = await loader(
-    oldData || (globalState.get(path) as AsyncDataEnvelope<DataT>).data,
+    oldData || (globalState.get(path) as AsyncDataEnvelopeT<DataT>).data,
   );
-  const state: AsyncDataEnvelope<DataT> = globalState.get(path);
+  const state: AsyncDataEnvelopeT<DataT> = globalState.get(path);
   if (operationId === state.operationId) {
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
       /* eslint-disable no-console */
@@ -152,13 +169,8 @@ export default function useAsyncData<DataT>(
   // Note: here we can't depend on useGlobalState() to init the initial value,
   // because that way we'll have issues with SSR (see details below).
   const globalState = getGlobalState();
-  const state = globalState.get<1, AsyncDataEnvelope<DataT>>(path, {
-    initialValue: {
-      data: null,
-      numRefs: 0,
-      operationId: '',
-      timestamp: 0,
-    },
+  const state = globalState.get<1, AsyncDataEnvelopeT<DataT>>(path, {
+    initialValue: newAsyncDataEnvelope<DataT>(),
   });
 
   if (globalState.ssrContext && !options.noSSR) {
@@ -182,7 +194,7 @@ export default function useAsyncData<DataT>(
       const numRefs = globalState.get<1, number>(numRefsPath);
       globalState.set<1, number>(numRefsPath, numRefs + 1);
       return () => {
-        const state2: AsyncDataEnvelope<DataT> = globalState.get(path);
+        const state2: AsyncDataEnvelopeT<DataT> = globalState.get(path);
         if (
           state2.numRefs === 1
           && garbageCollectAge < Date.now() - state2.timestamp
@@ -212,7 +224,7 @@ export default function useAsyncData<DataT>(
     // Data loading and refreshing.
     let loadTriggered = false;
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      const state2: AsyncDataEnvelope<DataT> = globalState.get(path);
+      const state2: AsyncDataEnvelopeT<DataT> = globalState.get(path);
       if (refreshAge < Date.now() - state2.timestamp
       && (!state2.operationId || state2.operationId.charAt(0) === 'S')) {
         load(path, loader, globalState, state2.data);
@@ -226,12 +238,10 @@ export default function useAsyncData<DataT>(
     }, deps); // eslint-disable-line react-hooks/exhaustive-deps
   }
 
-  const [localState] = useGlobalState<1, AsyncDataEnvelope<DataT>>(path, {
-    data: null,
-    numRefs: 0,
-    operationId: '',
-    timestamp: 0,
-  });
+  const [localState] = useGlobalState<1, AsyncDataEnvelopeT<DataT>>(
+    path,
+    newAsyncDataEnvelope<DataT>(),
+  );
 
   return {
     data: maxage < Date.now() - localState.timestamp ? null : localState.data,

@@ -13,7 +13,7 @@ import { act, mount } from 'jest/utils';
 import GlobalState from 'src/GlobalState';
 
 import {
-  type AsyncDataEnvelope,
+  type AsyncDataEnvelopeT,
   GlobalStateProvider,
   useAsyncCollection,
 } from 'src/index';
@@ -22,7 +22,7 @@ mockdate.set('2021-05-08Z');
 
 type DataT = {
   test: {
-    path: AsyncDataEnvelope<string>[];
+    path: AsyncDataEnvelopeT<string>[];
   };
 };
 

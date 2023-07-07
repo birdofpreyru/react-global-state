@@ -84,12 +84,16 @@ function useGlobalState<StateT>(): UseGlobalStateResT<StateT>;
 function useGlobalState<
   StateT,
   PathT extends null | string | undefined,
-  ValueT extends ValueAtPathT<StateT, PathT, void>
-  = ValueAtPathT<StateT, PathT, void>,
 >(
   path: PathT,
-  initialValue?: ValueOrInitializerT<ValueT>
-): UseGlobalStateResT<ValueT>;
+
+  // Note: Don't try to turn the value type (ValueAtPathT<StateT, PathT, void>)
+  // into a constrained default generic argument - there are situations when it
+  // will be auto-inferred, alongside with other generic arguments, in undesired
+  // ways (auto-allowing assignments which should be forbidden based on
+  // the knowledge about the state).
+  initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>
+): UseGlobalStateResT<ValueAtPathT<StateT, PathT, void>>;
 
 function useGlobalState<
   Unlocked extends 0 | 1 = 0,

@@ -24,10 +24,11 @@ function ComponentA1() {
 }
 
 function ComponentB1() {
-  const [state, setState] = useGlobalState<StateT1, 'path.nested', number>(
+  const [state, setState] = useGlobalState<StateT1, 'path.nested'>(
     'path.nested',
     0,
   );
+  if (state === undefined) throw Error('Invariant violated');
   return (
     <div>
       <button
