@@ -6,8 +6,10 @@ exports[`Library exports match expectations 1`] = `
   "SsrContext": [Function],
   "getGlobalState": [Function],
   "getSsrContext": [Function],
+  "newAsyncDataEnvelope": [Function],
   "useAsyncCollection": [Function],
   "useAsyncData": [Function],
   "useGlobalState": [Function],
+  "withGlobalStateType": [Function],
 }
 `;

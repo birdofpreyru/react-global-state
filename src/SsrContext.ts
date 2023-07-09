@@ -1,11 +1,11 @@
-export default class SsrContext<StateType> {
+export default class SsrContext<StateT> {
   dirty: boolean = false;
 
   pending: Promise<void>[] = [];
 
-  state?: StateType;
+  state?: StateT;
 
-  constructor(state?: StateType) {
+  constructor(state?: StateT) {
     this.state = state;
   }
 }

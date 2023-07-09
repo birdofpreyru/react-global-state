@@ -5,6 +5,7 @@
   "rootDir": "..",
   "testPathIgnorePatterns": [
     "/__assets__/",
+    "/__tests__/ts-types/",
     "/node_modules/"
   ],
   "transform": {

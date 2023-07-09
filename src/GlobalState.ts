@@ -1,5 +1,4 @@
 import {
-  type GetFieldType,
   cloneDeep,
   get,
   isFunction,
@@ -11,48 +10,20 @@ import {
 
 import SsrContext from './SsrContext';
 
-import { isDebugMode } from './utils';
+import {
+  type CallbackT,
+  type TypeLock,
+  type ValueAtPathT,
+  type ValueOrInitializerT,
+  isDebugMode,
+} from './utils';
 
 const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
-
-export type CallbackT = () => void;
-
-export type ValueOrInitializerT<T> = T | (() => T);
 
 type GetOptsT<T> = {
   initialState?: boolean;
   initialValue?: ValueOrInitializerT<T>;
 };
-
-/**
- * Given the type of state, `StateT`, and the type of state path, `PathT`,
- * it evaluates the type of value at that path of the state, if it can be
- * evaluated from the path type (it is possible when `PathT` is a string
- * literal type, and `StateT` elements along this path have appropriate
- * types); otherwise it falls back to the specified `UnknownT` type,
- * which should be set either `never` (for input arguments), or `void`
- * (for return types) - `never` and `void` in those places forbid assignments,
- * and are not auto-inferred to more permissible types.
- */
-export type ValueAtPathT<
-  StateT,
-  PathT extends null | string | undefined,
-  UnknownT extends never | void,
-> = PathT extends string
-  ? (
-    // Note: Don't try to move GetFieldType<StateT, PathT>
-    // to generic parameters as a variable definition - in certain cases
-    // it will allow TypeScript to extend it in a way we don't want to.
-    GetFieldType<StateT, PathT> extends undefined
-      ? UnknownT : GetFieldType<StateT, PathT>
-  )
-  : (PathT extends null | undefined ? StateT : UnknownT);
-
-export type TypeLock<
-  Unlocked extends 0 | 1,
-  LockedT extends never | void,
-  UnlockedT,
-> = Unlocked extends 0 ? LockedT : UnlockedT;
 
 export default class GlobalState<StateT> {
   readonly ssrContext?: SsrContext<StateT>;

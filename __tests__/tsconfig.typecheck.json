@@ -1,5 +1,6 @@
 {
   "extends": "@tsconfig/recommended",
+  "exclude": ["ts-types/**/*"],
   "include": ["**/*"],
   "compilerOptions": {
     "jsx": "react-jsx",

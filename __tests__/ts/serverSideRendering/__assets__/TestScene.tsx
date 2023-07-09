@@ -16,12 +16,12 @@ export const loaderB = jest.fn(async () => {
 });
 
 function ComponentA() {
-  const envelop = useAsyncData('x', loaderA);
+  const envelop = useAsyncData<1, string>('x', loaderA);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 
 function ComponentB() {
-  const envelop = useAsyncData('x', loaderB);
+  const envelop = useAsyncData<1, string>('x', loaderB);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 

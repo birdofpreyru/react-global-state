@@ -8,7 +8,7 @@
 import { type ReactNode } from 'react';
 
 import { mount } from 'jest/utils';
-import { type Setter, GlobalStateProvider, useGlobalState } from 'src/index';
+import { type SetterT, GlobalStateProvider, useGlobalState } from 'src/index';
 
 const PATH = 'path';
 
@@ -137,7 +137,7 @@ test('Functional update to a function value', () => {
   expect(TestComponent06.func2).not.toHaveBeenCalled();
 });
 
-let t07Set: Setter<ValueT>;
+let t07Set: SetterT<ValueT>;
 
 function TestComponent07() {
   TestComponent07.pass += 1;

@@ -31,7 +31,7 @@ const loader = jest.fn(async () => {
 
 function Component() {
   const [epoch, setEpoch] = useState(0);
-  const envelop = useAsyncData('test-path', loader, {
+  const envelop = useAsyncData<1, number>('test-path', loader, {
     deps: [epoch],
   });
   return (

@@ -36,7 +36,7 @@ async function loader(id: string) {
 
 function Component() {
   const [id, setId] = useState(0);
-  const { data } = useAsyncCollection(id.toString(), 'test.path', loader);
+  const { data } = useAsyncCollection<1, string>(id.toString(), 'test.path', loader);
   return (
     <div>
       {data}

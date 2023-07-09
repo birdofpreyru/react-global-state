@@ -2,10 +2,16 @@
  * Loads and uses an item in an async collection.
  */
 
-import useAsyncData, { type UseAsyncDataOptionsT } from './useAsyncData';
+import useAsyncData, {
+  type DataInEnvelopeAtPathT,
+  type UseAsyncDataOptionsT,
+  type UseAsyncDataResT,
+} from './useAsyncData';
 
-export type AsyncCollectionLoader<T> =
-  (id: string, oldData: null | T) => Promise<T>;
+import { TypeLock } from './utils';
+
+export type AsyncCollectionLoaderT<DataT> =
+  (id: string, oldData: null | DataT) => DataT | Promise<DataT>;
 
 /**
  * Resolves and stores at the given `path` of global state elements of
@@ -49,16 +55,42 @@ export type AsyncCollectionLoader<T> =
  * _e.g._ {@link useGlobalState}, but doing so you may interfere with related
  * `useAsyncData()` hooks logic.
  */
-export default function useAsyncCollection<DataT>(
+
+function useAsyncCollection<
+  StateT,
+  PathT extends null | string | undefined,
+  IdT extends string,
+>(
+  id: IdT,
+  path: PathT,
+  loader: AsyncCollectionLoaderT<
+  DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>
+  >,
+  options?: UseAsyncDataOptionsT,
+): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>;
+
+function useAsyncCollection<
+  Unlocked extends 0 | 1 = 0,
+  DataT = unknown,
+>(
   id: string,
-  path: string,
-  loader: AsyncCollectionLoader<DataT>,
+  path: null | string | undefined,
+  loader: AsyncCollectionLoaderT<TypeLock<Unlocked, void, DataT>>,
+  options?: UseAsyncDataOptionsT,
+): UseAsyncDataResT<TypeLock<Unlocked, void, DataT>>;
+
+function useAsyncCollection<DataT>(
+  id: string,
+  path: null | string | undefined,
+  loader: AsyncCollectionLoaderT<DataT>,
   options: UseAsyncDataOptionsT = {},
-) {
+): UseAsyncDataResT<DataT> {
   const itemPath = path ? `${path}.${id}` : id;
-  return useAsyncData(
+  return useAsyncData<1, DataT>(
     itemPath,
     (oldData: null | DataT) => loader(id, oldData),
     options,
   );
 }
+
+export default useAsyncCollection;

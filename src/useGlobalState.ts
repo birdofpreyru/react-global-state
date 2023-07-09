@@ -5,28 +5,29 @@ import { useEffect, useRef, useSyncExternalStore } from 'react';
 
 import { Emitter } from '@dr.pogodin/js-utils';
 
-import GlobalState, {
+import GlobalState from './GlobalState';
+import { getGlobalState } from './GlobalStateProvider';
+
+import {
   type CallbackT,
   type TypeLock,
   type ValueAtPathT,
   type ValueOrInitializerT,
-} from './GlobalState';
+  isDebugMode,
+} from './utils';
 
-import { getGlobalState } from './GlobalStateProvider';
-import { isDebugMode } from './utils';
-
-export type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
+export type SetterT<T> = React.Dispatch<React.SetStateAction<T>>;
 
 type GlobalStateRef = {
   emitter: Emitter<[]>;
   globalState: GlobalState<unknown>;
   path: null | string | undefined;
-  setter: Setter<unknown>;
+  setter: SetterT<unknown>;
   state: unknown;
   watcher: CallbackT;
 };
 
-type UseGlobalStateResT<StateT> = [StateT, Setter<StateT>];
+export type UseGlobalStateResT<T> = [T, SetterT<T>];
 
 /**
  * The primary hook for interacting with the global state, modeled after
@@ -86,12 +87,6 @@ function useGlobalState<
   PathT extends null | string | undefined,
 >(
   path: PathT,
-
-  // Note: Don't try to turn the value type (ValueAtPathT<StateT, PathT, void>)
-  // into a constrained default generic argument - there are situations when it
-  // will be auto-inferred, alongside with other generic arguments, in undesired
-  // ways (auto-allowing assignments which should be forbidden based on
-  // the knowledge about the state).
   initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>
 ): UseGlobalStateResT<ValueAtPathT<StateT, PathT, void>>;
 
@@ -106,7 +101,7 @@ function useGlobalState<
 function useGlobalState(
   path?: null | string,
   initialValue?: ValueOrInitializerT<unknown>,
-): UseGlobalStateResT<unknown> {
+): UseGlobalStateResT<any> {
   const globalState = getGlobalState();
 
   const ref = useRef<GlobalStateRef>();
@@ -127,7 +122,7 @@ function useGlobalState(
         console.groupEnd();
         /* eslint-enable no-console */
       }
-      rc.globalState.set(rc.path, newState);
+      rc.globalState.set<1, unknown>(rc.path, newState);
     },
     state: isFunction(initialValue) ? initialValue() : initialValue,
     watcher: () => {
@@ -142,8 +137,8 @@ function useGlobalState(
 
   rc.state = useSyncExternalStore(
     (cb) => rc.emitter.addListener(cb),
-    () => rc.globalState.get(rc.path, { initialValue }),
-    () => rc.globalState.get(rc.path, { initialValue, initialState: true }),
+    () => rc.globalState.get<1, unknown>(rc.path, { initialValue }),
+    () => rc.globalState.get<1, unknown>(rc.path, { initialValue, initialState: true }),
   );
 
   useEffect(() => {

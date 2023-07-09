@@ -9,8 +9,10 @@ import {
   useRef,
 } from 'react';
 
-import GlobalState, { type ValueOrInitializerT } from './GlobalState';
+import GlobalState from './GlobalState';
 import SsrContext from './SsrContext';
+
+import { type ValueOrInitializerT } from './utils';
 
 const context = createContext<GlobalState<unknown> | null>(null);
 
