@@ -68,12 +68,12 @@ afterEach(() => {
 
 test('Test with objects', async () => {
   currentScene = mount(<Scene1 />);
-  await act(() => timer(0));
+  await act(() => timer(1));
   expect(pretty(currentScene.innerHTML)).toMatchSnapshot();
   const button = getButton(currentScene);
   await act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    await timer(0);
+    await timer(1);
   });
   expect(pretty(currentScene.innerHTML)).toMatchSnapshot();
 });
