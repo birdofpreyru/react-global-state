@@ -1,5 +1,5 @@
 import List from './_content.md';
 
-# Objects
+# TypeScript Types
 
 <List />

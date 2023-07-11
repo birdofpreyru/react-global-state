@@ -1,3 +1,5 @@
+import TsNote from '../../docs/api/_ts-note.md';
+
 # React Global State
 
 [![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/react-global-state.svg)](https://www.npmjs.com/package/@dr.pogodin/react-global-state)
@@ -10,9 +12,13 @@ asynchronous data management in [React] applications, powered by [hooks] and
 [Context API]. It is simple, efficient, and features a full SSR (server-side
 rendering) support.
 
-[![Sponsor](../../static/img/sponsor.png)](https://github.com/sponsors/birdofpreyru)
+[![Sponsor](../../../.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
 
-## Motivation
+<TsNote />
+
+## Motivation (JavaScript)
+
+_**TypeScript**-specific nuances are explained in the next section._
 
 The motivation and vision behind this project is to bring to the table all
 useful features of [Redux], without related development overheads, like
@@ -64,9 +70,123 @@ Related closely to async data is the server-side rendering (SSR). This library
 takes it into account, and provides a flexible way to implement SSR with loading
 of some, or all async data at the server side.
 
+## Motivation (TypeScript)
+
+As many real-world projects nowadays are developed in TypeScript (justified so,
+or for all wrong reasons), a&nbsp;good JavaScript library has support TypeScript,
+and take a full advantage of its features, when available. It is worth reminding,
+TypeScript does _static, compile-time type-checks_, thus we cannot, and are not
+aiming to use its features for an exhaustive global state validation, casting,
+_etc._, which would require dedicated runtime features, and goes beyond
+the (current) scope of our library. We rather have the following aims with our
+TypeScript support:
+
+- In cases when static typing with TypeScript is able to evaluate the exact type
+  of value on a given global state path, we want to use it for type checks.
+
+- In cases when TypeScript is not able to evaluate, or is wrong about the exact
+  type of value on a given global state path, we want to be able to force it to
+  assume the type we need, whether it is correct or wrong.
+
+- We want to have it very clear from the code, whether TypeScript's type
+  resolution checked, and verified a value type, or wether we forced it under
+  our own responsibility.
+
+Regarding the evaluation of exact value type on a given global state path,
+TypeScript is able to do it when the path string type can be reduced to
+a _string literal type_, that describes a valid global state path,
+and the type of global state is well-defined along that path. For example:
+
+```ts
+import { withGlobalStateType } from '@dr.pogodin/react-global-state';
+
+type StateT = { some: { path: string }};
+
+// This call returns a set of React components and hooks "locked-in" into
+// the same specified state path.
+const { useGlobalState } = withGlobalStateType<StateT>();
+
+function SampleReactComponent() {
+  // Here TypeScript will automatically resolve "string" as the correct type of
+  // `dataA` value and `setDataA` argument (`setDataA` will also accept a correct
+  // state update function).
+  const [dataA, setDataA] = useGlobalState('some.path');
+
+  // This will report a TypeScript error: "unknown.path" is not a correct path
+  // inside our `StateT` type, and thus our library (in TS), by default, rejects
+  // to write/read it, although for its runtime implementation it is a legit
+  // operation: in the first call to an unknown path, the given initial value,
+  // `123`, will be written to that state path, then any hook related to that
+  // path will work as usual. This default TS behavior is on purpose, to make
+  // its clear that TS does not know given path (the type of value on that path),
+  // and thus the user must force it, if he is sure about it.
+  const dataB = useGlobalState('unknown.path', 123)[0];
+
+  // This variant forces "number" value type on that unknown path.
+  // NOTE: The "1" as the first generic parameter is just a "switch" value
+  // enabling this overload of the hook, it has nothing to do with the "number"
+  // type of value we are forcing here.
+  const dataC = useGlobalState<1, number>('unknown.path', 123)[0];
+
+  return /* Some JSX markup. */;
+}
+```
+
+Here is a brief exampe of async data loading with TS-flavour of this library:
+
+```ts
+import {
+  type AsyncDataEnvelopeT,
+  withGlobalStateType,
+} from '@dr.pogodin/react-global-state';
+
+// `AsyncDataEnvelopeT<DataT>` type describes a state segment with stores
+// data of given type `DataT`, managed by `useAsyncData()` hook(s).
+type StateT = { some: { path: AsyncDataEnvelopeT<string> }};
+
+// This call returns a set of React components and hooks "locked-in" into
+// the same specified state path.
+const { useAsyncData } = withGlobalStateType<StateT>();
+
+async function loader(): string {
+
+  /* Some async operation to get data, like a call to a 3-rd party API. */
+
+  return 'retrieved async data, a string in this example';
+}
+
+async function numberLoader(): number {
+
+  /* Some async operation to get data, like a call to a 3-rd party API. */
+
+  return 123;
+}
+
+
+function SampleReactComponent() {
+  // This works, and automatically deduces the correct `data` type as `string`.
+  const { data, loading, timestamp } = useAsyncData('some.path', loader);
+
+  // This gives TS error, as it able to evaluate the correct type of data
+  // in the envelope at "some.path" is "string", not a "number" returned by
+  // `numberLoader()`.
+  const { data, loading, timestamp } = useAsyncData('some.path', numberLoader);
+
+  // We can force a number, though, if we are sure about it.
+  // NOTE: The "1" as the first generic parameter is just a "switch" value
+  // enabling this overload of the hook, it has nothing to do with the "number"
+  // type of data we are forcing here.
+  const { data, loading, timer } = useAsyncData<1, number>('some.path', numberLoader);
+
+  return /* Some JSX markup. */
+}
+```
+
 ## Further Reading
 - [Getting Started](/docs/tutorials/getting-started)
-- [Blog Article](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
+- (**Outdated**) [Blog Article](https://dr.pogodin.studio/dev-blog/the-global-state-in-react-designed-right)
+  &zwnj; &mdash; _written in 2020 it covers the original motivation and features,
+  but not the&nbsp;TypeScript flavour of the library._
 
 ## Frequently Asked Questions {#faq}
 

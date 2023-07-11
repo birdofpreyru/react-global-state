@@ -35,7 +35,7 @@ export type ValueAtPathT<
       : GetFieldType<StateT, PathT> extends undefined
         ? UnknownT : GetFieldType<StateT, PathT>;
 
-export type ValueOrInitializerT<T> = T | (() => T);
+export type ValueOrInitializerT<ValueT> = ValueT | (() => ValueT);
 
 /**
  * Returns 'true' if debug logging should be performed; 'false' otherwise.

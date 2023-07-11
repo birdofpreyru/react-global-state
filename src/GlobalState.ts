@@ -163,8 +163,11 @@ export default class GlobalState<StateT> {
     opts?: GetOptsT<TypeLock<Unlocked, never, ValueT>>,
   ): TypeLock<Unlocked, void, ValueT>;
 
-  get(path?: null | string, opts?: GetOptsT<unknown>): unknown {
-    if (isNil(path)) return this.getEntireState(opts as GetOptsT<StateT>);
+  get<ValueT>(path?: null | string, opts?: GetOptsT<ValueT>): ValueT {
+    if (isNil(path)) {
+      const res = this.getEntireState((opts as unknown) as GetOptsT<StateT>);
+      return (res as unknown) as ValueT;
+    }
 
     const state = opts?.initialState ? this.#initialState : this.#currentState;
 

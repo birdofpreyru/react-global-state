@@ -1,28 +1,51 @@
 # getSsrContext()
 ```jsx
 import { getSsrContext } from '@dr.pogodin/react-global-state';
-
-getSsrContext(throwWithoutSsrContext = true): SsrContext;
 ```
 Gets [SsrContext] object (the server-side rendering context, which is used to
 pass global-state-related data between rendering iterations).
 
+The TypeScript signature of this hook is:
+```ts
+function getSsrContext<StateT>(
+  throwWithoutSsrContext = true,
+): SsrContext<StateT> | undefined;
+```
+
+:::tip
+Alternatively you may use [withGlobalStateType()] function to get
+[getSsrContext()] variant with a "locked-in" [StateT]:
+
+```ts
+import { withGlobalStateType } from '@dr.pogodin/react-global-state';
+
+const { getSsrContext } = withGlobalStateType<StateT>();
+```
+:::
+
+## Generic Parameters
+[StateT]: #state-type
+- `StateT` <a href="state-type" /> &mdash; The type of global state content.
+
 ## Arguments
-- `throwWithoutSsrContext` - **boolean** - If **true** (default) this hook
-  will throw if no SSR context is attached to the global state. Pass in **false**
-  to not throw in such case. In either case the hook will throw if no parent
-  [GlobalStateProvider] (hence no global state) is found.
+- `throwWithoutSsrContext` &mdash; **boolean** &mdash; If _true_ (default) this
+  hook will throw if no SSR context is attached to the global state. Pass in
+  _false_ to not throw in such case. In either case the hook will throw if
+  no parent [GlobalStateProvider] (hence no global state) is found.
 
 ## Result
-Returns [SsrContext] object.
+Returns [SsrContext]&lt;[StateT]&gt object, or _undefined_
+(if `throwWithoutSsrContext` set _false_, and there is no [SsrContext]).
 
 :::caution
 This hook throws in these cases:
 - If current component has no parent [GlobalStateProvider] in the rendered
   React tree.
-- If `throwWithoutSsrContext` is **true**, and there is no SSR context attached
+- If `throwWithoutSsrContext` is _true_, and there is no SSR context attached
   to the global state provided by [GlobalStateProvider].
 :::
 
+[getSsrContext()]: #
 [GlobalStateProvider]: /docs/api/components/globalstateprovider
 [SsrContext]: /docs/api/objects/ssrcontext
+[withGlobalStateType()]: /docs/api/functions/with-global-state-type
