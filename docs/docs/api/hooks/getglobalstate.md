@@ -33,6 +33,6 @@ const { getGlobalState } = withGlobalStateType<StateT>();
 Returns [GlobalState]&lt;[StateT]&gt; instance.
 
 [getGlobalState()]: #
-[GlobalState]: /docs/api/objects/globalstate
+[GlobalState]: /docs/api/classes/globalstate
 [useGlobalState()]: /docs/api/hooks/useglobalstate
 [withGlobalStateType()]: /docs/api/functions/with-global-state-type

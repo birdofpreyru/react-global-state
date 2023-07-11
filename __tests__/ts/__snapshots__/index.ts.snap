@@ -2,6 +2,7 @@
 
 exports[`Library exports match expectations 1`] = `
 {
+  "GlobalState": [Function],
   "GlobalStateProvider": [Function],
   "SsrContext": [Function],
   "getGlobalState": [Function],

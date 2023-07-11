@@ -93,7 +93,7 @@ activates the "proxy mode", no matter other props values.
   - Otherwise it will act as normal: create a new [GlobalState] instance and
     provide it to its children.
 
-[GlobalState]: /docs/api/objects/globalstate
+[GlobalState]: /docs/api/classes/globalstate
 [GlobalStateProvider]: #
 [initialState]: #initial-state-prop
 [SsrContext]: /docs/api/classes/ssrcontext

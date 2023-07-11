@@ -25,7 +25,7 @@ const { getSsrContext } = withGlobalStateType<StateT>();
 
 ## Generic Parameters
 [StateT]: #state-type
-- `StateT` <a href="state-type" /> &mdash; The type of global state content.
+- `StateT` <a id="state-type" /> &mdash; The type of global state content.
 
 ## Arguments
 - `throwWithoutSsrContext` &mdash; **boolean** &mdash; If _true_ (default) this
@@ -47,5 +47,5 @@ This hook throws in these cases:
 
 [getSsrContext()]: #
 [GlobalStateProvider]: /docs/api/components/globalstateprovider
-[SsrContext]: /docs/api/objects/ssrcontext
+[SsrContext]: /docs/api/classes/ssrcontext
 [withGlobalStateType()]: /docs/api/functions/with-global-state-type

@@ -30,6 +30,6 @@ All fields are optional.
   [useAsyncCollection()] or [useAsyncData()] hook is (re-)rendered.
   Defaults to the value of `maxage` option.
 
-[useAsyncCollection()]: /docs/api/hooks/uaseasynccollection
+[useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [UseAsyncDataOptionsT]: #
 [useAsyncData()]: /docs/api/hooks/useasyncdata

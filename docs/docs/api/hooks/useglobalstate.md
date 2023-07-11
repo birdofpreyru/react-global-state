@@ -144,7 +144,7 @@ It returns an array with two elements `[value, setValue]` (see the type
   Also, similar to the standard React's state setters, `setValue()` is
   a stable function: it does not change between component re-renders.
 
-[GlobalState]: /docs/api/classes/global-state
+[GlobalState]: /docs/api/classes/globalstate
 [SetterT]: /docs/api/types/setter
 [useGlobalState()]: #
 [UseGlobalStateResT]: /docs/api/types/use-global-state-res
