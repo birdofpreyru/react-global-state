@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`State set & get passes basic test 1`] = `
+{
+  "key": "value",
+}
+`;
+
+exports[`State set & get passes basic test 2`] = `
+{
+  "": "value2",
+  "key": "value",
+}
+`;
+
+exports[`State set & get passes basic test 3`] = `
+{
+  "": "value2",
+  "key": "value",
+}
+`;
+
+exports[`State set & get passes basic test 4`] = `"value3"`;
+
+exports[`State set & get passes basic test 5`] = `"value4"`;
+
+exports[`State set & get passes basic test 6`] = `
+{
+  "": "value5",
+}
+`;
+
+exports[`State set & get passes basic test 7`] = `
+[
+  [
+    "New ReactGlobalState created",
+  ],
+  [
+    "Initial state:",
+    {
+      "key": "value",
+    },
+  ],
+  [
+    "ReactGlobalState update. Path: """,
+  ],
+  [
+    "New value:",
+    "value2",
+  ],
+  [
+    "New state:",
+    {
+      "": "value2",
+      "key": "value",
+    },
+  ],
+  [
+    "ReactGlobalState update. Path: none (entire state update)",
+  ],
+  [
+    "New value:",
+    "value3",
+  ],
+  [
+    "New state:",
+    "value3",
+  ],
+  [
+    "ReactGlobalState update. Path: none (entire state update)",
+  ],
+  [
+    "New value:",
+    "value4",
+  ],
+  [
+    "New state:",
+    "value4",
+  ],
+  [
+    "ReactGlobalState update. Path: """,
+  ],
+  [
+    "New value:",
+    "value5",
+  ],
+  [
+    "New state:",
+    {
+      "": "value5",
+    },
+  ],
+]
+`;
+
+exports[`ssrContext forbids to .watch() and .unWatch() the state 1`] = `"GlobalState must not be watched at server side"`;
+
+exports[`ssrContext forbids to .watch() and .unWatch() the state 2`] = `"GlobalState must not be watched at server side"`;

@@ -1,5 +1,6 @@
-- [GlobalStateProvider](/docs/api/components/globalstateprovider) - Provides
+- [GlobalStateProvider] &mdash; Provides
   [GlobalState] to its children tree.
 
 <!-- Link -->
-[GlobalState]: ../objects/globalstate.md
+[GlobalState]: /docs/api/classes/globalstate
+[GlobalStateProvider]: /docs/api/components/globalstateprovider

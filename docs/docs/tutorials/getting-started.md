@@ -1,4 +1,11 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+import TsNote from '../api/_ts-note.md';
+
 # Getting Started
+
+<TsNote />
 
 ## Base Setup
 
@@ -6,10 +13,14 @@ The base setup is simple: just wrap your app into
 the [GlobalStateProvider] component, provided by this library, and you'll
 be able to use any library hooks within its child hierarchy.
 
+<Tabs groupId="language">
+<TabItem value="js" label="JavaScript">
+
 ```jsx
 /* The minimal example of the library setup and usage. */
 
 import React from 'react';
+
 import {
   GlobalStateProvider,
   useAsyncData,
@@ -51,6 +62,79 @@ export default function SampleApp() {
   );
 }
 ```
+</TabItem>
+<TabItem value="ts" label="TypeScript">
+
+```tsx
+/* The minimal example of the library setup and usage. */
+
+import React from 'react';
+
+import {
+  type AsyncDataEnvelopeT,
+  newAsyncDataEnvelope,
+  withGlobalStateType,
+} from '@dr.pogodin/react-global-state';
+
+type StateT = {
+  sample: {
+    'async-component': AsyncDataEnvelopeT<string>;
+    component: number;
+  };
+};
+
+const initialState = {
+  sample: {
+    'async-component': newAsyncDataEnvelope(),
+    component: 0,
+  };
+};
+
+const {
+  GlobalStateProvider,
+  useAsyncData,
+  useGlobalState,
+} = withGlobalStateType<StateT>();
+
+/* Example of component relying on the global state. */
+
+function SampleComponent() {
+  // `value` is auto-resolved as "number".
+  const [value, setValue] = useGlobalState('sample.component');
+  return (
+    <button onClick={() => setValue(1 + value)}>
+      {value}
+    </button>
+  );
+}
+
+/* Example of component relying on async data in the global state. */
+
+async function sampleDataLoader(): string {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve('Sample Data'), 500);
+  });
+}
+
+function SampleAsyncComponent() {
+  // `data` is auto-resolved as "string" or "null".
+  const { data, loading } = useAsyncData('sample.async-component', sampleDataLoader);
+  return data;
+}
+
+/* Example of the root app component, providing the state.  */
+
+export default function SampleApp() {
+  return (
+    <GlobalStateProvider>
+      <SampleComponent />
+      <SampleAsyncComponent />
+    </GlobalStateProvider>
+  );
+}
+```
+</TabItem>
+</Tabs>
 
 Multiple, or nested [GlobalStateProvider] instances are allowed, and they
 will provide independent global states to its children (shadowing parent ones,
@@ -68,6 +152,11 @@ To handle SSR better, and to have `<SampleAsyncComponent>` rendered as
 complex, setup.
 
 ## Advanced SSR Setup
+:::caution
+This section still contains only the original description of SSR setup
+with JavaScript flavour of the library. The TypeScript flavour of SSR setup
+is to be documented...
+:::
 
 Advanced setup with the server-side rendering (SSR) support is demonstrated
 below. It requires slightly different code depending on whether you use
@@ -102,9 +191,6 @@ export default function SampleApp() {
 ```
 
 The server-side rendering code becomes:
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 <Tabs groupId="SSR-API">
 <TabItem value="renderToPipeableStream" label="renderToPipeableStream()" default>

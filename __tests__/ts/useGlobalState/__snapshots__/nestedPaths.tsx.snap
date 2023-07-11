@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test with arrays 1`] = `
+"<div>[{"key0":"value0"},{"key1":"value1"},{"key2":"value2"}]</div>
+<div><button id="button" type="button">value1</button></div>"
+`;
+
+exports[`Test with arrays 2`] = `
+"<div>[{"key0":"value0"},{"key1":"value1-new"},{"key2":"value2"}]</div>
+<div><button id="button" type="button">value1-new</button></div>"
+`;
+
+exports[`Test with objects 1`] = `
+"<div>{"nested":0}</div>
+<div><button id="button" type="button">0</button></div>"
+`;
+
+exports[`Test with objects 2`] = `
+"<div>{"nested":1}</div>
+<div><button id="button" type="button">1</button></div>"
+`;
+
+exports[`Test with strings 1`] = `
+"<div>"value"</div>
+<div><button id="button" type="button">a</button></div>"
+`;
+
+exports[`Test with strings 2`] = `
+"<div>[null,"test"]</div>
+<div><button id="button" type="button">test</button></div>"
+`;

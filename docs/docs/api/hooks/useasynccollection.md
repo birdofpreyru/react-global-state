@@ -1,8 +1,6 @@
 # useAsyncCollection()
 ```jsx
 import { useAsyncCollection } from '@dr.pogodin/react-global-state';
-
-useAsyncCollection(id, path, loader, options = {}): object;
 ```
 Resolves and stores at the given `path` of global state elements of
 an asynchronous data collection. In other words, it is an auxiliar wrapper
@@ -12,72 +10,131 @@ IDs in the state.
 
 :::info
 For a given pair of `id` and `path` arguments this hook will store at
-the `` `${path}.${id}` `` path of the global state an [AsyncDataEnvelope] object
+the `` `${path}.${id}` `` path of the global state an [AsyncDataEnvelopeT] object
 holding the loaded data alongside some related meta-information. That global
 state segment can be accessed, and even modified using other hooks,
 _e.g_ [useGlobalState()], but doing so you should be careful to not interfere
 with the related [useAsyncCollection()] hook logic in an undesireable way.
 :::
 
-### Arguments
-- `id` - **string** - ID of the collection item to load & use.
-- `path` - **string** - The global state path where entire collection should be
-  stored.
-- `loader` - [AsyncCollectionLoader] - A loader function, which takes an
-  ID of data to load, and resolves to the corresponding data.
-- `options` - **object** - Optional object with additional settings. The valid
-  fields are:
-  - `deps` - **any[]** - An array of dependencies to watch. If provided,
-    the hook will reload async data when any of these dependencies changes.
-    Given dependencies are watched shallowly.
-  - `noSSR` - **boolean** - Set **true** to opt-out of loading async data
-    during the server-side rendering.
-  - `garbageCollectAge` - **number** - The maximum age of data (in milliseconds)
-    after which they are dropped from the global state when the last component
-    referencing them via [useAsyncCollection()] or [useAsyncData()] hook
-    unmounts. Defaults to the value of `maxage` option.
-  - `maxage` - **number** - The maximum age of data (in milliseconds) acceptable
-    to the hook's caller. If loaded data stored in the global state are older
-    than this value **null** is returned instread of the loaded data.
-    Defaults to 5 minutes.
-  - `refreshAge` - **number** - The maximum age of data (in milliseconds) after
-    which their refresh is triggered when any component referencing them via
-    [useAsyncCollection()] or [useAsyncData()] hook is (re-)rendered.
-    Defaults to the value of `maxage` option.
-
-### Result
-Returns an **object** with the following fields:
-- `data` - **any** - Async data loaded in the last `loader` invokation, if any,
-  and if satisfy the `maxage` limit; **null** otherwise.
-- `loading` - **boolean** - **true** if the data are being loaded
-  (_i.e._ the hook is currently waiting for the result of a `loader` function's
-  invokation).
-- `timestamp` - **number** - Unix timestamp (in milliseconds) of async data
-  currently loaded into the global state, if any.
-  :::caution
-  If `data` is **null** because async data loaded into the state do not satisfy
-  the `maxage` limit, the value of `timestamp` still will correspond to the time
-  when those async data were loaded into the state.
-  :::
-
-## AsyncCollectionLoader
-```jsx
-function loader(id, oldData): Promise<any>;
+The TypeScript signature of [useAsyncCollection()] implementation is
+```ts
+function useAsyncCollection<DataT>(
+  id: string,
+  path: null | string | undefined,
+  loader: AsyncCollectionLoaderT<DataT>,
+  options: UseAsyncDataOptionsT = {},
+): UseAsyncDataResT<DataT>;
 ```
-This is the signature of `loader` function accepted by
-[useAsyncCollection()] hook.
+This signature is shadowed in TypeScript by several narrowed overloads,
+explained below, which are necessary to make static TypeScript type analysis
+work.
 
-### Arguments
-- `id` - **string**  - ID of the collection item to load.
-- `oldData` - **any** - Previously fetched data for this ID, if any are stored
-  in the global state.
+## TypeScript Overloads
+[StateT]: #state-type
+1.  The first TypeScript overload for this hook has the signature (simplified
+    by ommitting details behind the **DataT** definition):
+    ```ts
+    function useAsyncCollection<
+      StateT,
+      PathT extends null | string | undefined,
+      IdT extends string,
+    >(
+      id: IdT,
+      path: PathT,
+      loader: AsyncCollectionLoaderT<DataT>
+      >,
+      options?: UseAsyncDataOptionsT,
+    ): UseAsyncDataResT<DataT>;
+    ```
+    with three generic parameters:
+      - `StateT` <a id="state-type" /> &mdash; The type of global state content.
+      - `PathT` &mdash; **null** | **string** | **undefined** &mdash;
+        The type of `path` argument.
+      - `IdT` &mdash; **string** &mdash; The type of `id` argument.
 
-### Result
-Returns a **Promise** which resolves to the async data loaded for the specified
-`id`.
+    The type **DataT** is auto-evaluated by TypeScript based on generic
+    parameters, if possible, and used for type-checking the loader and result.
+    If **DataT** cannot be auto-evaluated, it falls back to **void**, forbidding
+    TypeScript to use this hook overload.
 
-[AsyncCollectionLoader]: #asynccollectionloader
-[AsyncDataEnvelope]: /docs/api/objects/asyncdataenvelope
+    :::tip
+    As [StateT] parameter cannot be evaluated from hook arguments / result types,
+    to use this hook variant directly one would need to provide all three generic
+    parameters explicitly:
+    ```ts
+    useAsyncCollection<StateT, typeof path, typeof id>(id, path, loader);
+    ```
+    Instead of this, you should prefer to use the [withGlobalStateType()]
+    function to get and use a specially wrapped version of this hook, with
+    "locked-in" [StateT] type, which allows TS to auto-evaluate the values of
+    **PathT** and **IdT** from given arguments, and thus allows to use the hook
+    this way:
+    ```ts
+    const { useAsyncCollection } = withGlobalStateType<StateT>();
+
+    // Behind the scene, TS still attempts to auto-evaluate the DataT type
+    // based on StateT, typeof id, and typeof path; and uses it to type check
+    // the `loader` and result. It will deny to compile it if the type check
+    // fails, or DataT cannot be auto-evaluated.
+    useAsyncCollection(id, path, loader);
+    ```
+    :::
+
+2.  Another overload has the following signature (simplified by omitting
+    details behind the **DataT** definition), which allows to force any **DataT**
+    type under the caller's discretion:
+    ```ts
+    function useAsyncCollection<
+      Unlocked extends 0 | 1 = 0,
+      DataT = unknown,
+    >(
+      id: string,
+      path: null | string | undefined,
+      loader: AsyncCollectionLoaderT<DataT>,
+      options?: UseAsyncDataOptionsT,
+    ): UseAsyncDataResT<DataT>;
+    ```
+    Generic parameters are:
+    - `Unlocked` &mdash; **0** | **1** &mdash; The default value, **0**, forbids
+      TypeScript to use this overload (it does so by forcing **DataT** to evaluate
+      as **void** behind the scene). It must be set **1** explicitly, to use this
+      overload.
+    - `DataT` &mdash; The type of collection item, defaults to **unknown**.
+
+    You can use this overload in either of these way:
+    ```ts
+    // Variant #1.
+    import { useAsyncCollection } from '@dr.pogodin/react-global-state';
+
+    useAsyncCollection<1, DataT>(id, path, loader);
+
+    // Variant #2. Using withGlobalStateType().
+    import { withGlobalStateType } from '@dr.pogodin/react-global-state';
+
+    const { useAsyncCollection } = withGlobalStateType<StateT>();
+
+    // This overload does not really use StateT for type-checks, it just assumes
+    // the DataT type you have specified.
+    useAsyncCollection<1, DataT>(id, path, loader);
+    ```
+
+## Arguments
+- `id` &mdash; **string** &mdash; ID of the collection item to load & use.
+- `path` &mdash; **null** | **string** | **undefined** &mdash; The global state path
+  where entire collection should be stored.
+- `loader` &mdash; [AsyncCollectionLoaderT] &mdash; A loader function, which takes an
+  ID of data to load, and resolves to the corresponding data.
+- `options` &mdash; [UseAsyncDataOptionsT] &mdash; Optional object with additional settings.
+
+## Result
+Returns an object of [UseAsyncDataResT]&lt;**DataT**&gt; type.
+
+[AsyncCollectionLoaderT]: /docs/api/types/async-collection-loader
+[AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
+[UseAsyncDataOptionsT]: /docs/api/types/use-async-data-options
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata
+[UseAsyncDataResT]: /docs/api/types/use-async-data-res
 [useGlobalState()]: /docs/api/hooks/useglobalstate
+[withGlobalStateType()]: /docs/api/functions/with-global-state-type

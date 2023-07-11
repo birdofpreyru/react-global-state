@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Scenario I 1`] = `
+"<div>
+  <div>{
+    "data": 0,
+    "loading": false,
+    "timestamp": 1586390403000
+    }</div><button data-test-id="button" type="button">Update</button>
+</div>"
+`;
+
+exports[`Scenario I 2`] = `
+"<div>
+  <div>{
+    "data": 0,
+    "loading": false,
+    "timestamp": 1586390403000
+    }</div><button data-test-id="button" type="button">Update</button>
+</div>"
+`;
+
+exports[`Scenario I 3`] = `
+"<div>
+  <div>{
+    "data": 0,
+    "loading": true,
+    "timestamp": 1586390403000
+    }</div><button data-test-id="button" type="button">Update</button>
+</div>"
+`;

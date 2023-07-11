@@ -1,62 +1,81 @@
-defaults: &defaults
-  docker:
-    - image: cimg/node:lts
+install-and-test: &install-and-test
+  - checkout
+  - restore_cache:
+      key: node-modules-{{ checksum "package-lock.json" }}-{{ checksum "docs/package-lock.json" }}
+  - run: npm install && cd docs && npm install
+  - save_cache:
+      key: node-modules-{{ checksum "package-lock.json" }}-{{ checksum "docs/package-lock.json" }}
+      paths:
+        - node_modules
+        - docs/node_modules
+  - run: npm test
 
-version: 2
+version: 2.1
 jobs:
-  test:
-    <<: *defaults
+  test-node-16:
+    docker:
+      - image: cimg/node:16.20
     steps:
-      - checkout
-      - restore_cache:
-          key: node-modules-{{ checksum "package-lock.json" }}
-      - run: npm install
-      - save_cache:
-          key: node-modules-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
-      - run: npm run build && npm pack
-      - restore_cache:
-          key: docs-node-modules-{{ checksum "docs/package-lock.json" }}
-      - run:
-          command: npm install
-          working_directory: docs
-      - save_cache:
-          key: docs-node-modules-{{ checksum "docs/package-lock.json" }}
-          paths:
-            - docs/node_modules
-      - run: npm test
-      - run:
-          name: Documentation build
-          command: npm run build
-          working_directory: docs
-      - run: rm -rf docs/node_modules
+      *install-and-test
+  test-node-18:
+    docker:
+      - image: cimg/node:18.16
+    steps:
+      *install-and-test
+  test-node-20:
+    docker:
+      - image: cimg/node:20.3
+    steps:
+      *install-and-test
+  test-node-lts:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - when:
+          condition: true
+          steps:
+            *install-and-test
+      - run: npm run build && cd docs && npm run build
       - persist_to_workspace:
           root: .
           paths:
             - build
-            - docs
+            - docs/build
   release:
-    <<: *defaults
+    docker:
+      - image: cimg/node:lts
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run: ./bin/release.sh
 
+test-filters: &test-filters
+  filters:
+    tags:
+      only: /.*/
+
 workflows:
   version: 2
   build:
     jobs:
-      - test:
-          filters:
-            tags:
-              only: /.*/
+      - test-node-16:
+          <<: *test-filters
+      - test-node-18:
+          <<: *test-filters
+      - test-node-20:
+          <<: *test-filters
+      - test-node-lts:
+          <<: *test-filters
+          requires:
+            - test-node-16
+            - test-node-18
+            - test-node-20
       - release:
           filters:
             branches:
               ignore: /.*/
             tags:
-              only: /v[0-9]+(\.[0-9]+)*/
+              only: /v[0-9]+(\.[0-9]+)*(-(alpha|beta)\.[0-9]+)?/
           requires:
-            - test
+            - test-node-lts

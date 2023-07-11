@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works as expected 1`] = `"<div>Value for ID 0<button type="button">Bump the value</button></div>"`;
+
+exports[`works as expected 2`] = `
+{
+  "test": {
+    "path": [
+      {
+        "data": "Value for ID 0",
+        "numRefs": 1,
+        "operationId": "",
+        "timestamp": 1620432000000,
+      },
+    ],
+  },
+}
+`;
+
+exports[`works as expected 3`] = `"<div>Value for ID 1<button type="button">Bump the value</button></div>"`;
+
+exports[`works as expected 4`] = `
+{
+  "test": {
+    "path": [
+      {
+        "data": "Value for ID 0",
+        "numRefs": 0,
+        "operationId": "",
+        "timestamp": 1620432000000,
+      },
+      {
+        "data": "Value for ID 1",
+        "numRefs": 1,
+        "operationId": "",
+        "timestamp": 1620432000000,
+      },
+    ],
+  },
+}
+`;
