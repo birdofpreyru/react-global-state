@@ -285,28 +285,3 @@ function useAsyncData<DataT>(
 }
 
 export default useAsyncData;
-
-/*
-TODO: Move this to type tests.
-
-type StateT = {
-  some: {
-    path: AsyncDataEnvelopeT<number>;
-  };
-};
-
-const gs = new GlobalState<StateT>({ some: { path: 'value' } });
-
-function testLoader() {
-  return 'data';
-}
-
-type TT = DataInEnvelopeAtPathT<StateT, 'some.path'>;
-
-function Component() {
-  const P = 'some.path';
-  const x = useAsyncData<StateT, typeof P>(P, testLoader);
-  console.log(x);
-  return null;
-}
-*/

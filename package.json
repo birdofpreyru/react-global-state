@@ -1,20 +1,17 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.10.0-alpha.1",
+  "version": "0.10.0-alpha.2",
   "description": "Hook-based global state for React",
-  "main": "./build/node/index.js",
+  "main": "./build/index.js",
   "react-native": "src/index.ts",
   "source": "src/index.ts",
+  "type": "module",
   "exports": {
-    "module": "./build/module/index.js",
-    "node": "./build/node/index.js",
     "types": "./index.d.ts",
-    "default": "./build/node/index.js"
+    "default": "./build/index.js"
   },
   "scripts": {
-    "build": "rimraf build && npm run build:module && npm run build:node",
-    "build:module": "rimraf build/web && babel src --out-dir build/module --source-maps --config-file ./babel.module.config.js",
-    "build:node": "rimraf build/node && babel src --out-dir build/node --source-maps",
+    "build": "rimraf build && tsc",
     "jest": "npm run jest:types && npm run jest:logic",
     "jest:types": "jest --config jest/config-types.json",
     "jest:logic": "jest --config jest/config.json -w 1",
