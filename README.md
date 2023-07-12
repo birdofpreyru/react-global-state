@@ -10,6 +10,8 @@ State of the art approach to the global state and asynchronous data management
 in React applications, powered by hooks and Context API. Simple, efficient, with
 full server-side rendering (SSR) support.
 
+TypeScript support since v0.10.0.
+
 [&rArr; Documentation &lArr;](https://dr.pogodin.studio/docs/react-global-state/index.html)
 
 [![Sponsor](https://raw.githubusercontent.com/birdofpreyru/react-global-state/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
