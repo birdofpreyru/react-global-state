@@ -25,8 +25,11 @@ type GetOptsT<T> = {
   initialValue?: ValueOrInitializerT<T>;
 };
 
-export default class GlobalState<StateT> {
-  readonly ssrContext?: SsrContext<StateT>;
+export default class GlobalState<
+  StateT,
+  SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
+> {
+  readonly ssrContext?: SsrContextT;
 
   #initialState: StateT;
 
@@ -47,7 +50,7 @@ export default class GlobalState<StateT> {
    */
   constructor(
     initialState: StateT,
-    ssrContext?: SsrContext<StateT>,
+    ssrContext?: SsrContextT,
   ) {
     this.#currentState = initialState;
     this.#initialState = initialState;

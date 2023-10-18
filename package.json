@@ -2,21 +2,26 @@
   "name": "@dr.pogodin/react-global-state",
   "version": "0.10.0-alpha.2",
   "description": "Hook-based global state for React",
-  "main": "./build/index.js",
+  "main": "./build/common/index.js",
   "react-native": "src/index.ts",
   "source": "src/index.ts",
+  "types": "./build/types/index.d.ts",
   "exports": {
-    "types": "./index.d.ts",
-    "default": "./build/index.js"
+    "module": "./build/module/index.js",
+    "node": "./build/common/index.js",
+    "default": "./build/common/index.js"
   },
   "scripts": {
-    "build": "rimraf build && tsc",
+    "build": "rimraf build && npm run build:common && npm run build:module && npm run build:types",
+    "build:common": "rimraf build/common && babel src -x .ts,.tsx --out-dir build/common --source-maps",
+    "build:module": "rimraf build/module && babel src -x .ts,.tsx --out-dir build/module --source-maps --config-file ./babel.module.config.js",
+    "build:types": "rimraf build/types && tsc --project tsconfig.types.json",
     "jest": "npm run jest:types && npm run jest:logic",
     "jest:types": "jest --config jest/config-types.json",
     "jest:logic": "jest --config jest/config.json -w 1",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "test": "npm run lint && npm run typecheck && npm run jest",
-    "typecheck": "tsc --noEmit && tsc --project __tests__/tsconfig.typecheck.json"
+    "typecheck": "tsc --project __tests__/tsconfig.json"
   },
   "repository": "github:birdofpreyru/react-global-state",
   "keywords": [

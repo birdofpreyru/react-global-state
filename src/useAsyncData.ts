@@ -15,6 +15,7 @@ import { TypeLock, isDebugMode } from './utils';
 import GlobalState from './GlobalState';
 
 import { type ValueAtPathT } from './utils';
+import SsrContext from './SsrContext';
 
 const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
@@ -70,7 +71,7 @@ export type UseAsyncDataResT<DataT> = {
 async function load<DataT>(
   path: null | string | undefined,
   loader: AsyncDataLoaderT<DataT>,
-  globalState: GlobalState<unknown>,
+  globalState: GlobalState<unknown, SsrContext<unknown>>,
   oldData: DataT | null,
   opIdPrefix: 'C' | 'S' = 'C',
 ): Promise<void> {

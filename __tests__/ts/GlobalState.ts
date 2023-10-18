@@ -99,7 +99,7 @@ describe('ssrContext', () => {
     ];
     ssrContext.state = { oldKey: 'oldValue' };
 
-    const state = new GlobalState(['newValue'], ssrContext);
+    const state = new GlobalState<StateType, NamedSsrContext<StateType>>(['newValue'], ssrContext);
     expect(state.ssrContext).toBe(ssrContext);
     expect(ssrContext).toEqual({
       dirty: false,
@@ -110,7 +110,7 @@ describe('ssrContext', () => {
   });
 
   it('forbids to .watch() and .unWatch() the state', () => {
-    const state = new GlobalState(undefined, new SsrContext());
+    const state = new GlobalState(undefined, new SsrContext<undefined>());
     expect(() => {
       state.watch(jest.fn());
     }).toThrowErrorMatchingSnapshot();
