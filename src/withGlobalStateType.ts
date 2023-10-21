@@ -26,7 +26,12 @@ import useAsyncData, {
   type UseAsyncDataResT,
 } from './useAsyncData';
 
-export default function withGlobalStateType<StateT>() {
+export default function withGlobalStateType<
+  StateT,
+  SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
+>(
+  CustomSsrContext?: SsrContextT,
+) {
   // These wrap useGlobalState() with locked-in StateT type.
 
   function useGlobalStateWrap(): UseGlobalStateResT<StateT>;
@@ -107,10 +112,10 @@ export default function withGlobalStateType<StateT>() {
   }
 
   return {
-    getGlobalState: getGlobalState<StateT>,
-    getSsrContext: getSsrContext<StateT>,
-    GlobalStateProvider: GlobalStateProvider<StateT>,
-    SsrContext: SsrContext<StateT>,
+    getGlobalState: getGlobalState<StateT, SsrContextT>,
+    getSsrContext: getSsrContext<SsrContextT>,
+    GlobalStateProvider: GlobalStateProvider<StateT, SsrContextT>,
+    SsrContext: CustomSsrContext || SsrContext,
     useAsyncCollection: useAsyncCollectionWrap,
     useAsyncData: useAsyncDataWrap,
     useGlobalState: useGlobalStateWrap,

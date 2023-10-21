@@ -22,7 +22,10 @@ const context = createContext<GlobalState<unknown> | null>(null);
  * the global state, instead of accessing it directly.
  * @return
  */
-export function getGlobalState<StateT>(): GlobalState<StateT> {
+export function getGlobalState<
+  StateT,
+  SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
+>(): GlobalState<StateT, SsrContextT> {
   // Here Rules of Hooks are violated because "getGlobalState()" does not follow
   // convention that hook names should start with use... This is intentional in
   // our case, as getGlobalState() hook is intended for advance scenarious,
@@ -32,7 +35,7 @@ export function getGlobalState<StateT>(): GlobalState<StateT> {
   const globalState = useContext(context);
   /* eslint-enable react-hooks/rules-of-hooks */
   if (!globalState) throw new Error('Missing GlobalStateProvider');
-  return globalState as GlobalState<StateT>;
+  return globalState as GlobalState<StateT, SsrContextT>;
 }
 
 /**
@@ -49,25 +52,30 @@ export function getGlobalState<StateT>(): GlobalState<StateT> {
  * - If `throwWithoutSsrContext` is `true`, and there is no SSR context attached
  *   to the global state provided by {@link &lt;GlobalStateProvider&gt;}.
  */
-export function getSsrContext<StateT>(
+export function getSsrContext<
+  SsrContextT extends SsrContext<unknown>,
+>(
   throwWithoutSsrContext = true,
-): SsrContext<StateT> | undefined {
-  const { ssrContext } = getGlobalState<StateT>();
+): SsrContextT | undefined {
+  const { ssrContext } = getGlobalState<SsrContextT['state'], SsrContextT>();
   if (!ssrContext && throwWithoutSsrContext) {
     throw new Error('No SSR context found');
   }
   return ssrContext;
 }
 
-type NewStateProps<StateT> = {
+type NewStateProps<StateT, SsrContextT extends SsrContext<StateT>> = {
   initialState: ValueOrInitializerT<StateT>,
-  ssrContext?: SsrContext<StateT>;
+  ssrContext?: SsrContextT;
 };
 
-type GlobalStateProviderProps<StateT> = {
+type GlobalStateProviderProps<
+  StateT,
+  SsrContextT extends SsrContext<StateT>,
+> = {
   children?: ReactNode;
-} & (NewStateProps<StateT> | {
-  stateProxy: true | GlobalState<StateT>;
+} & (NewStateProps<StateT, SsrContextT> | {
+  stateProxy: true | GlobalState<StateT, SsrContextT>;
 });
 
 /**
@@ -83,10 +91,13 @@ type GlobalStateProviderProps<StateT> = {
  * - If `GlobalState` instance, it will be used by this provider.
  * - If not given, a new `GlobalState` instance will be created and used.
  */
-export default function GlobalStateProvider<StateT>(
-  { children, ...rest }: GlobalStateProviderProps<StateT>,
+export default function GlobalStateProvider<
+  StateT,
+  SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
+>(
+  { children, ...rest }: GlobalStateProviderProps<StateT, SsrContextT>,
 ) {
-  const state = useRef<GlobalState<StateT>>();
+  const state = useRef<GlobalState<StateT, SsrContextT>>();
   if (!state.current) {
     // NOTE: The last part of condition, "&& rest.stateProxy", is needed for
     // graceful compatibility with JavaScript - if "undefined" stateProxy value
@@ -96,9 +107,9 @@ export default function GlobalStateProvider<StateT>(
       if (rest.stateProxy === true) state.current = getGlobalState();
       else state.current = rest.stateProxy;
     } else {
-      const { initialState, ssrContext } = rest as NewStateProps<StateT>;
+      const { initialState, ssrContext } = rest as NewStateProps<StateT, SsrContextT>;
 
-      state.current = new GlobalState<StateT>(
+      state.current = new GlobalState<StateT, SsrContextT>(
         isFunction(initialState) ? initialState() : initialState,
         ssrContext,
       );
