@@ -32,13 +32,13 @@ with a single parameter:
   used in [constructor()] and [`state` field].
 
 :::tip
-Alternatively you may use [withGlobalStateType()] function to get
+Alternatively you may use [API] interface to get
 [SsrContext] variant with "locked-in" [StateT]:
 
 ```ts
-import { withGlobalStateType } from '@dr.pogodin/react-global-state';
+import RGS, { type API } from '@dr.pogodin/react-global-state';
 
-const { SsrContext } = withGlobalStateType<StateT>();
+const { SsrContext } = RGS as API<StateT>;
 ```
 :::
 
@@ -66,8 +66,8 @@ Creates a new [SsrContext] instance.
   value for [`state` field], which can be left _undefined_, to start the render
   with default initial state.
 
+[API]: /docs/api/types/api
 [getSsrContext()]: /docs/api/hooks/getssrcontext
 [GlobalStateProvider]: /docs/api/components/globalstateprovider
 [SsrContext]: /docs/api/classes/ssrcontext
 [useAsyncData()]: /docs/api/hooks/useasyncdata
-[withGlobalStateType()]: /docs/api/functions/with-global-state-type

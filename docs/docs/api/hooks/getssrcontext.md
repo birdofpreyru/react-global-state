@@ -13,13 +13,13 @@ function getSsrContext<StateT>(
 ```
 
 :::tip
-Alternatively you may use [withGlobalStateType()] function to get
+Alternatively you may use [API] interface to get
 [getSsrContext()] variant with a "locked-in" [StateT]:
 
 ```ts
-import { withGlobalStateType } from '@dr.pogodin/react-global-state';
+import RGS, { type API } from '@dr.pogodin/react-global-state';
 
-const { getSsrContext } = withGlobalStateType<StateT>();
+const { getSsrContext } = RGS as API<StateT>;
 ```
 :::
 
@@ -45,7 +45,7 @@ This hook throws in these cases:
   to the global state provided by [GlobalStateProvider].
 :::
 
+[API]: /docs/api/types/api
 [getSsrContext()]: #
 [GlobalStateProvider]: /docs/api/components/globalstateprovider
 [SsrContext]: /docs/api/classes/ssrcontext
-[withGlobalStateType()]: /docs/api/functions/with-global-state-type

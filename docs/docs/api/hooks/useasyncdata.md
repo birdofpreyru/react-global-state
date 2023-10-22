@@ -59,12 +59,14 @@ making convenient and safe static type analysis possible.
     ```ts
     useAsyncData<StateT, typeof path>(path, loader);
     ```
-    Instead, you should prefer to use [withGlobalStateType()] function to get and
+    Instead, you should prefer to use [API] interface to get and
     use a specially wrapped version of this hook, with "locked-in" [StateT] type,
     which allows TS to auto-evaluate **PathT** based on `path` argument, and
     thus allows to use this hook without generic parameters, when possible:
     ```ts
-    const { useAsyncData } = withGlobalStateType<StateT>();
+    import RGS, { type API } from '@dr.pogodin/react-global-state';
+
+    const { useAsyncData } = RGS as API<StateT>;
 
     // Behind the scene, TS still auto-evaluates the DataT type, and uses it
     // to type-check `loader` and result. It denies to compile this if type check
@@ -102,11 +104,11 @@ making convenient and safe static type analysis possible.
 
     useAsyncData<ForceT, DataT>(id, path, loader);
 
-    // Variant #2. Using withGlobalStateType().
+    // Variant #2. Using API
 
-    import { type ForceT, withGlobalStateType } from '@dr.pogodin/react-global-state';
+    import RGS, { type API, type ForceT } from '@dr.pogodin/react-global-state';
 
-    const { useAsyncData } = withGlobalStateType<StateT>();
+    const { useAsyncData } = RGS as API<StateT>;
 
     // This overload does not really use StateT for type-checks, it just
     // assumes the DatatT type you have specified.
@@ -131,6 +133,7 @@ making convenient and safe static type analysis possible.
 ## Result
 Returns an object of the type [UseAsyncDataResT]&lt;**DataT**&gt;.
 
+[API]: /docs/api/types/api
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
 [ForceT]: /docs/api/types/force
@@ -140,4 +143,3 @@ Returns an object of the type [UseAsyncDataResT]&lt;**DataT**&gt;.
 [UseAsyncDataOptionsT]: /docs/api/types/use-async-data-options
 [UseAsyncDataResT]: /docs/api/types/use-async-data-res
 [useGlobalState()]: /docs/api/hooks/useglobalstate
-[withGlobalStateType()]: /docs/api/functions/with-global-state-type

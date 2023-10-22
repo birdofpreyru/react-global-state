@@ -1,3 +1,5 @@
+- [API] &mdash; A special interface allowing to get all library exports with
+  &laquo;locked-in&raquo; state type.
 - [AsyncCollectionLoaderT] &mdash; The signature of a valid data loader function
   for [useAsyncCollection()] hook.
 - [AsyncDataEnvelopeT] &mdash; The type of a state segment storing data managed
@@ -16,6 +18,7 @@
 - [ValueOrInitializerT] &mdash; The type for arguments that accept either
   a value to use, or a function that returns the value to use.
 
+[API]: /docs/api/types/api
 [AsyncCollectionLoaderT]: /docs/api/types/async-collection-loader
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader

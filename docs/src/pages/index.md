@@ -98,13 +98,13 @@ a _string literal type_, that describes a valid global state path,
 and the type of global state is well-defined along that path. For example:
 
 ```ts
-import { type ForceT, withGlobalStateType } from '@dr.pogodin/react-global-state';
+import RGS, { type API, type ForceT} from '@dr.pogodin/react-global-state';
 
 type StateT = { some: { path: string }};
 
 // This call returns a set of React components and hooks "locked-in" into
 // the same specified state path.
-const { useGlobalState } = withGlobalStateType<StateT>();
+const { useGlobalState } = RGS as API<StateT>;
 
 function SampleReactComponent() {
   // Here TypeScript will automatically resolve "string" as the correct type of
@@ -132,10 +132,10 @@ function SampleReactComponent() {
 Here is a brief exampe of async data loading with TS-flavour of this library:
 
 ```ts
-import {
+import RGS, {
+  type API,
   type AsyncDataEnvelopeT,
   type ForceT,
-  withGlobalStateType,
 } from '@dr.pogodin/react-global-state';
 
 // `AsyncDataEnvelopeT<DataT>` type describes a state segment with stores
@@ -144,7 +144,7 @@ type StateT = { some: { path: AsyncDataEnvelopeT<string> }};
 
 // This call returns a set of React components and hooks "locked-in" into
 // the same specified state path.
-const { useAsyncData } = withGlobalStateType<StateT>();
+const { useAsyncData } = RGS as API<StateT>;
 
 async function loader(): string {
   //-------------------------------------------------------------------

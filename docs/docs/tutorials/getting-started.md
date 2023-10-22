@@ -70,10 +70,10 @@ export default function SampleApp() {
 
 import React from 'react';
 
-import {
+import RGS, {
+  type API,
   type AsyncDataEnvelopeT,
   newAsyncDataEnvelope,
-  withGlobalStateType,
 } from '@dr.pogodin/react-global-state';
 
 type StateT = {
@@ -94,7 +94,7 @@ const {
   GlobalStateProvider,
   useAsyncData,
   useGlobalState,
-} = withGlobalStateType<StateT>();
+} = RGS as API<StateT>;
 
 /* Example of component relying on the global state. */
 
