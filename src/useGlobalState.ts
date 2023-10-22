@@ -10,6 +10,7 @@ import { getGlobalState } from './GlobalStateProvider';
 
 import {
   type CallbackT,
+  type ForceT,
   type TypeLock,
   type ValueAtPathT,
   type ValueOrInitializerT,
@@ -82,6 +83,11 @@ export type UseGlobalStateResT<T> = [T, SetterT<T>];
 
 function useGlobalState<StateT>(): UseGlobalStateResT<StateT>;
 
+function useGlobalState<Forced extends ForceT | false = false, ValueT = unknown>(
+  path: null | string | undefined,
+  initialValue?: ValueOrInitializerT<TypeLock<Forced, never, ValueT>>,
+): UseGlobalStateResT<TypeLock<Forced, void, ValueT>>;
+
 function useGlobalState<
   StateT,
   PathT extends null | string | undefined,
@@ -89,14 +95,6 @@ function useGlobalState<
   path: PathT,
   initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>
 ): UseGlobalStateResT<ValueAtPathT<StateT, PathT, void>>;
-
-function useGlobalState<
-  Unlocked extends 0 | 1 = 0,
-  ValueT = void,
->(
-  path: null | string | undefined,
-  initialValue?: ValueOrInitializerT<TypeLock<Unlocked, never, ValueT>>,
-): UseGlobalStateResT<TypeLock<Unlocked, void, ValueT>>;
 
 function useGlobalState(
   path?: null | string,
@@ -122,7 +120,7 @@ function useGlobalState(
         console.groupEnd();
         /* eslint-enable no-console */
       }
-      rc.globalState.set<1, unknown>(rc.path, newState);
+      rc.globalState.set<ForceT, unknown>(rc.path, newState);
     },
     state: isFunction(initialValue) ? initialValue() : initialValue,
     watcher: () => {
@@ -137,8 +135,8 @@ function useGlobalState(
 
   rc.state = useSyncExternalStore(
     (cb) => rc.emitter.addListener(cb),
-    () => rc.globalState.get<1, unknown>(rc.path, { initialValue }),
-    () => rc.globalState.get<1, unknown>(rc.path, { initialValue, initialState: true }),
+    () => rc.globalState.get<ForceT, unknown>(rc.path, { initialValue }),
+    () => rc.globalState.get<ForceT, unknown>(rc.path, { initialValue, initialState: true }),
   );
 
   useEffect(() => {

@@ -17,7 +17,7 @@ import {
   mount,
 } from 'jest/utils';
 
-import { GlobalStateProvider, useAsyncData } from 'src/index';
+import { type ForceT, GlobalStateProvider, useAsyncData } from 'src/index';
 
 jest.useFakeTimers();
 mockdate.set('2020-04-09Z');
@@ -31,7 +31,7 @@ const loader = jest.fn(async () => {
 
 function Component() {
   const [epoch, setEpoch] = useState(0);
-  const envelop = useAsyncData<1, number>('test-path', loader, {
+  const envelop = useAsyncData<ForceT, number>('test-path', loader, {
     deps: [epoch],
   });
   return (

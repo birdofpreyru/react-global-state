@@ -12,6 +12,7 @@ import SsrContext from './SsrContext';
 
 import {
   type CallbackT,
+  type ForceT,
   type TypeLock,
   type ValueAtPathT,
   type ValueOrInitializerT,
@@ -161,10 +162,10 @@ export default class GlobalState<
 
   // This variant is not callable by default (without generic arguments),
   // otherwise it allows to set the correct ValueT directly.
-  get<Unlocked extends 0 | 1 = 0, ValueT = void>(
+  get<Forced extends ForceT | false = false, ValueT = void>(
     path?: null | string,
-    opts?: GetOptsT<TypeLock<Unlocked, never, ValueT>>,
-  ): TypeLock<Unlocked, void, ValueT>;
+    opts?: GetOptsT<TypeLock<Forced, never, ValueT>>,
+  ): TypeLock<Forced, void, ValueT>;
 
   get<ValueT>(path?: null | string, opts?: GetOptsT<ValueT>): ValueT {
     if (isNil(path)) {
@@ -181,7 +182,7 @@ export default class GlobalState<
     res = isFunction(iv) ? iv() : iv;
 
     if (!opts?.initialState || this.get(path) === undefined) {
-      this.set<1, unknown>(path, res);
+      this.set<ForceT, unknown>(path, res);
     }
 
     return res;
@@ -204,10 +205,10 @@ export default class GlobalState<
 
   // This variant is disabled by default, otherwise allows to give
   // expected value type explicitly.
-  set<Unlocked extends 0 | 1 = 0, ValueT = never>(
+  set<Forced extends ForceT | false = false, ValueT = never>(
     path: null | string | undefined,
-    value: TypeLock<Unlocked, never, ValueT>,
-  ): TypeLock<Unlocked, void, ValueT>;
+    value: TypeLock<Forced, never, ValueT>,
+  ): TypeLock<Forced, void, ValueT>;
 
   set(path: null | string | undefined, value: unknown): unknown {
     if (isNil(path)) return this.setEntireState(value as StateT);

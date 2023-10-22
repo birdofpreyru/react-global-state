@@ -5,7 +5,11 @@
 
 import { expectError } from 'tsd-lite';
 
-import { type AsyncDataEnvelopeT, withGlobalStateType } from '../../../src';
+import {
+  type AsyncDataEnvelopeT,
+  type ForceT,
+  withGlobalStateType,
+} from '../../../src';
 
 // i.e. "examples.asyncGlobalData" is not assignable path for useAsyncData(),
 // which requires a data envelope on that path.

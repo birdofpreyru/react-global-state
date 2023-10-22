@@ -1,6 +1,7 @@
 import { expectError, expectType } from 'tsd-lite';
 
 import GlobalState from 'src/GlobalState';
+import type { ForceT } from 'src/utils';
 
 type ValueT = 'value-a' | 'value-b';
 
@@ -33,7 +34,7 @@ expectType<void>(gs.get('invalid.path'));
 expectError(() => gs.get('some.path', { initialValue: 'invalid' }));
 expectError(() => gs.get('invalid.path', { initialValue: 'invalid' }));
 
-expectType<void>(gs.get<1>());
-expectType<'OK'>(gs.get<1, 'OK'>());
+expectType<void>(gs.get<ForceT, void>());
+expectType<'OK'>(gs.get<ForceT, 'OK'>());
 
-expectError(() => gs.get<1>('some.path', { initialValue: 'invalid' }));
+expectError(() => gs.get<ForceT, void>('some.path', { initialValue: 'invalid' }));

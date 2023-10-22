@@ -21,7 +21,7 @@ import {
   wait,
 } from 'jest/utils';
 
-import { GlobalStateProvider, useAsyncData } from 'src/index';
+import { type ForceT, GlobalStateProvider, useAsyncData } from 'src/index';
 
 jest.useFakeTimers();
 mockdate.set('2019-10-28Z');
@@ -37,12 +37,12 @@ const loaderB = jest.fn(async () => {
 });
 
 function ComponentA() {
-  const envelop = useAsyncData<1, string>('x', loaderA);
+  const envelop = useAsyncData<ForceT, string>('x', loaderA);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 
 function ComponentB() {
-  const envelop = useAsyncData<1, string>('x', loaderB);
+  const envelop = useAsyncData<ForceT, string>('x', loaderB);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
 }
 

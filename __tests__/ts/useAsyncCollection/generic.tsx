@@ -14,9 +14,10 @@ import GlobalState from 'src/GlobalState';
 
 import {
   type AsyncDataEnvelopeT,
+  type ForceT,
   GlobalStateProvider,
   useAsyncCollection,
-} from 'src/index';
+} from 'src';
 
 mockdate.set('2021-05-08Z');
 
@@ -36,7 +37,7 @@ async function loader(id: string) {
 
 function Component() {
   const [id, setId] = useState(0);
-  const { data } = useAsyncCollection<1, string>(id.toString(), 'test.path', loader);
+  const { data } = useAsyncCollection<ForceT, string>(id.toString(), 'test.path', loader);
   return (
     <div>
       {data}

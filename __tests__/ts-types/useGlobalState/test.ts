@@ -1,7 +1,7 @@
 import { expectAssignable } from 'tsd-lite';
 
-import { useGlobalState } from '../../../src';
+import { type ForceT, useGlobalState } from '../../../src';
 
-const [testValue] = useGlobalState<1, string>('fake.path');
+const [testValue] = useGlobalState<ForceT, string>('fake.path');
 
-expectAssignable<String>(testValue);
+expectAssignable<string>(testValue);

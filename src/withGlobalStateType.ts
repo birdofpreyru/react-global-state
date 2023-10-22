@@ -1,4 +1,5 @@
 import {
+  type ForceT,
   type TypeLock,
   type ValueAtPathT,
   type ValueOrInitializerT,
@@ -41,19 +42,16 @@ export default function withGlobalStateType<
     initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>,
   ): UseGlobalStateResT<ValueAtPathT<StateT, PathT, void>>;
 
-  function useGlobalStateWrap<
-    Unlocked extends 0 | 1 = 0,
-    ValueT = void,
-  >(
+  function useGlobalStateWrap<Forced extends ForceT | false = false, ValueT = unknown>(
     path: null | string | undefined,
-    initialValue?: ValueOrInitializerT<TypeLock<Unlocked, never, ValueT>>,
-  ): UseGlobalStateResT<TypeLock<Unlocked, void, ValueT>>;
+    initialValue?: ValueOrInitializerT<TypeLock<Forced, never, ValueT>>,
+  ): UseGlobalStateResT<TypeLock<Forced, void, ValueT>>;
 
   function useGlobalStateWrap(
     path?: null | string,
     initialValue?: ValueOrInitializerT<unknown>,
   ): UseGlobalStateResT<any> {
-    return useGlobalState<1, unknown>(path, initialValue);
+    return useGlobalState<ForceT, unknown>(path, initialValue);
   }
 
   // These overloads & implementation wrap useAsyncData() hook to lock-in its
@@ -65,21 +63,18 @@ export default function withGlobalStateType<
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
 
-  function useAsyncDataWrap<
-    Unlocked extends 0 | 1 = 0,
-    DataT = unknown,
-  >(
+  function useAsyncDataWrap<Forced extends ForceT | false = false, DataT = unknown>(
     path: null | string | undefined,
-    loader: AsyncDataLoaderT<TypeLock<Unlocked, void, DataT>>,
+    loader: AsyncDataLoaderT<TypeLock<Forced, void, DataT>>,
     options?: UseAsyncDataOptionsT,
-  ): UseAsyncDataResT<TypeLock<Unlocked, never, DataT>>;
+  ): UseAsyncDataResT<TypeLock<Forced, never, DataT>>;
 
   function useAsyncDataWrap<DataT>(
     path: null | string | undefined,
     loader: AsyncDataLoaderT<DataT>,
     options: UseAsyncDataOptionsT = {},
   ): UseAsyncDataResT<DataT> {
-    return useAsyncData<1, DataT>(path, loader, options);
+    return useAsyncData<ForceT, DataT>(path, loader, options);
   }
 
   // These overloads & implementation wrap useAsyncCollection() hook to lock-in
@@ -92,13 +87,10 @@ export default function withGlobalStateType<
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
 
-  function useAsyncCollectionWrap<
-    Unlocked extends 0 | 1 = 0,
-    DataT = unknown,
-  >(
+  function useAsyncCollectionWrap<Forced extends ForceT | false = false, DataT = unknown>(
     id: string,
     path: null | string | undefined,
-    loader: AsyncCollectionLoaderT<TypeLock<Unlocked, void, DataT>>,
+    loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataT>;
 
@@ -108,7 +100,7 @@ export default function withGlobalStateType<
     loader: AsyncCollectionLoaderT<DataT>,
     options: UseAsyncDataOptionsT = {},
   ): UseAsyncDataResT<DataT> {
-    return useAsyncCollection<1, DataT>(id, path, loader, options);
+    return useAsyncCollection<ForceT, DataT>(id, path, loader, options);
   }
 
   return {

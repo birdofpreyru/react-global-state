@@ -1,14 +1,22 @@
 {
   "extends": "@tsconfig/recommended",
-  "exclude": ["ts-types/"],
+
+  // TODO: This actually breaks VSCode code analysis inside ts-types. We should
+  // do no exclusion here, but provide a different TS config file for Jest tests
+  // to use.
+  "exclude": ["ts-types"],
+
   "include": [".."],
   "compilerOptions": {
     "jsx": "react-jsx",
     "noEmit": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "paths": {
       "jest/*": ["../jest/*"],
-      "src/*": ["../src/*"]
+      "*": ["../*"],
     },
     "strict": true,
+    "verbatimModuleSyntax": true,
   },
 }

@@ -28,6 +28,6 @@ export {
   default as useGlobalState,
 } from './useGlobalState';
 
-export { type ValueOrInitializerT } from './utils';
+export { type ForceT, type ValueOrInitializerT } from './utils';
 
 export { default as withGlobalStateType } from './withGlobalStateType';

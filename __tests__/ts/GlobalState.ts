@@ -8,7 +8,7 @@
 import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils';
 
 import GlobalState from 'src/GlobalState';
-import { SsrContext } from 'src/index';
+import { type ForceT, SsrContext } from 'src/index';
 
 jest.useFakeTimers();
 
@@ -42,7 +42,7 @@ describe('State set & get', () => {
     process.env.REACT_GLOBAL_STATE_DEBUG = '1';
     const state = new GlobalState<StateT1>({ key: 'value' });
     expect(state.get()).toMatchSnapshot();
-    state.set<1, string>('', 'value2');
+    state.set<ForceT, string>('', 'value2');
     expect(state.get()).toMatchSnapshot();
     jest.runAllTimers();
     expect(state.get()).toMatchSnapshot();
@@ -52,7 +52,7 @@ describe('State set & get', () => {
     state.set(null, 'value4');
     jest.runAllTimers();
     expect(state.get()).toMatchSnapshot();
-    state.set<1, string>('', 'value5');
+    state.set<ForceT, string>('', 'value5');
     jest.runAllTimers();
     expect(state.get()).toMatchSnapshot();
     expect(consoleLogs).toMatchSnapshot();

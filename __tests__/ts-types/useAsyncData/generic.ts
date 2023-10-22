@@ -3,21 +3,19 @@ import { expectAssignable, expectType } from 'tsd-lite';
 import {
   type AsyncDataEnvelopeT,
   type AsyncDataLoaderT,
+  type ForceT,
   type UseAsyncDataResT,
   useAsyncData,
-} from 'src/index';
-
-import { type TypeLock } from 'src/utils';
+} from 'src';
 
 declare function loader1(): 'OK';
 declare function loader2(): Promise<'OK'>;
 
 expectAssignable<AsyncDataLoaderT<'OK'>>(loader1);
 expectAssignable<AsyncDataLoaderT<'OK'>>(loader2);
-expectAssignable<AsyncDataLoaderT<TypeLock<1, void, 'OK'>>>(loader1);
 
 expectType<UseAsyncDataResT<'OK'>>(
-  useAsyncData<1, 'OK'>('path', loader1),
+  useAsyncData<ForceT, 'OK'>('path', loader1),
 );
 
 const SOME_PATH = 'some.path';

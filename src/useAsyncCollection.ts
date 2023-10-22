@@ -8,7 +8,7 @@ import useAsyncData, {
   type UseAsyncDataResT,
 } from './useAsyncData';
 
-import { TypeLock } from './utils';
+import { type ForceT, type TypeLock } from './utils';
 
 export type AsyncCollectionLoaderT<DataT> =
   (id: string, oldData: null | DataT) => DataT | Promise<DataT>;
@@ -70,14 +70,14 @@ function useAsyncCollection<
 ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>;
 
 function useAsyncCollection<
-  Unlocked extends 0 | 1 = 0,
+  Forced extends ForceT | false = false,
   DataT = unknown,
 >(
   id: string,
   path: null | string | undefined,
-  loader: AsyncCollectionLoaderT<TypeLock<Unlocked, void, DataT>>,
+  loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
   options?: UseAsyncDataOptionsT,
-): UseAsyncDataResT<TypeLock<Unlocked, void, DataT>>;
+): UseAsyncDataResT<TypeLock<Forced, void, DataT>>;
 
 function useAsyncCollection<DataT>(
   id: string,
@@ -86,7 +86,7 @@ function useAsyncCollection<DataT>(
   options: UseAsyncDataOptionsT = {},
 ): UseAsyncDataResT<DataT> {
   const itemPath = path ? `${path}.${id}` : id;
-  return useAsyncData<1, DataT>(
+  return useAsyncData<ForceT, DataT>(
     itemPath,
     (oldData: null | DataT) => loader(id, oldData),
     options,

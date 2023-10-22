@@ -3,7 +3,13 @@
   "compilerOptions": {
     "declaration": true,
     "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "outDir": "build",
-    "strict": true
+    "paths": {
+      "*": ["./*"],
+    },
+    "strict": true,
+    "verbatimModuleSyntax": true,
   },
 }

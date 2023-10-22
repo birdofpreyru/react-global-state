@@ -2,12 +2,17 @@ import { type GetFieldType } from 'lodash';
 
 export type CallbackT = () => void;
 
-// TODO: This probably should be moved to JS Utils lib.
+// TODO: This (ForceT & TypeLock) probably should be moved to JS Utils lib.
+
+// This type is used to "unlocked" special generic overrides around the library.
+declare const force: unique symbol;
+export type ForceT = typeof force;
+
 export type TypeLock<
-  Unlocked extends 0 | 1,
+  Unlocked extends ForceT | false,
   LockedT extends never | void,
   UnlockedT,
-> = Unlocked extends 0 ? LockedT : UnlockedT;
+> = Unlocked extends ForceT ? UnlockedT : LockedT;
 
 /**
  * Given the type of state, `StateT`, and the type of state path, `PathT`,

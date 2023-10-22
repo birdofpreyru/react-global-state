@@ -1,5 +1,5 @@
 {
   "rootDir": "..",
   "runner": "jest-runner-tsd",
-  "testMatch": ["**/__tests__/ts-types/**/*.ts"]
+  "testMatch": ["**/__tests__/ts-types/**"]
 }
