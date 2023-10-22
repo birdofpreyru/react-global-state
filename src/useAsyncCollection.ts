@@ -94,3 +94,19 @@ function useAsyncCollection<DataT>(
 }
 
 export default useAsyncCollection;
+
+export interface UseAsyncCollectionI<StateT> {
+  <PathT extends null | string | undefined, IdT extends string>(
+    id: IdT,
+    path: PathT,
+    loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>,
+    options?: UseAsyncDataOptionsT,
+  ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>;
+
+  <Forced extends ForceT | LockT = LockT, DataT = unknown>(
+    id: string,
+    path: null | string | undefined,
+    loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
+    options?: UseAsyncDataOptionsT,
+  ): UseAsyncDataResT<TypeLock<Forced, void, DataT>>;
+}

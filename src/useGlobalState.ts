@@ -82,16 +82,19 @@ export type UseGlobalStateResT<T> = [T, SetterT<T>];
  *   stable function: it does not change between component re-renders.
  */
 
-function useGlobalState<StateT>(): UseGlobalStateResT<StateT>;
-
+// "Enforced type overload"
 function useGlobalState<
   Forced extends ForceT | LockT = LockT,
-  ValueT = unknown,
+  ValueT = void,
 >(
   path: null | string | undefined,
   initialValue?: ValueOrInitializerT<TypeLock<Forced, never, ValueT>>,
 ): UseGlobalStateResT<TypeLock<Forced, void, ValueT>>;
 
+// "Entire state overload"
+function useGlobalState<StateT>(): UseGlobalStateResT<StateT>;
+
+// "State evaluation overload"
 function useGlobalState<
   StateT,
   PathT extends null | string | undefined,
@@ -158,3 +161,17 @@ function useGlobalState(
 }
 
 export default useGlobalState;
+
+export interface UseGlobalStateI<StateT> {
+  (): UseGlobalStateResT<StateT>;
+
+  <PathT extends null | string | undefined>(
+    path: PathT,
+    initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>
+  ): UseGlobalStateResT<ValueAtPathT<StateT, PathT, void>>;
+
+  <Forced extends ForceT | LockT = LockT, ValueT = unknown>(
+    path: null | string | undefined,
+    initialValue?: ValueOrInitializerT<TypeLock<Forced, never, ValueT>>,
+  ): UseGlobalStateResT<TypeLock<Forced, void, ValueT>>;
+}

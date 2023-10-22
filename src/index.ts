@@ -1,33 +1,71 @@
-export { default as GlobalState } from './GlobalState';
+import GlobalState from './GlobalState';
 
-export {
-  default as GlobalStateProvider,
+import GlobalStateProvider, {
   getGlobalState,
   getSsrContext,
 } from './GlobalStateProvider';
 
-export { default as SsrContext } from './SsrContext';
+import SsrContext from './SsrContext';
 
-export {
-  type AsyncCollectionLoaderT,
-  default as useAsyncCollection,
+import useAsyncCollection, {
+  type UseAsyncCollectionI,
 } from './useAsyncCollection';
 
-export {
-  type AsyncDataEnvelopeT,
-  type AsyncDataLoaderT,
-  type UseAsyncDataOptionsT,
-  type UseAsyncDataResT,
-  default as useAsyncData,
+import useAsyncData, {
+  type UseAsyncDataI,
   newAsyncDataEnvelope,
 } from './useAsyncData';
 
+import useGlobalState, { type UseGlobalStateI } from './useGlobalState';
+
+export type { AsyncCollectionLoaderT } from './useAsyncCollection';
+
+export type {
+  AsyncDataEnvelopeT,
+  AsyncDataLoaderT,
+  UseAsyncDataOptionsT,
+  UseAsyncDataResT,
+} from './useAsyncData';
+
+export type { SetterT, UseGlobalStateResT } from './useGlobalState';
+
+export type { ForceT, ValueOrInitializerT } from './utils';
+
 export {
-  type SetterT,
-  type UseGlobalStateResT,
-  default as useGlobalState,
-} from './useGlobalState';
+  getGlobalState,
+  getSsrContext,
+  GlobalState,
+  GlobalStateProvider,
+  newAsyncDataEnvelope,
+  SsrContext,
+  useAsyncCollection,
+  useAsyncData,
+  useGlobalState,
+};
 
-export { type ForceT, type ValueOrInitializerT } from './utils';
+export interface API<
+  StateT,
+  SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
+> {
+  getGlobalState: typeof getGlobalState<StateT, SsrContextT>;
+  getSsrContext: typeof getSsrContext<SsrContextT>,
+  GlobalState: typeof GlobalState<StateT, SsrContextT>,
+  GlobalStateProvider: typeof GlobalStateProvider<StateT, SsrContextT>,
+  newAsyncDataEnvelope: typeof newAsyncDataEnvelope,
+  SsrContext: typeof SsrContext<StateT>,
+  useAsyncCollection: UseAsyncCollectionI<StateT>,
+  useAsyncData: UseAsyncDataI<StateT>,
+  useGlobalState: UseGlobalStateI<StateT>,
+}
 
-export { default as withGlobalStateType } from './withGlobalStateType';
+export default {
+  getGlobalState,
+  getSsrContext,
+  GlobalState,
+  GlobalStateProvider,
+  newAsyncDataEnvelope,
+  SsrContext,
+  useAsyncCollection,
+  useAsyncData,
+  useGlobalState,
+} as API<unknown>;

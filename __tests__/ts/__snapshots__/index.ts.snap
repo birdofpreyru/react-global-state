@@ -5,12 +5,22 @@ exports[`Library exports match expectations 1`] = `
   "GlobalState": [Function],
   "GlobalStateProvider": [Function],
   "SsrContext": [Function],
+  "default": {
+    "GlobalState": [Function],
+    "GlobalStateProvider": [Function],
+    "SsrContext": [Function],
+    "getGlobalState": [Function],
+    "getSsrContext": [Function],
+    "newAsyncDataEnvelope": [Function],
+    "useAsyncCollection": [Function],
+    "useAsyncData": [Function],
+    "useGlobalState": [Function],
+  },
   "getGlobalState": [Function],
   "getSsrContext": [Function],
   "newAsyncDataEnvelope": [Function],
   "useAsyncCollection": [Function],
   "useAsyncData": [Function],
   "useGlobalState": [Function],
-  "withGlobalStateType": [Function],
 }
 `;

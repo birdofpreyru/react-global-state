@@ -183,7 +183,7 @@ function useAsyncData<
 
 function useAsyncData<
   Forced extends ForceT | LockT = LockT,
-  DataT = unknown,
+  DataT = void,
 >(
   path: null | string | undefined,
   loader: AsyncDataLoaderT<TypeLock<Forced, void, DataT>>,
@@ -294,3 +294,17 @@ function useAsyncData<DataT>(
 }
 
 export default useAsyncData;
+
+export interface UseAsyncDataI<StateT> {
+  <PathT extends null | string | undefined>(
+    path: PathT,
+    loader: AsyncDataLoaderT<DataInEnvelopeAtPathT<StateT, PathT>>,
+    options?: UseAsyncDataOptionsT,
+  ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
+
+  <Forced extends ForceT | LockT = LockT, DataT = unknown>(
+    path: null | string | undefined,
+    loader: AsyncDataLoaderT<TypeLock<Forced, void, DataT>>,
+    options?: UseAsyncDataOptionsT,
+  ): UseAsyncDataResT<TypeLock<Forced, void, DataT>>;
+}
