@@ -94,7 +94,7 @@ to make convenient and safe static type analysis possible.
     definition):
     ```ts
     function useGlobalState<
-      Unlocked extends 0 | 1 = 0,
+      Forced extends ForceT | false = false,
       ValueT = void,
     >(
       path: null | string | undefined,
@@ -102,9 +102,9 @@ to make convenient and safe static type analysis possible.
     ): UseGlobalStateResT<ValueT>;
     ```
     Generic parameters are:
-    - `Unlocked` &mdash; **0** | **1** &mdash; The default value, **0**, forbids
+    - `Unlocked` &mdash; [ForceT] | **false** &mdash; The default value, **false**, forbids
       TypeScript to use this overload (it does so by forcing **DataT** to evaluate
-      as **void**). It must be set **1** explicitly to use this overload.
+      as **void**). It must be set equal [ForceT] explicitly to use this overload.
     - `ValueT` &mdash; The type of value at the state `path`, defaults
       to **void** to force the caller to specify it.
 
@@ -144,6 +144,7 @@ It returns an array with two elements `[value, setValue]` (see the type
   Also, similar to the standard React's state setters, `setValue()` is
   a stable function: it does not change between component re-renders.
 
+[ForceT]: /docs/api/types/force
 [GlobalState]: /docs/api/classes/globalstate
 [SetterT]: /docs/api/types/setter
 [useGlobalState()]: #

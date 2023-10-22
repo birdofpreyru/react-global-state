@@ -5,6 +5,10 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "jsx": "react-jsx",
-    "outDir": "build/types"
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "outDir": "build/types",
+    "strict": true,
+    "verbatimModuleSyntax": true,
   }
 }

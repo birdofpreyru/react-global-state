@@ -4,6 +4,8 @@
   by [useAsyncData()] and [useAsyncCollection()] hooks, alongside related meta-data.
 - [AsyncDataLoaderT] &mdash; The signature of a valid data loader function for
   [useAsyncData()] hook.
+- [ForceT] &mdash; A special type for &laquo;unlocking&raquo; overloads of
+  hooks and functions that allow to enforce arbitrary value types.
 - [SetterT] &mdash; The type of setter returned by the [useGlobalState()] hook.
 - [UseAsyncDataOptionsT] &mdash; The type of options object accepted by
   [useAsyncData()] and [useAsyncCollection()] hooks.
@@ -17,6 +19,7 @@
 [AsyncCollectionLoaderT]: /docs/api/types/async-collection-loader
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
+[ForceT]: /docs/api/types/force
 [SetterT]: /docs/api/types/setter
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata

@@ -29,7 +29,7 @@ is a function type), you must wrap such value inside an _initializer function_
 to correctly set it, _e.g._
 
 ```ts
-import { useGlobalState } from '@dr.pogodin/react-global-state';
+import { type ForceT, useGlobalState } from '@dr.pogodin/react-global-state';
 
 // A sample function, we want to place, as the initial value,
 // at the path "some.path" of the global state (although it is not
@@ -44,13 +44,13 @@ function SampleComponent() {
   // function, thus if the initial value is to be used, it will call
   // foo(), which will crash with error in this example (and if would
   // not crash, its result would be used as the initial value).
-  useGlobalState<1, typeof foo>('some.path', foo);
+  useGlobalState<ForceT, typeof foo>('some.path', foo);
 
   // CORRECT: At runtime the hook correctly assumes its argument,
   // `() => foo` is an initializer function, thus if the initial
   // value is to be used, it calls it, and uses its result (`foo`)
   // as the initial value.
-  useGlobalState<1, typeof foo>('some.path', () => foo);
+  useGlobalState<ForceT, typeof foo>('some.path', () => foo);
 
   return null;
 }

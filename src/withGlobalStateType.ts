@@ -27,12 +27,67 @@ import useAsyncData, {
   type UseAsyncDataResT,
 } from './useAsyncData';
 
+interface NarrowedUseGlobalStateI<StateT> {
+  (): UseGlobalStateResT<StateT>;
+
+  <PathT extends null | string | undefined>(
+    path: PathT,
+    initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>,
+  ): UseGlobalStateResT<ValueAtPathT<StateT, PathT, void>>;
+
+  <Forced extends ForceT | false = false, ValueT = unknown>(
+    path: null | string | undefined,
+    initialValue?: ValueOrInitializerT<TypeLock<Forced, never, ValueT>>,
+  ): UseGlobalStateResT<TypeLock<Forced, void, ValueT>>;
+}
+
+interface NarrowedUseAsyncDataI<StateT> {
+  <PathT extends null | string | undefined>(
+    path: PathT,
+    loader: AsyncDataLoaderT<DataInEnvelopeAtPathT<StateT, PathT>>,
+    options?: UseAsyncDataOptionsT,
+  ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
+
+  <Forced extends ForceT | false = false, DataT = unknown>(
+    path: null | string | undefined,
+    loader: AsyncDataLoaderT<TypeLock<Forced, void, DataT>>,
+    options?: UseAsyncDataOptionsT,
+  ): UseAsyncDataResT<TypeLock<Forced, never, DataT>>;
+}
+
+interface NarrowedUseAsyncCollectionI<StateT> {
+  <PathT extends null | string | undefined>(
+    id: string,
+    path: PathT,
+    loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, PathT>>,
+    options?: UseAsyncDataOptionsT,
+  ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
+
+  <Forced extends ForceT | false = false, DataT = unknown>(
+    id: string,
+    path: null | string | undefined,
+    loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
+    options?: UseAsyncDataOptionsT,
+  ): UseAsyncDataResT<DataT>;
+}
+
+type WithGlobalStateTypeResT<
+  StateT,
+  SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
+> = {
+  getGlobalState: typeof getGlobalState<StateT, SsrContextT>,
+  getSsrContext: typeof getSsrContext<SsrContextT>,
+  GlobalStateProvider: typeof GlobalStateProvider<StateT, SsrContextT>,
+  // SsrContext: SsrContext<StateT>,
+  useAsyncCollection: NarrowedUseAsyncCollectionI<StateT>,
+  useAsyncData: NarrowedUseAsyncDataI<StateT>,
+  useGlobalState: NarrowedUseGlobalStateI<StateT>,
+};
+
 export default function withGlobalStateType<
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
->(
-  CustomSsrContext?: SsrContextT,
-) {
+>(): WithGlobalStateTypeResT<StateT, SsrContextT> {
   // These wrap useGlobalState() with locked-in StateT type.
 
   function useGlobalStateWrap(): UseGlobalStateResT<StateT>;
@@ -107,7 +162,7 @@ export default function withGlobalStateType<
     getGlobalState: getGlobalState<StateT, SsrContextT>,
     getSsrContext: getSsrContext<SsrContextT>,
     GlobalStateProvider: GlobalStateProvider<StateT, SsrContextT>,
-    SsrContext: CustomSsrContext || SsrContext,
+    // SsrContext, /* CustomSsrContext || SsrContext, */
     useAsyncCollection: useAsyncCollectionWrap,
     useAsyncData: useAsyncDataWrap,
     useGlobalState: useGlobalStateWrap,

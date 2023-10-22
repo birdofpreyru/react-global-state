@@ -82,11 +82,11 @@ work.
     :::
 
 2.  Another overload has the following signature (simplified by omitting
-    details behind the **DataT** definition), which allows to force any **DataT**
-    type under the caller's discretion:
+    details behind the exact **DataT** definition), which allows to force any
+    **DataT** type under the caller's discretion:
     ```ts
     function useAsyncCollection<
-      Unlocked extends 0 | 1 = 0,
+      Force extends ForceT | false = false,
       DataT = unknown,
     >(
       id: string,
@@ -96,27 +96,29 @@ work.
     ): UseAsyncDataResT<DataT>;
     ```
     Generic parameters are:
-    - `Unlocked` &mdash; **0** | **1** &mdash; The default value, **0**, forbids
-      TypeScript to use this overload (it does so by forcing **DataT** to evaluate
-      as **void** behind the scene). It must be set **1** explicitly, to use this
-      overload.
+    - `Forced` &mdash; [ForceT] | **false** &mdash; The default value, **false**,
+      forbids TypeScript to use this overload (it does so by forcing **DataT**
+      to evaluate as **void** behind the scene). It must be set [ForceT] explicitly,
+      to use this overload.
     - `DataT` &mdash; The type of collection item, defaults to **unknown**.
 
     You can use this overload in either of these way:
     ```ts
     // Variant #1.
-    import { useAsyncCollection } from '@dr.pogodin/react-global-state';
 
-    useAsyncCollection<1, DataT>(id, path, loader);
+    import { type ForceT, useAsyncCollection } from '@dr.pogodin/react-global-state';
+
+    useAsyncCollection<ForceT, DataT>(id, path, loader);
 
     // Variant #2. Using withGlobalStateType().
-    import { withGlobalStateType } from '@dr.pogodin/react-global-state';
+
+    import { type ForceT, withGlobalStateType } from '@dr.pogodin/react-global-state';
 
     const { useAsyncCollection } = withGlobalStateType<StateT>();
 
     // This overload does not really use StateT for type-checks, it just assumes
     // the DataT type you have specified.
-    useAsyncCollection<1, DataT>(id, path, loader);
+    useAsyncCollection<ForceT, DataT>(id, path, loader);
     ```
 
 ## Arguments
@@ -132,6 +134,7 @@ Returns an object of [UseAsyncDataResT]&lt;**DataT**&gt; type.
 
 [AsyncCollectionLoaderT]: /docs/api/types/async-collection-loader
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
+[ForceT]: /docs/api/types/force
 [UseAsyncDataOptionsT]: /docs/api/types/use-async-data-options
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata

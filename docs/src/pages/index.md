@@ -98,7 +98,7 @@ a _string literal type_, that describes a valid global state path,
 and the type of global state is well-defined along that path. For example:
 
 ```ts
-import { withGlobalStateType } from '@dr.pogodin/react-global-state';
+import { type ForceT, withGlobalStateType } from '@dr.pogodin/react-global-state';
 
 type StateT = { some: { path: string }};
 
@@ -123,10 +123,7 @@ function SampleReactComponent() {
   const dataB = useGlobalState('unknown.path', 123)[0];
 
   // This variant forces "number" value type on that unknown path.
-  // NOTE: The "1" as the first generic parameter is just a "switch" value
-  // enabling this overload of the hook, it has nothing to do with the "number"
-  // type of value we are forcing here.
-  const dataC = useGlobalState<1, number>('unknown.path', 123)[0];
+  const dataC = useGlobalState<ForceT, number>('unknown.path', 123)[0];
 
   return /* Some JSX markup. */;
 }
@@ -137,6 +134,7 @@ Here is a brief exampe of async data loading with TS-flavour of this library:
 ```ts
 import {
   type AsyncDataEnvelopeT,
+  type ForceT,
   withGlobalStateType,
 } from '@dr.pogodin/react-global-state';
 
@@ -149,16 +147,16 @@ type StateT = { some: { path: AsyncDataEnvelopeT<string> }};
 const { useAsyncData } = withGlobalStateType<StateT>();
 
 async function loader(): string {
-
-  /* Some async operation to get data, like a call to a 3-rd party API. */
-
+  //-------------------------------------------------------------------
+  // Some async operation to get data, like a call to a 3-rd party API.
+  //-------------------------------------------------------------------
   return 'retrieved async data, a string in this example';
 }
 
 async function numberLoader(): number {
-
-  /* Some async operation to get data, like a call to a 3-rd party API. */
-
+  //-------------------------------------------------------------------
+  // Some async operation to get data, like a call to a 3-rd party API.
+  //-------------------------------------------------------------------
   return 123;
 }
 
@@ -176,7 +174,7 @@ function SampleReactComponent() {
   // NOTE: The "1" as the first generic parameter is just a "switch" value
   // enabling this overload of the hook, it has nothing to do with the "number"
   // type of data we are forcing here.
-  const { data, loading, timer } = useAsyncData<1, number>('some.path', numberLoader);
+  const { data, loading, timer } = useAsyncData<ForceT, number>('some.path', numberLoader);
 
   return /* Some JSX markup. */
 }

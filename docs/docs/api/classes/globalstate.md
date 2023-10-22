@@ -110,7 +110,7 @@ _Compile-time TypeScript overloads:_
 
 3.  This implementation allows to force any value type at the caller's discretion:
     ```ts
-    get<Unlocked extends 0 | 1 = 0, ValueT = void>(
+    get<Forced extends ForceT | false = false, ValueT = void>(
       path?: null | string,
       opts?: GetOptsT<ValueT>,
     ): ValueT;
@@ -118,11 +118,14 @@ _Compile-time TypeScript overloads:_
     &uArr; _Simplified by omitting some details behind the actual **ValueT**
     definition and usage._
 
-    By default, **0** value of **Unlocked** generic param forbids compiler
-    to use this overload; it must be set equal **1** to work, _e.g._
+    By default, the _false_ value of **Forced** generic param forbids compiler
+    to use this overload; it must be set equal **ForceT** to work, _e.g._
     ```ts
     // Forces TypeScript to assume the value at `path` has "string" type.
-    globalState.get<1,string>(path);
+
+    import { type ForceT } from '@dr.pogodin/react-global-state';
+
+    globalState.get<ForceT, string>(path);
     ```
 
 ### getEntireState()
@@ -173,7 +176,7 @@ _Compile-time TypeScript overloads:_
 2.  This overload allows to force any **ValueT** type at the caller's
     discretion:
     ```ts
-    set<Unlocked extends 0 | 1 = 0, ValueT = never>(
+    set<Forced extends ForceT | false = false, ValueT = never>(
       path: null | string | undefined,
       value: ValueT,
     ): ValueT; 
@@ -181,13 +184,15 @@ _Compile-time TypeScript overloads:_
     &uArr; _Simplified by omitting details behind the actual **ValueT**
     definition and use._
 
-    The default value of **Unlocked** generic parameter, **0**, forbids TypeScript
-    to use this overload, unless **Unlocked** is explicitly set equal **1**,
+    The default value of **Forced** generic parameter, _false_, forbids TypeScript
+    to use this overload, unless **Forced** is explicitly set equal _ForcedT_,
     _i.e._ you use this overload like this:
     ```ts
     // Forces TypeScript to assume `value` has "string" type:
 
-    globalState.set<1, string>('some.path', 'some string value');
+    import { type ForceT } from '@dr.pogodin/react-global-state';
+
+    globalState.set<ForceT, string>('some.path', 'some string value');
     ```
 
 ### setEntireState()

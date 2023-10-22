@@ -78,7 +78,7 @@ making convenient and safe static type analysis possible.
     force any **DataT** type under the caller's discretion:
     ```ts
     function useAsyncData<
-      Unlocked extends 0 | 1 = 0,
+      Forced extends ForceT | false = false,
       DataT = unknown,
     >(
       path: null | string | undefined,
@@ -87,25 +87,30 @@ making convenient and safe static type analysis possible.
     ): UseAsyncDataResT<DataT>;
     ```
     Generic parameters are:
-    - `Unlocked` &mdash; **0** | **1** &mdash; The default value, **0**, forbids
+    - `Forced` &mdash; [ForceT] | **false** &mdash; The default value, _false_,
+      forbids
       TypeScript to use this overload (it does so by forcing **DataT** to evaluate
-      as **void**). It must be set **1** explicitly to use this overload.
+      as _void_). It must be set equal [ForceT] explicitly to use this overload.
+
     - `DataT` &mdash; The type of loaded datum, defaults to **unknown**.
     You can use this overload in two ways:
+
     ```ts
     // Variant #1.
-    import { useAsyncData } from '@dr.pogodin/react-global-state';
 
-    useAsyncData<1, DataT>(id, path, loader);
+    import { type ForceT, useAsyncData } from '@dr.pogodin/react-global-state';
+
+    useAsyncData<ForceT, DataT>(id, path, loader);
 
     // Variant #2. Using withGlobalStateType().
-    import { withGlobalStateType } from '@dr.pogodin/react-global-state';
+
+    import { type ForceT, withGlobalStateType } from '@dr.pogodin/react-global-state';
 
     const { useAsyncData } = withGlobalStateType<StateT>();
 
     // This overload does not really use StateT for type-checks, it just
     // assumes the DatatT type you have specified.
-    useAsyncData<1, DataT>(id, path, loader);
+    useAsyncData<ForceT, DataT>(id, path, loader);
     ```
 
 ## Arguments
@@ -128,6 +133,7 @@ Returns an object of the type [UseAsyncDataResT]&lt;**DataT**&gt;.
 
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
+[ForceT]: /docs/api/types/force
 [newAsyncDataEnvelope()]: /docs/api/functions/new-async-data-envelope
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata

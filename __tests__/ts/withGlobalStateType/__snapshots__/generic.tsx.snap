@@ -5,7 +5,6 @@ exports[` 1`] = `"<div>value-b</div>"`;
 exports[`withGlobalStateType() result matches snapshot 1`] = `
 {
   "GlobalStateProvider": [Function],
-  "SsrContext": [Function],
   "getGlobalState": [Function],
   "getSsrContext": [Function],
   "useAsyncCollection": [Function],
