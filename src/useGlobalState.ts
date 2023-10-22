@@ -11,6 +11,7 @@ import { getGlobalState } from './GlobalStateProvider';
 import {
   type CallbackT,
   type ForceT,
+  type LockT,
   type TypeLock,
   type ValueAtPathT,
   type ValueOrInitializerT,
@@ -83,7 +84,10 @@ export type UseGlobalStateResT<T> = [T, SetterT<T>];
 
 function useGlobalState<StateT>(): UseGlobalStateResT<StateT>;
 
-function useGlobalState<Forced extends ForceT | false = false, ValueT = unknown>(
+function useGlobalState<
+  Forced extends ForceT | LockT = LockT,
+  ValueT = unknown,
+>(
   path: null | string | undefined,
   initialValue?: ValueOrInitializerT<TypeLock<Forced, never, ValueT>>,
 ): UseGlobalStateResT<TypeLock<Forced, void, ValueT>>;

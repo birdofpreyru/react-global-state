@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/recommended",
+  "extends": "./node_modules/@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "declaration": true,
     "jsx": "react-jsx",

@@ -8,7 +8,7 @@ import useAsyncData, {
   type UseAsyncDataResT,
 } from './useAsyncData';
 
-import { type ForceT, type TypeLock } from './utils';
+import { type ForceT, type LockT, type TypeLock } from './utils';
 
 export type AsyncCollectionLoaderT<DataT> =
   (id: string, oldData: null | DataT) => DataT | Promise<DataT>;
@@ -70,7 +70,7 @@ function useAsyncCollection<
 ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>;
 
 function useAsyncCollection<
-  Forced extends ForceT | false = false,
+  Forced extends ForceT | LockT = LockT,
   DataT = unknown,
 >(
   id: string,

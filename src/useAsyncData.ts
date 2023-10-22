@@ -13,6 +13,7 @@ import useGlobalState from './useGlobalState';
 
 import {
   type ForceT,
+  type LockT,
   type TypeLock,
   type ValueAtPathT,
   isDebugMode,
@@ -181,7 +182,7 @@ function useAsyncData<
 ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
 
 function useAsyncData<
-  Forced extends ForceT | false = false,
+  Forced extends ForceT | LockT = LockT,
   DataT = unknown,
 >(
   path: null | string | undefined,

@@ -1,5 +1,6 @@
 import {
   type ForceT,
+  type LockT,
   type TypeLock,
   type ValueAtPathT,
   type ValueOrInitializerT,
@@ -35,7 +36,7 @@ interface NarrowedUseGlobalStateI<StateT> {
     initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>,
   ): UseGlobalStateResT<ValueAtPathT<StateT, PathT, void>>;
 
-  <Forced extends ForceT | false = false, ValueT = unknown>(
+  <Forced extends ForceT | LockT = LockT, ValueT = unknown>(
     path: null | string | undefined,
     initialValue?: ValueOrInitializerT<TypeLock<Forced, never, ValueT>>,
   ): UseGlobalStateResT<TypeLock<Forced, void, ValueT>>;
@@ -48,7 +49,7 @@ interface NarrowedUseAsyncDataI<StateT> {
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
 
-  <Forced extends ForceT | false = false, DataT = unknown>(
+  <Forced extends ForceT | LockT = LockT, DataT = unknown>(
     path: null | string | undefined,
     loader: AsyncDataLoaderT<TypeLock<Forced, void, DataT>>,
     options?: UseAsyncDataOptionsT,
@@ -63,7 +64,7 @@ interface NarrowedUseAsyncCollectionI<StateT> {
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
 
-  <Forced extends ForceT | false = false, DataT = unknown>(
+  <Forced extends ForceT | LockT = LockT, DataT = unknown>(
     id: string,
     path: null | string | undefined,
     loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
@@ -97,7 +98,10 @@ export default function withGlobalStateType<
     initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>,
   ): UseGlobalStateResT<ValueAtPathT<StateT, PathT, void>>;
 
-  function useGlobalStateWrap<Forced extends ForceT | false = false, ValueT = unknown>(
+  function useGlobalStateWrap<
+    Forced extends ForceT | LockT = LockT,
+    ValueT = unknown,
+  >(
     path: null | string | undefined,
     initialValue?: ValueOrInitializerT<TypeLock<Forced, never, ValueT>>,
   ): UseGlobalStateResT<TypeLock<Forced, void, ValueT>>;
@@ -118,7 +122,10 @@ export default function withGlobalStateType<
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
 
-  function useAsyncDataWrap<Forced extends ForceT | false = false, DataT = unknown>(
+  function useAsyncDataWrap<
+    Forced extends ForceT | LockT = LockT,
+    DataT = unknown,
+  >(
     path: null | string | undefined,
     loader: AsyncDataLoaderT<TypeLock<Forced, void, DataT>>,
     options?: UseAsyncDataOptionsT,
@@ -142,7 +149,10 @@ export default function withGlobalStateType<
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
 
-  function useAsyncCollectionWrap<Forced extends ForceT | false = false, DataT = unknown>(
+  function useAsyncCollectionWrap<
+    Forced extends ForceT | LockT = LockT,
+    DataT = unknown,
+  >(
     id: string,
     path: null | string | undefined,
     loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,

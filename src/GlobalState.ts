@@ -13,6 +13,7 @@ import SsrContext from './SsrContext';
 import {
   type CallbackT,
   type ForceT,
+  type LockT,
   type TypeLock,
   type ValueAtPathT,
   type ValueOrInitializerT,
@@ -162,7 +163,7 @@ export default class GlobalState<
 
   // This variant is not callable by default (without generic arguments),
   // otherwise it allows to set the correct ValueT directly.
-  get<Forced extends ForceT | false = false, ValueT = void>(
+  get<Forced extends ForceT | LockT = LockT, ValueT = void>(
     path?: null | string,
     opts?: GetOptsT<TypeLock<Forced, never, ValueT>>,
   ): TypeLock<Forced, void, ValueT>;
@@ -205,7 +206,7 @@ export default class GlobalState<
 
   // This variant is disabled by default, otherwise allows to give
   // expected value type explicitly.
-  set<Forced extends ForceT | false = false, ValueT = never>(
+  set<Forced extends ForceT | LockT = LockT, ValueT = never>(
     path: null | string | undefined,
     value: TypeLock<Forced, never, ValueT>,
   ): TypeLock<Forced, void, ValueT>;
