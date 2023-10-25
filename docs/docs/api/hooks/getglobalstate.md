@@ -19,20 +19,20 @@ function getGlobalState<StateT>(): GlobalState<StateT>;
 - `StateT` <a id="state-type" /> &mdash; The global state type.
 
 :::tip
-Alternatively you may use [API] interface to get
+Alternatively you may use [withGlobalStateType()] function to get
 [getGlobalState()] with "locked-in" [StateT]:
 
 ```ts
-import RGS, { type API } from '@dr.pogodin/react-global-state';
+import { withGlobalStateType } from '@dr.pogodin/react-global-state';
 
-const { getGlobalState } = RGS as API<StateT>;
+const { getGlobalState } = withGlobalStateType<StateT>();
 ```
 :::
 
 ## Result
 Returns [GlobalState]&lt;[StateT]&gt; instance.
 
-[API]: /docs/api/types/api
 [getGlobalState()]: #
 [GlobalState]: /docs/api/classes/globalstate
 [useGlobalState()]: /docs/api/hooks/useglobalstate
+[withGlobalStateType()]: /docs/api/functions/with-global-state-type

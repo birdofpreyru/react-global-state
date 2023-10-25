@@ -18,13 +18,13 @@ where a single generic parameter:
   [GlobalStateProvider].
 
 :::tip
-Alternatively you may use  [API] interface to get
+Alternatively you may use [withGlobalStateType()] function to get
 [GlobalStateProvider] with "locked-in" [StateT]:
 
 ```ts
-import RGS, { type API } from '@dr.pogodin/react-global-state';
+import { withGlobalStateType } from '@dr.pogodin/react-global-state';
 
-const { GlobalStateProvider } = RGS as API<StateT>;
+const { GlobalStateProvider } = withGlobalStateType<StateT>();
 ```
 :::
 
@@ -93,10 +93,10 @@ activates the "proxy mode", no matter other props values.
   - Otherwise it will act as normal: create a new [GlobalState] instance and
     provide it to its children.
 
-[API]: /docs/api/types/api
 [GlobalState]: /docs/api/classes/globalstate
 [GlobalStateProvider]: #
 [initialState]: #initial-state-prop
 [SsrContext]: /docs/api/classes/ssrcontext
 [stateProxy]: #state-proxy-prop
 [ValueOrInitializerT]: /docs/api/types/value-or-initializer
+[withGlobalStateType()]: /docs/api/functions/with-global-state-type

@@ -240,3 +240,4 @@ the state watching functionlity is intended for the client-side only.
 [SsrContext]: /docs/api/classes/ssrcontext
 [useGlobalState()]: /docs/api/hooks/useglobalstate
 [ValueOrInitializerT]: /docs/api/types/value-or-initializer
+[withGlobalStateType()]: /docs/api/functions/with-global-state-type

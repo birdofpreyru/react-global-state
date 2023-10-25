@@ -65,15 +65,13 @@ work.
     ```ts
     useAsyncCollection<StateT, typeof path, typeof id>(id, path, loader);
     ```
-    Instead of this, you should prefer to use the [API] interface
-    to get and use a specially wrapped version of this hook, with
+    Instead of this, you should prefer to use the [withGlobalStateType()]
+    function to get and use a specially wrapped version of this hook, with
     "locked-in" [StateT] type, which allows TS to auto-evaluate the values of
     **PathT** and **IdT** from given arguments, and thus allows to use the hook
     this way:
     ```ts
-    import RGS, { type API } from '@dr.pogodin/react-global-state';
-
-    const { useAsyncCollection } = RGS as API<StateT>;
+    const { useAsyncCollection } = withGlobalStateType<StateT>();
 
     // Behind the scene, TS still attempts to auto-evaluate the DataT type
     // based on StateT, typeof id, and typeof path; and uses it to type check
@@ -112,11 +110,11 @@ work.
 
     useAsyncCollection<ForceT, DataT>(id, path, loader);
 
-    // Variant #2. Using API interface.
+    // Variant #2. Using withGlobalStateType().
 
-    import RGS, { type API, type ForceT } from '@dr.pogodin/react-global-state';
+    import { type ForceT, withGlobalStateType } from '@dr.pogodin/react-global-state';
 
-    const { useAsyncCollection } = RGS as API<StateT>;
+    const { useAsyncCollection } = withGlobalStateType<StateT>();
 
     // This overload does not really use StateT for type-checks, it just assumes
     // the DataT type you have specified.
@@ -134,7 +132,6 @@ work.
 ## Result
 Returns an object of [UseAsyncDataResT]&lt;**DataT**&gt; type.
 
-[API]: /docs/api/types/api
 [AsyncCollectionLoaderT]: /docs/api/types/async-collection-loader
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
 [ForceT]: /docs/api/types/force
@@ -143,3 +140,4 @@ Returns an object of [UseAsyncDataResT]&lt;**DataT**&gt; type.
 [useAsyncData()]: /docs/api/hooks/useasyncdata
 [UseAsyncDataResT]: /docs/api/types/use-async-data-res
 [useGlobalState()]: /docs/api/hooks/useglobalstate
+[withGlobalStateType()]: /docs/api/functions/with-global-state-type

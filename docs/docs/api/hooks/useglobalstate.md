@@ -74,15 +74,13 @@ to make convenient and safe static type analysis possible.
     ```ts
     useGlobalState<StateT, typeof path>(path);
     ```
-    Instead, you should prefer to use [API] interface to get
+    Instead, you should prefer to use [withGlobalStateType()] function to get
     and use a specially wrapped version of this hook, with "locked-in" **StateT**
     type, which allows TS to auto-evaluate **PathT** based on `path` argument,
     and thus allows to use this hook variant without generic parameters,
     when possible:
     ```ts
-    import RGS, { type API } from '@dr.pogodin/react-global-state';
-
-    const { useGlobalState } = RGS as API<StateT>;
+    const { useGlobalState } = withGlobalStateType<StateT>();
 
     // Behind the scene, TS still auto-evaluates DataT type, and uses it
     // for type checks; it also denies to compile it, if DataT cannot be
@@ -146,10 +144,10 @@ It returns an array with two elements `[value, setValue]` (see the type
   Also, similar to the standard React's state setters, `setValue()` is
   a stable function: it does not change between component re-renders.
 
-[API]: /docs/api/types/api
 [ForceT]: /docs/api/types/force
 [GlobalState]: /docs/api/classes/globalstate
 [SetterT]: /docs/api/types/setter
 [useGlobalState()]: #
 [UseGlobalStateResT]: /docs/api/types/use-global-state-res
 [ValueOrInitializerT]: /docs/api/types/value-or-initializer
+[withGlobalStateType()]: /docs/api/functions/with-global-state-type
