@@ -5,10 +5,10 @@
 
 import { expectError } from 'tsd-lite';
 
-import RGS, {
-  type API,
+import {
   type AsyncDataEnvelopeT,
   type ForceT,
+  withGlobalStateType,
 } from '../../../src';
 
 // i.e. "examples.asyncGlobalData" is not assignable path for useAsyncData(),
@@ -26,7 +26,7 @@ type GoodStateT = {
   };
 };
 
-const { useAsyncData: badUseAsyncData } = RGS as API<BadStateT>;
+const { useAsyncData: badUseAsyncData } = withGlobalStateType<BadStateT>();
 
 expectError(() => {
   badUseAsyncData(
@@ -36,7 +36,7 @@ expectError(() => {
 });
 
 // This is a functional variant
-const { useAsyncData: goodUseAsyncData } = RGS as API<GoodStateT>;
+const { useAsyncData: goodUseAsyncData } = withGlobalStateType<GoodStateT>();
 
 goodUseAsyncData(
   'examples.asyncGlobalData',

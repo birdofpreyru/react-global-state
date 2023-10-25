@@ -3,12 +3,12 @@
 import pretty from 'pretty';
 import { type DestroyableHtmlElement, mount } from 'jest/utils';
 
-import RGS, { type API } from 'src/index';
+import { withGlobalStateType } from 'src/index';
 
 type ValueT = 'value-a' | 'value-b';
 type StateT = { some: { path: ValueT } };
 
-const GS = RGS as API<StateT>;
+const GS = withGlobalStateType<StateT>();
 
 it('withGlobalStateType() result matches snapshot', () => {
   expect(GS).toMatchSnapshot();

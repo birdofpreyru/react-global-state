@@ -43,7 +43,7 @@ export {
   useGlobalState,
 };
 
-export interface API<
+interface API<
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
 > {
@@ -58,7 +58,7 @@ export interface API<
   useGlobalState: UseGlobalStateI<StateT>,
 }
 
-export default {
+const api = {
   getGlobalState,
   getSsrContext,
   GlobalState,
@@ -68,4 +68,11 @@ export default {
   useAsyncCollection,
   useAsyncData,
   useGlobalState,
-} as API<unknown>;
+};
+
+export function withGlobalStateType<
+  StateT,
+  SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
+>() {
+  return api as API<StateT, SsrContextT>;
+}
