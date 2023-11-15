@@ -60,14 +60,15 @@ function useAsyncCollection<
   StateT,
   PathT extends null | string | undefined,
   IdT extends string,
+
+  DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> =
+  DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
 >(
   id: IdT,
   path: PathT,
-  loader: AsyncCollectionLoaderT<
-  DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>
-  >,
+  loader: AsyncCollectionLoaderT<DataT>,
   options?: UseAsyncDataOptionsT,
-): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>;
+): UseAsyncDataResT<DataT>;
 
 function useAsyncCollection<
   Forced extends ForceT | LockT = LockT,

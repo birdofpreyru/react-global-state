@@ -1,4 +1,4 @@
-import { expectAssignable, expectType } from 'tsd-lite';
+import { expectAssignable, expectType, expectError } from 'tsd-lite';
 
 import {
   type AsyncDataEnvelopeT,
@@ -10,6 +10,7 @@ import {
 
 declare function loader1(): 'OK';
 declare function loader2(): Promise<'OK'>;
+declare function numLoader(): number;
 
 expectAssignable<AsyncDataLoaderT<'OK'>>(loader1);
 expectAssignable<AsyncDataLoaderT<'OK'>>(loader2);
@@ -24,3 +25,10 @@ type StateT = { some: { path: AsyncDataEnvelopeT<'OK'> } };
 expectType<UseAsyncDataResT<'OK'>>(
   useAsyncData<StateT, typeof SOME_PATH>(SOME_PATH, loader1),
 );
+
+expectError(() => {
+  const x: UseAsyncDataResT<number> = useAsyncData<StateT, typeof SOME_PATH>(
+    SOME_PATH,
+    numLoader,
+  );
+});

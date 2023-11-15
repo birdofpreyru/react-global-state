@@ -56,6 +56,7 @@ export type UseAsyncDataOptionsT = {
 export type UseAsyncDataResT<DataT> = {
   data: DataT | null;
   loading: boolean;
+  reload: (loader?: AsyncDataLoaderT<DataT>) => Promise<void>;
   timestamp: number;
 };
 
@@ -175,11 +176,14 @@ export type DataInEnvelopeAtPathT<StateT, PathT extends null | string | undefine
 function useAsyncData<
   StateT,
   PathT extends null | string | undefined,
+
+  DataT extends DataInEnvelopeAtPathT<StateT, PathT> =
+  DataInEnvelopeAtPathT<StateT, PathT>,
 >(
   path: PathT,
-  loader: AsyncDataLoaderT<DataInEnvelopeAtPathT<StateT, PathT>>,
+  loader: AsyncDataLoaderT<DataT>,
   options?: UseAsyncDataOptionsT,
-): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, PathT>>;
+): UseAsyncDataResT<DataT>;
 
 function useAsyncData<
   Forced extends ForceT | LockT = LockT,
@@ -289,6 +293,14 @@ function useAsyncData<DataT>(
   return {
     data: maxage < Date.now() - localState.timestamp ? null : localState.data,
     loading: Boolean(localState.operationId),
+
+    reload: (customLoader?: AsyncDataLoaderT<DataT>) => load(
+      path,
+      customLoader || loader,
+      globalState,
+      null,
+    ),
+
     timestamp: localState.timestamp,
   };
 }
