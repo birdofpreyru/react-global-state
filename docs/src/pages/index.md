@@ -1,5 +1,3 @@
-import TsNote from '../../docs/api/_ts-note.md';
-
 # React Global State
 
 [![Latest NPM Release](https://img.shields.io/npm/v/@dr.pogodin/react-global-state.svg)](https://www.npmjs.com/package/@dr.pogodin/react-global-state)
@@ -13,8 +11,6 @@ asynchronous data management in [React] applications, powered by [hooks] and
 rendering) support.
 
 [![Sponsor](../../../.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
-
-<TsNote />
 
 ## Motivation (JavaScript)
 

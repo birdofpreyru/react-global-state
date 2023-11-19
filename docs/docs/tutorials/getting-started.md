@@ -1,11 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-import TsNote from '../api/_ts-note.md';
-
 # Getting Started
-
-<TsNote />
 
 ## Base Setup
 
