@@ -33,6 +33,8 @@ export default class GlobalState<
 > {
   readonly ssrContext?: SsrContextT;
 
+  #dependencies: { [key: string]: Readonly<any[]> } = {};
+
   #initialState: StateT;
 
   // TODO: It is tempting to replace watchers here by
@@ -76,6 +78,29 @@ export default class GlobalState<
       console.groupEnd();
       /* eslint-enable no-console */
     }
+  }
+
+  /**
+   * Drops the record of dependencies, if any, for the given path.
+   */
+  dropDependencies(path: string) {
+    delete this.#dependencies[path];
+  }
+
+  /**
+   * Checks if given `deps` are different from previously recorded ones for
+   * the given `path`. If they are, `deps` are recorded as the new deps for
+   * the `path`, and also the array is frozen, to prevent it from being
+   * modified.
+   */
+  hasChangedDependencies(path: string, deps: any[]): boolean {
+    const prevDeps = this.#dependencies[path];
+    let changed = !prevDeps || prevDeps.length !== deps.length;
+    for (let i = 0; !changed && i < deps.length; ++i) {
+      changed = prevDeps[i] !== deps[i];
+    }
+    this.#dependencies[path] = Object.freeze(deps);
+    return changed;
   }
 
   /**

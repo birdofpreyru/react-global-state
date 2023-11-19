@@ -253,6 +253,7 @@ function useAsyncData<DataT>(
             );
             /* eslint-enable no-console */
           }
+          globalState.dropDependencies(path || '');
           globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
             ...state2,
             data: null,
@@ -281,7 +282,9 @@ function useAsyncData<DataT>(
 
     const deps = options.deps || [];
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      if (!loadTriggered && deps.length) load(path, loader, globalState, null);
+      if (globalState.hasChangedDependencies(path || '', deps) && !loadTriggered) {
+        load(path, loader, globalState, null);
+      }
     }, deps); // eslint-disable-line react-hooks/exhaustive-deps
   }
 
