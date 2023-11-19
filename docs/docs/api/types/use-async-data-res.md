@@ -26,7 +26,7 @@ type UseAsyncDataResT<DataT> = {
 - `loading` &mdash; **boolean** &mdash; _true_ if the loading operation is
   currently underway; _false_ otherwise.
 
-- `reload` &mdash; **(loader?: [AsyncDataLoaderT]<[DataT]>) => Promise&lt;void>**
+- `reload` &mdash; **(loader?: [AsyncDataLoaderT]&lt;[DataT]&gt;) => Promise&lt;void>**
   &mdash; Imperatively triggers a reload of data at the corresponding path in
   the global state, using provided custom `loader`, if any, or otherwise
   the loader given to the corresponding [useAsyncData()] hook.

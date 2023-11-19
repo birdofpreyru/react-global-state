@@ -10,7 +10,8 @@ All fields are optional.
 
 - `deps` &mdash; **any[]** &mdash; An array of dependencies to watch. If provided,
   the hook will reload async data when any of these dependencies changes.
-  Given dependencies are watched shallowly.
+  Given dependencies are watched shallowly, and since library **v0.11.0**
+  they are tracked per the global state path, rather than per a hook instance.
 
 - `noSSR` &mdash; **boolean** &mdash; Set _true_ to opt-out of loading async data
   during the server-side rendering.
