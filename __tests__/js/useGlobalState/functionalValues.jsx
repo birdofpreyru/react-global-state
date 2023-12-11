@@ -5,6 +5,7 @@
  * state update.
  */
 
+import { useEffect } from 'react';
 import { mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
@@ -119,14 +120,21 @@ function TestComponent07() {
   const [value, set] = useGlobalState('path', () => 'value-07');
   if (!TestComponent07.set) TestComponent07.set = set;
   else expect(set === TestComponent07.set).toBe(true);
-  if (value.endsWith('07')) set((v) => `${v}-2`);
-  else if (value.endsWith('-2')) set((v) => `${v}-3`);
-  switch (TestComponent07.pass) {
-    case 1: expect(value).toBe('value-07'); break;
-    case 2: expect(value).toBe('value-07-2'); break;
-    case 3: expect(value).toBe('value-07-2-3'); break;
-    default: throw Error('Unexpected render pass');
-  }
+
+  // NOTE: Without useEffect(), doing these state updates directly inside
+  // the render, we gonna end up with an infinite update loop, and error
+  // warnings from React.
+  useEffect(() => {
+    if (value.endsWith('07')) set((v) => `${v}-2`);
+    else if (value.endsWith('-2')) set((v) => `${v}-3`);
+    switch (TestComponent07.pass) {
+      case 1: expect(value).toBe('value-07'); break;
+      case 2: expect(value).toBe('value-07-2'); break;
+      case 3: expect(value).toBe('value-07-2-3'); break;
+      default: throw Error('Unexpected render pass');
+    }
+  }, [value, set]);
+
   return null;
 }
 
