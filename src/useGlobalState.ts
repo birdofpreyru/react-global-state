@@ -128,6 +128,17 @@ function useGlobalState(
         /* eslint-enable no-console */
       }
       rc.globalState.set<ForceT, unknown>(rc.path, newState);
+
+      // NOTE: The regular global state's update notifications, automatically
+      // triggered by the rc.globalState.set() call above, are batched, and
+      // scheduled to fire asynchronosuly at a later time, which is problematic
+      // for managed text inputs - if they have their value update delayed to
+      // future render cycles, it will result in reset of their cursor position
+      // to the value end. Calling the rc.emitter.emit() below causes a sooner
+      // state update for the current component, thus working around the issue.
+      // For additional details see the original issue:
+      // https://github.com/birdofpreyru/react-global-state/issues/22
+      if (newState !== rc.state) rc.emitter.emit();
     },
     state: isFunction(initialValue) ? initialValue() : initialValue,
     watcher: () => {

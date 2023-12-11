@@ -5,7 +5,7 @@
  * state update.
  */
 
-import { type ReactNode } from 'react';
+import { type ReactNode, useEffect } from 'react';
 
 import { mount } from 'jest/utils';
 import { type SetterT, GlobalStateProvider, useGlobalState } from 'src/index';
@@ -147,17 +147,24 @@ function TestComponent07() {
   );
   if (!t07Set) t07Set = set;
   else expect(set === t07Set).toBe(true);
-  if (typeof value === 'string' && value.endsWith('07')) {
-    set((v: ValueT) => `${v}-2`);
-  } else if (typeof value === 'string' && value.endsWith('-2')) {
-    set((v: ValueT) => `${v}-3`);
-  }
-  switch (TestComponent07.pass) {
-    case 1: expect(value).toBe('value-07'); break;
-    case 2: expect(value).toBe('value-07-2'); break;
-    case 3: expect(value).toBe('value-07-2-3'); break;
-    default: throw Error('Unexpected render pass');
-  }
+
+  // NOTE: Without useEffect(), doing these state updates directly inside
+  // the render, we gonna end up with an infinite update loop, and error
+  // warnings from React.
+  useEffect(() => {
+    if (typeof value === 'string' && value.endsWith('07')) {
+      set((v: ValueT) => `${v}-2`);
+    } else if (typeof value === 'string' && value.endsWith('-2')) {
+      set((v: ValueT) => `${v}-3`);
+    }
+    switch (TestComponent07.pass) {
+      case 1: expect(value).toBe('value-07'); break;
+      case 2: expect(value).toBe('value-07-2'); break;
+      case 3: expect(value).toBe('value-07-2-3'); break;
+      default: throw Error('Unexpected render pass');
+    }
+  });
+
   return null;
 }
 
