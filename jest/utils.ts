@@ -84,3 +84,9 @@ export function mount(scene: ReactNode): DestroyableHtmlElement {
 export function wait(time: number) {
   return act(() => mockTimer(time));
 }
+
+export function timer(time: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+}

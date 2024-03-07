@@ -36,12 +36,13 @@ export type AsyncDataEnvelopeT<DataT> = {
 
 export function newAsyncDataEnvelope<DataT>(
   initialData: DataT | null = null,
+  { numRefs = 0, timestamp = 0 } = {},
 ): AsyncDataEnvelopeT<DataT> {
   return {
     data: initialData,
-    numRefs: 0,
+    numRefs,
     operationId: '',
-    timestamp: 0,
+    timestamp,
   };
 }
 
@@ -280,12 +281,16 @@ function useAsyncData<DataT>(
       }
     });
 
-    const deps = options.deps || [];
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      if (globalState.hasChangedDependencies(path || '', deps) && !loadTriggered) {
+      const { deps } = options;
+      if (deps && globalState.hasChangedDependencies(path || '', deps) && !loadTriggered) {
         load(path, loader, globalState, null);
       }
-    }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Here we need to default to empty array, so that this hook is re-evaluated
+    // only when dependencies specified in options change, and it should not be
+    // re-evaluated at all if no `deps` option is used.
+    }, options.deps || []); // eslint-disable-line react-hooks/exhaustive-deps
   }
 
   const [localState] = useGlobalState<ForceT, AsyncDataEnvelopeT<DataT>>(
