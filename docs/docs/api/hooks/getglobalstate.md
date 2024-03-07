@@ -16,7 +16,7 @@ function getGlobalState<StateT>(): GlobalState<StateT>;
 
 ## Generic Parameters
 [StateT]: #state-type
-- `StateT` <a id="state-type" /> &mdash; The global state type.
+- `StateT` <Link id="state-type" /> &mdash; The global state type.
 
 :::tip
 Alternatively you may use [withGlobalStateType()] function to get

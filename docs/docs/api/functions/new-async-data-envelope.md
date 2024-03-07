@@ -15,12 +15,12 @@ function newAsyncDataEnvelope<DataT>(
 
 ## Generic Parameters
 [DataT]: #data-type
-- `DataT` <a id="data-type" /> &mdash; The type of data to be stored in
+- `DataT` <Link id="data-type" /> &mdash; The type of data to be stored in
   the created envelope.
 
 ## Arguments
 [initialData]: #initial-data
-- `initialData` <a id="initial-data" /> &mdash; [DataT] | **null** &mdash;
+- `initialData` <Link id="initial-data" /> &mdash; [DataT] | **null** &mdash;
   Optional. The initial datum to put in the envelope, if any; otherwise _null_
   (default) means to create an empty envelope.
 - `options` &mdash; **object** &mdash; Optional. Additional

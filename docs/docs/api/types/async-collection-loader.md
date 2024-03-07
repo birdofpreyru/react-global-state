@@ -12,7 +12,7 @@ type AsyncCollectionLoaderT<DataT> =
 ```
 
 ## Generic Parameters
-- `DataT` <a id="data-type" /> &mdash; The type of data loaded by the loader function.
+- `DataT` <Link id="data-type" /> &mdash; The type of data loaded by the loader function.
 
 [DataT]: #data-type
 

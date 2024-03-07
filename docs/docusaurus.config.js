@@ -80,7 +80,7 @@ const config = {
           {
             title: 'Docs',
             items: [
-              { label: 'API', to: '/docs/api/index' },
+              { label: 'API', to: '/docs/api' },
               {
                 label: 'Getting Started',
                 to: '/docs/tutorials/getting-started',

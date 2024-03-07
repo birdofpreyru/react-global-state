@@ -18,7 +18,7 @@ class GlobalState<StateT>;
 ```
 where the signle generic parameter is:
 
-- `StateT` <a id="state-type" /> &mdash; The global state content type.
+- `StateT` <Link id="state-type" /> &mdash; The global state content type.
 
 ## Methods
 - [constructor()] &mdash; Creates a new [GlobalState] instance.

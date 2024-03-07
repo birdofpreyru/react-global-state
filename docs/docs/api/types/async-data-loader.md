@@ -12,7 +12,7 @@ export type AsyncDataLoaderT<DataT>
 ```
 ## Generic Parameters
 [DataT]: #data-type
-- `DataT` <a id="data-type" /> &mdash; The type of data loaded by the loader
+- `DataT` <Link id="data-type" /> &mdash; The type of data loaded by the loader
   function.
 
 ## Arguments

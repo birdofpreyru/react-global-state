@@ -25,7 +25,7 @@ const { getSsrContext } = withGlobalStateType<StateT>();
 
 ## Generic Parameters
 [StateT]: #state-type
-- `StateT` <a id="state-type" /> &mdash; The type of global state content.
+- `StateT` <Link id="state-type" /> &mdash; The type of global state content.
 
 ## Arguments
 - `throwWithoutSsrContext` &mdash; **boolean** &mdash; If _true_ (default) this

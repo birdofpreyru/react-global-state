@@ -44,7 +44,7 @@ making convenient and safe static type analysis possible.
     ): UseAsyncDataResT<DataT>;
     ```
     with two generic parameters:
-    - `StateT` <a id="state-type" /> &mdash; The type of global state content.
+    - `StateT` <Link id="state-type" /> &mdash; The type of global state content.
     - `PathT` &mdash; **null** | **string** | **undefined** &mdash;
       The type of `path` argument.
 

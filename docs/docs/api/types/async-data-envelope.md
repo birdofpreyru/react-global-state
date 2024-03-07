@@ -19,7 +19,7 @@ defaults.
 
 ## Generic Parameters
 [DataT]: #data-type
-- `DataT` <a id="data-type" /> &mdash; The type of data stored in the envelope.
+- `DataT` <Link id="data-type" /> &mdash; The type of data stored in the envelope.
 
 ## Fields
 - `data` &mdash; [DataT] | **null** &mdash; The data currently stored in

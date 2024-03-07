@@ -48,7 +48,7 @@ work.
     ): UseAsyncDataResT<DataT>;
     ```
     with three generic parameters:
-      - `StateT` <a id="state-type" /> &mdash; The type of global state content.
+      - `StateT` <Link id="state-type" /> &mdash; The type of global state content.
       - `PathT` &mdash; **null** | **string** | **undefined** &mdash;
         The type of `path` argument.
       - `IdT` &mdash; **string** &mdash; The type of `id` argument.

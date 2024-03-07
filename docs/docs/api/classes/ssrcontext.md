@@ -28,7 +28,7 @@ class SsrContext<StateT>;
 ```
 with a single parameter:
 
-- `StateT` <a id="state-type"></a> &mdash; The type of global state object,
+- `StateT` <Link id="state-type" /> &mdash; The type of global state object,
   used in [constructor()] and [`state` field].
 
 :::tip
@@ -50,7 +50,7 @@ const { SsrContext } = withGlobalStateType<StateT>();
 - `pending` &mdash; **Promise[]** &mdash; An array of unresolved promises
   (pending async operations) that should be awaited prior to the next SSR
   iteration (see [useAsyncData()]).
-- `state` <a id="state-field" /> &mdash; [StateT] | **undefined** &mdash;
+- `state` <Link id="state-field" /> &mdash; [StateT] | **undefined** &mdash;
   Entire global state at the end of the last SSR iteration. Can be _undefined_
   prior to the first SSR pass.
 

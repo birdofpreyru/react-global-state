@@ -14,7 +14,7 @@ function GlobalStateProvider<StateT>(
 ): JSX.Element;
 ```
 where a single generic parameter:
-- `StateT` <a id="state-type" /> &mdash; The type of global state provided via this
+- `StateT` <Link id="state-type" /> &mdash; The type of global state provided via this
   [GlobalStateProvider].
 
 :::tip
@@ -55,7 +55,7 @@ activates the "proxy mode", no matter other props values.
   are rendered in-place of [GlobalStateProvider] and provided with [GlobalState]
   instance.
 
-- `initialState` <a id="initial-state-prop" /> &mdash;
+- `initialState` <Link id="initial-state-prop" /> &mdash;
   [ValueOrInitializerT]&lt;[StateT]&gt; &mdash;
   The initial global state content.
 
@@ -82,7 +82,7 @@ activates the "proxy mode", no matter other props values.
   rendering) context. In TypeScript version it is only permitted when no
   [stateProxy] is provided.
 
-- `stateProxy` <a id="state-proxy-prop" /> &mdash;
+- `stateProxy` <Link id="state-proxy-prop" /> &mdash;
   **boolean** | [GlobalState] &mdash; Enables _proxy mode_, intended
   for code-splitting and SSR implementation:
   - If _true_ this [GlobalStateProvider] will fetch and reuse

@@ -13,7 +13,7 @@ by React's [useState()] hook (see `setState` in the linked React documentation).
 
 ## Generic Parameters
 [ValueT]: #value-type
-- `ValueT` <a id="value-type" /> &mdash; The type of value being set by the setter.
+- `ValueT` <Link id="value-type" /> &mdash; The type of value being set by the setter.
 
 ## Arguments
 The setter accepts a single argument which should be either the new value 

@@ -21,7 +21,7 @@ All fields are optional.
   referencing them via [useAsyncCollection()] or [useAsyncData()] hook
   unmounts. Defaults to the value of `maxage` option.
 
-- `maxage` <a id="maxage" /> &mdash; **number** &mdash; The maximum age of data (in milliseconds) acceptable
+- `maxage` <Link id="maxage" /> &mdash; **number** &mdash; The maximum age of data (in milliseconds) acceptable
   to the hook's caller. If loaded data stored in the global state are older
   than this value **null** is returned instread of the loaded data.
   Defaults to 5 minutes.

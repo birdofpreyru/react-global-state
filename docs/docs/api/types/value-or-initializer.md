@@ -16,7 +16,7 @@ type ValueOrInitializerT<ValueT> = ValueT | (() => ValueT);
 ```
 where
 [ValueT]: #value-type
-- `ValueT` <a id="value-type" /> &mdash; The type of value.
+- `ValueT` <Link id="value-type" /> &mdash; The type of value.
 
 :::caution
 To decide whether a value or an _initializer function_ was provided to

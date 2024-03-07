@@ -17,7 +17,7 @@ type UseAsyncDataResT<DataT> = {
 
 ## Generic Parameters
 [DataT]: #data-type
-- `DataT` <a id="data-type" /> &mdash; The type of datum managed by
+- `DataT` <Link id="data-type" /> &mdash; The type of datum managed by
   [useAsyncData()] or [useAsyncCollection()] hook.
 
 ## Fields
