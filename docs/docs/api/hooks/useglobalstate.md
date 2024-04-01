@@ -16,15 +16,6 @@ or change objects already written into the global state, without explicitly
 clonning them first yourself.
 :::
 
-:::caution
-State update notifications are asynchronous. When your code does multiple
-global state updates in the same React rendering cycle, all state update
-notifications are queued and dispatched together, after the current
-rendering cycle. In other words, in any given rendering cycle the global
-state values are "fixed", and all changes becomes visible at once in the
-next triggered rendering pass.
-:::
-
 The TypeScript signature of [useGlobalState()] implementation is
 
 ```ts
@@ -136,15 +127,17 @@ It returns an array with two elements `[value, setValue]` (see the type
   to update the value at `path`.
 
   Similar to the standard React's `useState()`, it supports
-  [functional value updates](https://reactjs.org/docs/hooks-reference.html#functional-updates):
+  [functional value updates][functional updates]:
   if `setValue()` is called with a function as argument, that function will
-  be called and its return value will be written to `path`. Otherwise,
+  be called with the current state value as its argument, and its return value
+  will be written to `path`. Otherwise,
   the argument of `setValue()` itself is written to `path`.
 
   Also, similar to the standard React's state setters, `setValue()` is
   a stable function: it does not change between component re-renders.
 
 [ForceT]: /docs/api/types/force
+[functional updates]: https://reactjs.org/docs/hooks-reference.html#functional-updates
 [GlobalState]: /docs/api/classes/globalstate
 [SetterT]: /docs/api/types/setter
 [useGlobalState()]: #

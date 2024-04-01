@@ -14,6 +14,7 @@ const config = {
   tagline: 'React global state designed right',
   url: 'https://dr.pogodin.studio',
   baseUrl: '/docs/react-global-state/',
+  onBrokenAnchors: 'throw',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'throw',
   favicon: 'img/favicon.ico',
