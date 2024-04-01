@@ -115,7 +115,10 @@ function useGlobalState(
     globalState,
     path,
     setter: (value) => {
-      const newState = isFunction(value) ? value(rc.state) : value;
+      const newState = isFunction(value)
+        ? value(rc.globalState.get(rc.path))
+        : value;
+
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */
         console.groupCollapsed(

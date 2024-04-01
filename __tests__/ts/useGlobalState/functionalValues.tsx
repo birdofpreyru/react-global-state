@@ -12,9 +12,10 @@ import { type SetterT, GlobalStateProvider, useGlobalState } from 'src/index';
 
 const PATH = 'path';
 
-type ValueT = jest.Mock | string | undefined;
+type ValueT = jest.Mock | number | string | undefined;
 
 type StateT = { [PATH]?: ValueT };
+type State2T = { key: number };
 
 function Wrapper({ children }: { children: ReactNode }) {
   return (
@@ -110,6 +111,24 @@ TestComponent05.pass = 0;
 
 test('Functional update', () => {
   mount(<Wrapper><TestComponent05 /></Wrapper>);
+});
+
+// When functional state update is done a few times within the same render,
+// each subsequent one should get the current (previously updated) state,
+// and not the very original one.
+
+function TestComponent05b() {
+  const [, set] = useGlobalState<State2T, 'key'>('key', 0);
+  set((x) => Math.min(1, x + 1));
+  set((x) => {
+    expect(x).toBe(1);
+    return x;
+  });
+  return null;
+}
+
+test('Functional update - sequential updates within the same render', () => {
+  mount(<Wrapper><TestComponent05b /></Wrapper>);
 });
 
 function TestComponent06() {
