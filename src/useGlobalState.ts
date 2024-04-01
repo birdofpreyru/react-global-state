@@ -20,11 +20,14 @@ import {
 
 export type SetterT<T> = React.Dispatch<React.SetStateAction<T>>;
 
+type ListenerT = () => void;
+
 type GlobalStateRef = {
   emitter: Emitter<[]>;
   globalState: GlobalState<unknown>;
   path: null | string | undefined;
   setter: SetterT<unknown>;
+  subscribe: (listener: ListenerT) => () => void;
   state: unknown;
   watcher: CallbackT;
 };
@@ -110,54 +113,64 @@ function useGlobalState(
   const globalState = getGlobalState();
 
   const ref = useRef<GlobalStateRef>();
-  const rc: GlobalStateRef = ref.current || {
-    emitter: new Emitter(),
-    globalState,
-    path,
-    setter: (value) => {
-      const newState = isFunction(value)
-        ? value(rc.globalState.get(rc.path))
-        : value;
 
-      if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-        /* eslint-disable no-console */
-        console.groupCollapsed(
-          `ReactGlobalState - useGlobalState setter triggered for path ${
-            rc.path || ''
-          }`,
-        );
-        console.log('New value:', cloneDeep(newState));
-        console.groupEnd();
-        /* eslint-enable no-console */
-      }
-      rc.globalState.set<ForceT, unknown>(rc.path, newState);
+  let rc: GlobalStateRef;
+  if (!ref.current) {
+    const emitter = new Emitter();
+    ref.current = {
+      emitter,
+      globalState,
+      path,
+      setter: (value) => {
+        const newState = isFunction(value)
+          ? value(rc!.globalState.get(rc!.path))
+          : value;
 
-      // NOTE: The regular global state's update notifications, automatically
-      // triggered by the rc.globalState.set() call above, are batched, and
-      // scheduled to fire asynchronosuly at a later time, which is problematic
-      // for managed text inputs - if they have their value update delayed to
-      // future render cycles, it will result in reset of their cursor position
-      // to the value end. Calling the rc.emitter.emit() below causes a sooner
-      // state update for the current component, thus working around the issue.
-      // For additional details see the original issue:
-      // https://github.com/birdofpreyru/react-global-state/issues/22
-      if (newState !== rc.state) rc.emitter.emit();
-    },
-    state: isFunction(initialValue) ? initialValue() : initialValue,
-    watcher: () => {
-      const state = rc.globalState.get(rc.path);
-      if (state !== rc.state) rc.emitter.emit();
-    },
-  };
-  ref.current = rc;
+        if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+          /* eslint-disable no-console */
+          console.groupCollapsed(
+            `ReactGlobalState - useGlobalState setter triggered for path ${
+              rc!.path || ''
+            }`,
+          );
+          console.log('New value:', cloneDeep(newState));
+          console.groupEnd();
+          /* eslint-enable no-console */
+        }
+        rc!.globalState.set<ForceT, unknown>(rc!.path, newState);
+
+        // NOTE: The regular global state's update notifications, automatically
+        // triggered by the rc.globalState.set() call above, are batched, and
+        // scheduled to fire asynchronosuly at a later time, which is problematic
+        // for managed text inputs - if they have their value update delayed to
+        // future render cycles, it will result in reset of their cursor position
+        // to the value end. Calling the rc.emitter.emit() below causes a sooner
+        // state update for the current component, thus working around the issue.
+        // For additional details see the original issue:
+        // https://github.com/birdofpreyru/react-global-state/issues/22
+        if (newState !== rc!.state) rc!.emitter.emit();
+      },
+      state: isFunction(initialValue) ? initialValue() : initialValue,
+      subscribe: emitter.addListener.bind(emitter),
+      watcher: () => {
+        const state = rc!.globalState.get(rc!.path);
+        if (state !== rc!.state) rc!.emitter.emit();
+      },
+    };
+  }
+  rc = ref.current!;
 
   rc.globalState = globalState;
   rc.path = path;
 
   rc.state = useSyncExternalStore(
-    (cb) => rc.emitter.addListener(cb),
-    () => rc.globalState.get<ForceT, unknown>(rc.path, { initialValue }),
-    () => rc.globalState.get<ForceT, unknown>(rc.path, { initialValue, initialState: true }),
+    rc.subscribe,
+    () => rc!.globalState.get<ForceT, unknown>(rc!.path, { initialValue }),
+
+    () => rc!.globalState.get<ForceT, unknown>(
+      rc!.path,
+      { initialValue, initialState: true },
+    ),
   );
 
   useEffect(() => {
