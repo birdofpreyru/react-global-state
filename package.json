@@ -1,6 +1,6 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "Hook-based global state for React",
   "main": "./build/common/index.js",
   "react-native": "src/index.ts",
@@ -43,41 +43,41 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@babel/runtime": "^7.24.1",
+    "@babel/runtime": "^7.24.5",
     "@dr.pogodin/js-utils": "^0.0.9",
-    "@types/lodash": "^4.17.0",
+    "@types/lodash": "^4.17.1",
     "lodash": "^4.17.21",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.1",
-    "@babel/core": "^7.24.3",
-    "@babel/eslint-parser": "^7.24.1",
-    "@babel/eslint-plugin": "^7.23.5",
+    "@babel/cli": "^7.24.5",
+    "@babel/core": "^7.24.5",
+    "@babel/eslint-parser": "^7.24.5",
+    "@babel/eslint-plugin": "^7.24.5",
     "@babel/node": "^7.23.9",
     "@babel/plugin-transform-runtime": "^7.24.3",
-    "@babel/preset-env": "^7.24.3",
+    "@babel/preset-env": "^7.24.5",
     "@babel/preset-react": "^7.24.1",
     "@babel/preset-typescript": "^7.24.1",
-    "@tsconfig/recommended": "^1.0.5",
-    "@tsd/typescript": "^5.4.3",
+    "@tsconfig/recommended": "^1.0.6",
+    "@tsd/typescript": "^5.4.5",
     "@types/jest": "^29.5.12",
     "@types/pretty": "^2.0.3",
-    "@types/react": "^18.2.73",
-    "@types/react-dom": "^18.2.23",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
     "@types/uuid": "^9.0.8",
-    "typescript-eslint": "^7.4.0",
+    "typescript-eslint": "^7.8.0",
     "babel-jest": "^29.7.0",
-    "babel-plugin-module-resolver": "^5.0.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-import-resolver-babel-module": "^5.3.2",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jest": "^27.9.0",
+    "eslint-plugin-jest": "^28.5.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-runner-tsd": "^6.0.0",
@@ -85,10 +85,10 @@
     "pretty": "^2.0.0",
     "rimraf": "^5.0.1",
     "tsd-lite": "^0.9.0",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.5"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

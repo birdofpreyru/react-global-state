@@ -74,10 +74,6 @@ function TestScene(
   );
 }
 
-TestScene.defaultProps = {
-  stateProxy: undefined,
-};
-
 let scene: DestroyableHtmlElement | undefined;
 
 afterEach(() => {

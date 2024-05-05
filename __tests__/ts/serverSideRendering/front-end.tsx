@@ -75,7 +75,7 @@ test('Scene test in the front-end mode', async () => {
 
 describe('Test `getSsrContext()` function', () => {
   function SceneUsingSsrContext(
-    { throwWithoutSsrContext }: { throwWithoutSsrContext?: boolean },
+    { throwWithoutSsrContext = true }: { throwWithoutSsrContext?: boolean },
   ) {
     const ssrContext = getSsrContext(throwWithoutSsrContext);
     return (
@@ -84,10 +84,6 @@ describe('Test `getSsrContext()` function', () => {
       </div>
     );
   }
-
-  SceneUsingSsrContext.defaultProps = {
-    throwWithoutSsrContext: true,
-  };
 
   let consoleError: typeof console.error;
   beforeAll(() => {

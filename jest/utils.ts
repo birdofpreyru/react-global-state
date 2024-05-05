@@ -4,9 +4,8 @@
 
 import { cloneDeep } from 'lodash';
 import mockdate from 'mockdate';
-import { type ReactNode } from 'react';
+import { type ReactNode, act } from 'react';
 import { type Root, createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 
 export { act };
 

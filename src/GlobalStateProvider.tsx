@@ -121,7 +121,3 @@ export default function GlobalStateProvider<
     </context.Provider>
   );
 }
-
-GlobalStateProvider.defaultProps = {
-  children: undefined,
-};
