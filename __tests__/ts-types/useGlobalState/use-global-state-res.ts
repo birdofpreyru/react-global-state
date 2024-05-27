@@ -1,7 +1,7 @@
-import { expectNotAssignable, expectType } from 'tsd-lite';
-import { type SetterT, type UseGlobalStateResT } from 'src/index';
+import { expect } from 'tstyche';
+import { type SetterT, type UseGlobalStateResT } from '../../../src';
 
 declare const x: UseGlobalStateResT<'X'>;
 
-expectType<'X'>(x[0]);
-expectType<SetterT<'X'>>(x[1]);
+expect(x[0]).type.toEqual<'X'>();
+expect(x[1]).type.toEqual<SetterT<'X'>>();

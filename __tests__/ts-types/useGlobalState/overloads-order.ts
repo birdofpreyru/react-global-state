@@ -1,15 +1,15 @@
-import { expectType } from 'tsd-lite';
+import { expect } from 'tstyche';
 
-import { type ForceT, useGlobalState } from 'src';
-import { type UseGlobalStateI } from 'src/useGlobalState';
+import { type ForceT, useGlobalState } from '../../../src';
+import { type UseGlobalStateI } from '../../../src/useGlobalState';
 
 // Enforced type overload.
 const [t01] = useGlobalState<ForceT, string>('fake.path');
-expectType<string>(t01);
+expect(t01).type.toBeString();
 
 // Enforced type overload.
 const [t02] = useGlobalState('fake.path');
-expectType<void>(t02);
+expect(t02).type.toBeVoid();
 
 type StateT = {
   real: {
@@ -19,11 +19,11 @@ type StateT = {
 
 // Entire state overload.
 const [t03] = useGlobalState<StateT>();
-expectType<StateT>(t03);
+expect(t03).type.toEqual<StateT>();
 
 // State evaluation overload.
 const [t04] = useGlobalState<StateT, 'real.path'>('real.path');
-expectType<string>(t04);
+expect(t04).type.toBeString();
 
 //------------------------------------------------------------------------------
 // With locked-in state type.
@@ -32,20 +32,20 @@ const useGS = useGlobalState as UseGlobalStateI<StateT>;
 
 { // Enforced type overload.
   const [t] = useGS<ForceT, string>('fake.path');
-  expectType<string>(t);
+  expect(t).type.toBeString();
 }
 
 { // Enforced type overload.
   const [t] = useGS('fake.path');
-  expectType<void>(t);
+  expect(t).type.toBeVoid();
 }
 
 { // State evaluation overload.
   const [t] = useGS('real.path');
-  expectType<string>(t);
+  expect(t).type.toBeString();
 }
 
 { // Entire state overload.
   const [t] = useGS();
-  expectType<StateT>(t);
+  expect(t).type.toEqual<StateT>();
 }

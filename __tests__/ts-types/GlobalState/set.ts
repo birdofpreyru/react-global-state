@@ -1,15 +1,19 @@
-import { expectError, expectType } from 'tsd-lite';
+import { expect } from 'tstyche';
 
-import GlobalState from 'src/GlobalState';
-import { type ForceT } from 'src/utils';
+import GlobalState from '../../../src/GlobalState';
+import { type ForceT } from '../../../src/utils';
 
 type ValueT = 'value-a' | 'value-b';
 type StateT = { some: { path: ValueT } };
 
 const gs = new GlobalState<StateT>({ some: { path: 'value-a' } });
 
-expectType<StateT>(gs.set(null, { some: { path: 'value-a' } }));
-expectError(() => gs.set(null, 'invalid'));
-expectType<ValueT>(gs.set('some.path', 'value-b'));
-expectError(() => gs.set('some.path', 'invalid'));
-expectType<number>(gs.set<ForceT, number>('some.path', 10));
+expect(gs.set(null, { some: { path: 'value-a' } })).type.toEqual<StateT>();
+
+expect(() => gs.set(null, 'invalid')).type.toRaiseError(2769);
+
+expect(gs.set('some.path', 'value-b')).type.toEqual<ValueT>();
+
+expect(() => gs.set('some.path', 'invalid')).type.toRaiseError(2769);
+
+expect(gs.set<ForceT, number>('some.path', 10)).type.toBeNumber();

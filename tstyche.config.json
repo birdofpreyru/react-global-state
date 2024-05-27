@@ -1,0 +1,6 @@
+{
+  "testFileMatch": [
+    "__tests__/ts",
+    "__tests__/ts-types"
+  ]
+}

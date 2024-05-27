@@ -3,7 +3,7 @@
 // Spoiler: The test shows no error, thus it should be an issue in react-utils
 // or react-starter.
 
-import { expectError } from 'tsd-lite';
+import { expect } from 'tstyche';
 
 import {
   type AsyncDataEnvelopeT,
@@ -28,14 +28,15 @@ type GoodStateT = {
 
 const { useAsyncData: badUseAsyncData } = withGlobalStateType<BadStateT>();
 
-expectError(() => {
+expect(() => {
   badUseAsyncData(
     'examples.asyncGlobalData',
     async () => 0,
   );
-});
+}).type.toRaiseError(2769);
 
 // This is a functional variant
+// TODO: We should use expect() here!
 const { useAsyncData: goodUseAsyncData } = withGlobalStateType<GoodStateT>();
 
 goodUseAsyncData(

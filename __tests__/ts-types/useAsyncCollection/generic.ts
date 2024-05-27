@@ -1,17 +1,17 @@
-import { expectAssignable, expectType } from 'tsd-lite';
+import { expect } from 'tstyche';
 
 import {
   type AsyncDataEnvelopeT,
   type AsyncCollectionLoaderT,
   type UseAsyncDataResT,
   useAsyncCollection,
-} from 'src/index';
+} from '../../../src';
 
 declare function loader1(): 'OK';
 declare function loader2(): Promise<'OK'>;
 
-expectAssignable<AsyncCollectionLoaderT<'OK'>>(loader1);
-expectAssignable<AsyncCollectionLoaderT<'OK'>>(loader2);
+expect<AsyncCollectionLoaderT<'OK'>>().type.toBeAssignable(loader1);
+expect<AsyncCollectionLoaderT<'OK'>>().type.toBeAssignable(loader2);
 
 type StateT = {
   some: {
@@ -24,10 +24,10 @@ type StateT = {
 const SOME_ID = 'someId';
 const SOME_PATH = 'some.path';
 
-expectType<UseAsyncDataResT<'OK'>>(
+expect(
   useAsyncCollection<StateT, typeof SOME_PATH, typeof SOME_ID>(
     SOME_ID,
     SOME_PATH,
     loader1,
   ),
-);
+).type.toEqual<UseAsyncDataResT<'OK'>>();
