@@ -25,7 +25,10 @@ import SsrContext from './SsrContext';
 const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
 export type AsyncDataLoaderT<DataT>
-= (oldData: null | DataT) => DataT | PromiseLike<DataT>;
+= (oldData: null | DataT) => DataT | Promise<DataT>;
+
+export type AsyncDataReloaderT<DataT>
+= (loader?: AsyncDataLoaderT<DataT>) => Promise<void>;
 
 export type AsyncDataEnvelopeT<DataT> = {
   data: null | DataT;
@@ -57,7 +60,7 @@ export type UseAsyncDataOptionsT = {
 export type UseAsyncDataResT<DataT> = {
   data: DataT | null;
   loading: boolean;
-  reload: (loader?: AsyncDataLoaderT<DataT>) => Promise<void>;
+  reload: AsyncDataReloaderT<DataT>;
   timestamp: number;
 };
 
