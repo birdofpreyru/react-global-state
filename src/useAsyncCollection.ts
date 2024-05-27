@@ -2,10 +2,11 @@
  * Loads and uses an item in an async collection.
  */
 
-import useAsyncData, {
+import {
   type DataInEnvelopeAtPathT,
   type UseAsyncDataOptionsT,
   type UseAsyncDataResT,
+  useAsyncData,
 } from './useAsyncData';
 
 import { type ForceT, type LockT, type TypeLock } from './utils';

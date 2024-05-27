@@ -10,6 +10,7 @@ import { act, mount } from 'jest/utils';
 
 import {
   type AsyncDataEnvelopeT,
+  type AsyncDataReloaderT,
   type ForceT,
   GlobalState,
   GlobalStateProvider,
@@ -22,16 +23,23 @@ type StateT = {
   sync: AsyncDataEnvelopeT<string>;
 };
 
+let aReload: AsyncDataReloaderT<string> | undefined;
+let sReload: AsyncDataReloaderT<string> | undefined;
+
 function AsyncComponent() {
-  useAsyncData<ForceT, string>('async', async () => {
+  const x = useAsyncData<ForceT, string>('async', async () => {
     await timer(100);
     return 'ok';
   });
+  if (aReload) expect(aReload).toBe(x.reload);
+  else aReload = x.reload;
   return null;
 }
 
 function SyncComponent() {
-  useAsyncData<ForceT, string>('sync', () => 'ok');
+  const x = useAsyncData<ForceT, string>('sync', () => 'ok');
+  if (sReload) expect(sReload).toBe(x.reload);
+  else sReload = x.reload;
   return null;
 }
 
