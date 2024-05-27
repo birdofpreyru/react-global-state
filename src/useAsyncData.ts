@@ -25,7 +25,7 @@ import SsrContext from './SsrContext';
 const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
 export type AsyncDataLoaderT<DataT>
-= (oldData: null | DataT) => DataT | Promise<DataT>;
+= (oldData: null | DataT) => DataT | PromiseLike<DataT>;
 
 export type AsyncDataEnvelopeT<DataT> = {
   data: null | DataT;
@@ -92,9 +92,14 @@ async function load<DataT>(
   const operationId = opIdPrefix + uuid();
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
   globalState.set<ForceT, string>(operationIdPath, operationId);
-  const data = await loader(
+
+  const dataOrLoader = loader(
     oldData || (globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path)).data,
   );
+
+  const data: DataT = dataOrLoader instanceof Promise
+    ? await dataOrLoader : dataOrLoader;
+
   const state: AsyncDataEnvelopeT<DataT> = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path);
   if (operationId === state.operationId) {
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
