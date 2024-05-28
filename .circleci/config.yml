@@ -1,10 +1,10 @@
 install-and-test: &install-and-test
   - checkout
   - restore_cache:
-      key: node-modules-{{ checksum "package-lock.json" }}-{{ checksum "docs/package-lock.json" }}
+      key: node-modules-1-{{ checksum "package-lock.json" }}-{{ checksum "docs/package-lock.json" }}
   - run: npm install && cd docs && npm install
   - save_cache:
-      key: node-modules-{{ checksum "package-lock.json" }}-{{ checksum "docs/package-lock.json" }}
+      key: node-modules-1-{{ checksum "package-lock.json" }}-{{ checksum "docs/package-lock.json" }}
       paths:
         - node_modules
         - docs/node_modules
