@@ -1,5 +1,5 @@
 diff --git a/node_modules/@types/lodash/common/object.d.ts b/node_modules/@types/lodash/common/object.d.ts
-index 69552b0..606390f 100644
+index 69552b0..2c10bea 100644
 --- a/node_modules/@types/lodash/common/object.d.ts
 +++ b/node_modules/@types/lodash/common/object.d.ts
 @@ -1051,9 +1051,11 @@ declare module "../index" {
@@ -12,7 +12,7 @@ index 69552b0..606390f 100644
 -                    ? IndexedFieldWithPossiblyUndefined<T[FieldKey], IndexKey>
 +                    ? '' extends Rest
 +                        ? IndexedFieldWithPossiblyUndefined<T[FieldKey], IndexKey>
-+                        : GetFieldType<Exclude<GetIndexedField<T[FieldKey], IndexKey>, undefined>, Rest>
++                        : FieldWithPossiblyUndefined<IndexedFieldWithPossiblyUndefined<T[FieldKey], IndexKey>, Rest>
                      : undefined
                  : IndexedFieldWithPossiblyUndefined<T, P>;
  
