@@ -82,3 +82,24 @@ test('type resolution with [] brackets in path', () => {
   expect<ValueAtPathT<StateT, `a[${string}][${string}]`, never>>()
     .type.toEqual<string | undefined>();
 });
+
+// Test related to: https://github.com/birdofpreyru/react-global-state/issues/79
+test('type resolution with number keys', () => {
+  type StateT = Record<string, string>;
+
+  expect<StateT[string]>().type.toEqual<string>();
+
+  // It works because for JavaScript objects numeric keys are converted
+  // to their string representations anyway, and TypeScript knows it.
+  expect<StateT[number]>().type.toEqual<string>();
+
+  // GetFieldType<> must follow the TypeScript behavior above.
+  expect<GetFieldType<StateT, string>>().type.toEqual<string>();
+  expect<GetFieldType<StateT, number>>().type.toEqual<string>();
+  expect<GetFieldType<StateT, `[${number}]`>>().type.toEqual<string>();
+
+  type ArrT = string[];
+  expect<ArrT[1]>().type.toEqual<string>();
+  expect<GetFieldType<ArrT, number>>().type.toEqual<string>();
+  // expect<GetFieldType<ArrT, `[${number}]`>>().type.toEqual<string>();
+});
