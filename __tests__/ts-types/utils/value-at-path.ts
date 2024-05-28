@@ -1,4 +1,5 @@
-import { expect } from 'tstyche';
+import type { GetFieldType } from 'lodash';
+import { expect, test } from 'tstyche';
 
 import { type ValueAtPathT } from '../../../src/utils';
 
@@ -63,3 +64,21 @@ expect(y1).type.toBeNever();
 
 declare const y2: ValueAtPathT<unknown, null, never>;
 expect(y2).type.toBeNever();
+
+// Test related to: https://github.com/birdofpreyru/react-global-state/issues/89
+test('type resolution with [] brackets in path', () => {
+  type TA = Record<string, string | undefined>;
+  type StateT = { a: Record<string, TA | undefined> };
+
+  expect<GetFieldType<StateT, `a.${string}.${string}`>>()
+    .type.toEqual<string | undefined>();
+
+  expect<GetFieldType<StateT, `a[${string}][${string}]`>>()
+    .type.toEqual<string | undefined>();
+
+  expect<ValueAtPathT<StateT, `a.${string}.${string}`, never>>()
+    .type.toEqual<string | undefined>();
+
+  expect<ValueAtPathT<StateT, `a[${string}][${string}]`, never>>()
+    .type.toEqual<string | undefined>();
+});

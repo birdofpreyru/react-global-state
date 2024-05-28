@@ -1,0 +1,18 @@
+diff --git a/node_modules/@types/lodash/common/object.d.ts b/node_modules/@types/lodash/common/object.d.ts
+index 69552b0..606390f 100644
+--- a/node_modules/@types/lodash/common/object.d.ts
++++ b/node_modules/@types/lodash/common/object.d.ts
+@@ -1051,9 +1051,11 @@ declare module "../index" {
+                 : undefined
+         : P extends keyof T
+             ? T[P]
+-            : P extends `${infer FieldKey}[${infer IndexKey}]`
++            : P extends `${infer FieldKey}[${infer IndexKey}]${infer Rest}`
+                 ? FieldKey extends keyof T
+-                    ? IndexedFieldWithPossiblyUndefined<T[FieldKey], IndexKey>
++                    ? '' extends Rest
++                        ? IndexedFieldWithPossiblyUndefined<T[FieldKey], IndexKey>
++                        : GetFieldType<Exclude<GetIndexedField<T[FieldKey], IndexKey>, undefined>, Rest>
+                     : undefined
+                 : IndexedFieldWithPossiblyUndefined<T, P>;
+ 

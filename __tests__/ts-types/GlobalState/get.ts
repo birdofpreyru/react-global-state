@@ -1,4 +1,4 @@
-import { expect } from 'tstyche';
+import { expect, test } from 'tstyche';
 
 import GlobalState from '../../../src/GlobalState';
 import type { ForceT } from '../../../src/utils';
@@ -46,3 +46,16 @@ expect(gs.get<ForceT, 'OK'>()).type.toEqual<'OK'>();
 expect(() => gs.get<ForceT, void>('some.path', {
   initialValue: 'invalid',
 })).type.toRaiseError(2322);
+
+// Test for: https://github.com/birdofpreyru/react-global-state/issues/89
+test('type resolution with [] brackets in path', () => {
+  type TA = Record<string, string | undefined>;
+  type StateT = { a: Record<string, TA | undefined> };
+  const gs2 = new GlobalState<StateT>({ a: {} });
+
+  const keyA: string = 'a-key';
+  const keyB: string = 'b-key';
+
+  expect(gs2.get(`a.${keyA}.${keyB}`)).type.toEqual<string | undefined>();
+  expect(gs2.get(`a['${keyA}']['${keyB}']`)).type.toEqual<string | undefined>();
+});
