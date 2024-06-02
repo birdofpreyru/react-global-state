@@ -125,8 +125,14 @@ work.
 - `id` &mdash; **string** &mdash; ID of the collection item to load & use.
 - `path` &mdash; **null** | **string** | **undefined** &mdash; The global state path
   where entire collection should be stored.
-- `loader` &mdash; [AsyncCollectionLoaderT] &mdash; A loader function, which takes an
-  ID of data to load, and resolves to the corresponding data.
+- `loader` &mdash; [AsyncCollectionLoaderT] &mdash; A loader function,
+  which takes an ID of data to load, and resolves to the corresponding data.
+  Same as with the [useAsyncData()] hook, if `loader` returns data promise,
+  the corresponding envelope in the global state will be put into (re-)loading
+  state while the promise settlement is awaited; however, if non-promise data
+  value is returned, it is immediately (synchronously) stored into the envelope,
+  without visiting the (re-)loading state.
+
 - `options` &mdash; [UseAsyncDataOptionsT] &mdash; Optional object with additional settings.
 
 ## Result

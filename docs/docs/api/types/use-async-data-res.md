@@ -31,10 +31,13 @@ type UseAsyncDataResT<DataT> = {
   the global state, using provided custom `loader`, if any, or otherwise
   the loader given to the corresponding [useAsyncData()] hook.
 
-  :::tip
-  This method is intended for use in the imperative code (like mouse event
-  handlers). When data should be reloaded in a response to the local or global
-  state change, prefer to use `deps` option of [UseAsyncDataOptionsT].
+  :::tip Tips
+  - This method is intended for imperative code (_e.g._ UI event handlers).
+    When data should be reloaded in response to local or global state changes,
+    prefer to use `deps` option of [UseAsyncDataOptionsT] to manage reloads.
+
+  - This method is a stable function &mdash; it is guaranteed to remain the same
+    across re-renders of the host component.
   :::
 
 - `timestamp` &mdash; **number** &mdash; The timestamp (milliseconds) when

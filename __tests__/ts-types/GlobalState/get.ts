@@ -1,7 +1,7 @@
-import { expectError, expectType } from 'tsd-lite';
+import { expect } from 'tstyche';
 
-import GlobalState from 'src/GlobalState';
-import type { ForceT } from 'src/utils';
+import GlobalState from '../../../src/GlobalState';
+import type { ForceT } from '../../../src/utils';
 
 type ValueT = 'value-a' | 'value-b';
 
@@ -13,28 +13,36 @@ type StateT1 = {
 
 const gs = new GlobalState<StateT1>({ some: { path: 'value-a' } });
 
-expectType<StateT1>(gs.getEntireState());
-expectError(() => gs.setEntireState('invalid'));
-expectType<StateT1>(gs.get());
-expectType<StateT1>(gs.get(null));
-expectType<StateT1>(gs.get(undefined));
+expect(gs.getEntireState()).type.toEqual<StateT1>();
+expect(() => gs.setEntireState('invalid')).type.toRaiseError(2345);
+expect(gs.get()).type.toEqual<StateT1>();
+expect(gs.get(null)).type.toEqual<StateT1>();
+expect(gs.get(undefined)).type.toEqual<StateT1>();
 
 declare const p1: null | string;
-expectType<void>(gs.get(p1));
+expect(gs.get(p1)).type.toBeVoid();
 
 declare const p2: string;
-expectType<void>(gs.get(p2));
+expect(gs.get(p2)).type.toBeVoid();
 
-expectError(() => {
+expect(() => {
   const x: string = gs.get(p2);
-});
+}).type.toRaiseError(2322);
 
-expectType<ValueT>(gs.get('some.path'));
-expectType<void>(gs.get('invalid.path'));
-expectError(() => gs.get('some.path', { initialValue: 'invalid' }));
-expectError(() => gs.get('invalid.path', { initialValue: 'invalid' }));
+expect(gs.get('some.path')).type.toEqual<ValueT>();
+expect(gs.get('invalid.path')).type.toBeVoid();
 
-expectType<void>(gs.get<ForceT, void>());
-expectType<'OK'>(gs.get<ForceT, 'OK'>());
+expect(() => gs.get('some.path', {
+  initialValue: 'invalid',
+})).type.toRaiseError(2769);
 
-expectError(() => gs.get<ForceT, void>('some.path', { initialValue: 'invalid' }));
+expect(() => gs.get('invalid.path', {
+  initialValue: 'invalid',
+})).type.toRaiseError(2769);
+
+expect(gs.get<ForceT, void>()).type.toBeVoid();
+expect(gs.get<ForceT, 'OK'>()).type.toEqual<'OK'>();
+
+expect(() => gs.get<ForceT, void>('some.path', {
+  initialValue: 'invalid',
+})).type.toRaiseError(2322);

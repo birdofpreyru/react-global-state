@@ -11,21 +11,17 @@ import useAsyncCollection, {
   type UseAsyncCollectionI,
 } from './useAsyncCollection';
 
-import useAsyncData, {
+import {
   type UseAsyncDataI,
   newAsyncDataEnvelope,
+  useAsyncData,
 } from './useAsyncData';
 
 import useGlobalState, { type UseGlobalStateI } from './useGlobalState';
 
 export type { AsyncCollectionLoaderT } from './useAsyncCollection';
 
-export type {
-  AsyncDataEnvelopeT,
-  AsyncDataLoaderT,
-  UseAsyncDataOptionsT,
-  UseAsyncDataResT,
-} from './useAsyncData';
+export * from './useAsyncData';
 
 export type { SetterT, UseGlobalStateResT } from './useGlobalState';
 
@@ -36,10 +32,8 @@ export {
   getSsrContext,
   GlobalState,
   GlobalStateProvider,
-  newAsyncDataEnvelope,
   SsrContext,
   useAsyncCollection,
-  useAsyncData,
   useGlobalState,
 };
 

@@ -3,7 +3,7 @@
  */
 
 import { cloneDeep } from 'lodash';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { MIN_MS } from '@dr.pogodin/js-utils';
@@ -26,6 +26,9 @@ const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
 export type AsyncDataLoaderT<DataT>
 = (oldData: null | DataT) => DataT | Promise<DataT>;
+
+export type AsyncDataReloaderT<DataT>
+= (loader?: AsyncDataLoaderT<DataT>) => Promise<void>;
 
 export type AsyncDataEnvelopeT<DataT> = {
   data: null | DataT;
@@ -57,7 +60,7 @@ export type UseAsyncDataOptionsT = {
 export type UseAsyncDataResT<DataT> = {
   data: DataT | null;
   loading: boolean;
-  reload: (loader?: AsyncDataLoaderT<DataT>) => Promise<void>;
+  reload: AsyncDataReloaderT<DataT>;
   timestamp: number;
 };
 
@@ -92,9 +95,14 @@ async function load<DataT>(
   const operationId = opIdPrefix + uuid();
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
   globalState.set<ForceT, string>(operationIdPath, operationId);
-  const data = await loader(
+
+  const dataOrLoader = loader(
     oldData || (globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path)).data,
   );
+
+  const data: DataT = dataOrLoader instanceof Promise
+    ? await dataOrLoader : dataOrLoader;
+
   const state: AsyncDataEnvelopeT<DataT> = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path);
   if (operationId === state.operationId) {
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
@@ -174,6 +182,14 @@ export type DataInEnvelopeAtPathT<StateT, PathT extends null | string | undefine
   ? Exclude<ValueAtPathT<StateT, PathT, never>['data'], null>
   : void;
 
+type HeapT<DataT> = {
+  // Note: these heap fields are necessary to make reload() a stable function.
+  globalState?: GlobalState<unknown>;
+  path?: null | string;
+  loader?: AsyncDataLoaderT<DataT>;
+  reload?: AsyncDataReloaderT<DataT>;
+};
+
 function useAsyncData<
   StateT,
   PathT extends null | string | undefined,
@@ -215,6 +231,19 @@ function useAsyncData<DataT>(
   const state = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
     initialValue: newAsyncDataEnvelope<DataT>(),
   });
+
+  const { current: heap } = useRef<HeapT<DataT>>({});
+  heap.globalState = globalState;
+  heap.path = path;
+  heap.loader = loader;
+
+  if (!heap.reload) {
+    heap.reload = (customLoader?: AsyncDataLoaderT<DataT>) => {
+      const localLoader = customLoader || heap.loader;
+      if (!localLoader || !heap.globalState) throw Error('Internal error');
+      return load(heap.path, localLoader, heap.globalState, null);
+    };
+  }
 
   if (globalState.ssrContext && !options.noSSR) {
     if (!state.timestamp && !state.operationId) {
@@ -301,19 +330,12 @@ function useAsyncData<DataT>(
   return {
     data: maxage < Date.now() - localState.timestamp ? null : localState.data,
     loading: Boolean(localState.operationId),
-
-    reload: (customLoader?: AsyncDataLoaderT<DataT>) => load(
-      path,
-      customLoader || loader,
-      globalState,
-      null,
-    ),
-
+    reload: heap.reload,
     timestamp: localState.timestamp,
   };
 }
 
-export default useAsyncData;
+export { useAsyncData };
 
 export interface UseAsyncDataI<StateT> {
   <PathT extends null | string | undefined>(

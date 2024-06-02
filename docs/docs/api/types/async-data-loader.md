@@ -20,8 +20,12 @@ export type AsyncDataLoaderT<DataT>
   if any; or _null_.
 
 ## Result
-The data loader function must either return a **Promise** resolving to a [DataT]
-value, or just return a [DataT] value directly.
+The data loader function should return either a [Promise] of [DataT] value,
+or [DataT] value directly. In the former case, the corresponding envelope in
+the global state will be in the (re-)loading state while the promise resolution
+or rejection is awaited; in the later case [DataT] value will be writted into
+the envelope synchronously, without visiting the intermediate (re-)loading state.
 
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
+[Promise]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 [useAsyncData()]: /docs/api/hooks/useasyncdata

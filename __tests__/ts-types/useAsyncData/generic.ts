@@ -1,4 +1,4 @@
-import { expectAssignable, expectType, expectError } from 'tsd-lite';
+import { expect } from 'tstyche';
 
 import {
   type AsyncDataEnvelopeT,
@@ -6,29 +6,29 @@ import {
   type ForceT,
   type UseAsyncDataResT,
   useAsyncData,
-} from 'src';
+} from '../../../src';
 
 declare function loader1(): 'OK';
 declare function loader2(): Promise<'OK'>;
 declare function numLoader(): number;
 
-expectAssignable<AsyncDataLoaderT<'OK'>>(loader1);
-expectAssignable<AsyncDataLoaderT<'OK'>>(loader2);
+expect<AsyncDataLoaderT<'OK'>>().type.toBeAssignable(loader1);
+expect<AsyncDataLoaderT<'OK'>>().type.toBeAssignable(loader2);
 
-expectType<UseAsyncDataResT<'OK'>>(
+expect(
   useAsyncData<ForceT, 'OK'>('path', loader1),
-);
+).type.toEqual<UseAsyncDataResT<'OK'>>();
 
 const SOME_PATH = 'some.path';
 type StateT = { some: { path: AsyncDataEnvelopeT<'OK'> } };
 
-expectType<UseAsyncDataResT<'OK'>>(
+expect(
   useAsyncData<StateT, typeof SOME_PATH>(SOME_PATH, loader1),
-);
+).type.toEqual<UseAsyncDataResT<'OK'>>();
 
-expectError(() => {
+expect(() => {
   const x: UseAsyncDataResT<number> = useAsyncData<StateT, typeof SOME_PATH>(
     SOME_PATH,
     numLoader,
   );
-});
+}).type.toRaiseError(2322, 2345);

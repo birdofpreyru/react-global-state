@@ -1,6 +1,6 @@
-import { expectError, expectType } from 'tsd-lite';
+import { expect } from 'tstyche';
 
-import { type ValueAtPathT } from 'src/utils';
+import { type ValueAtPathT } from '../../../src/utils';
 
 type StateT1 = {
   some: {
@@ -10,56 +10,56 @@ type StateT1 = {
 };
 
 declare const x1: ValueAtPathT<StateT1, 'some.path', never>;
-expectType<'value-a' | 'value-b'>(x1);
+expect(x1).type.toEqual<'value-a' | 'value-b'>();
 
 declare const x2: ValueAtPathT<StateT1, 'some.path', undefined>;
-expectType<'value-a' | 'value-b'>(x2);
+expect(x2).type.toEqual<'value-a' | 'value-b'>();
 
 declare const x3: ValueAtPathT<StateT1, 'some.array[3].key', never>;
-expectType<string>(x3);
+expect(x3).type.toBeString();
 
 declare const x4: ValueAtPathT<StateT1, 'invalid.path', never>;
-expectType<never>(x4);
+expect(x4).type.toBeNever();
 
 declare const x5: ValueAtPathT<StateT1, 'invalid.path', undefined>;
-expectType<undefined>(x5);
+expect(x5).type.toBeUndefined();
 
 declare const x6: ValueAtPathT<StateT1, 'invalid.path', void>;
-expectType<void>(x6);
+expect(x6).type.toBeVoid();
 
-expectError(() => {
+expect(() => {
   const x: ValueAtPathT<StateT1, 'some.path', 'XXX'> = 'value-a';
-});
+}).type.toRaiseError(2344);
 
 declare const x7: ValueAtPathT<StateT1, null, void>;
-expectType<StateT1>(x7);
+expect(x7).type.toEqual<StateT1>();
 
 declare const x8: ValueAtPathT<StateT1, undefined, void>;
-expectType<StateT1>(x8);
+expect(x8).type.toEqual<StateT1>();
 
 declare const x9: ValueAtPathT<StateT1, null | undefined, void>;
-expectType<StateT1>(x9);
+expect(x9).type.toEqual<StateT1>();
 
-expectError(() => {
+expect(() => {
   const x: ValueAtPathT<StateT1, null | string, never> = 'XXX';
-});
+}).type.toRaiseError(2322);
 
-expectError(() => {
+expect(() => {
   const x: ValueAtPathT<StateT1, null | string, never> = {
     some: {
       array: [],
       path: 'value-a',
     },
   };
-});
+}).type.toRaiseError(2322);
 
 declare const x10: ValueAtPathT<string | StateT1, 'some.path', never>;
-expectType<never>(x10);
+expect(x10).type.toBeNever();
 
 // When the state type is unknown.
 
 declare const y1: ValueAtPathT<unknown, 'some.path', never>;
-expectType<never>(y1);
+expect(y1).type.toBeNever();
 
 declare const y2: ValueAtPathT<unknown, null, never>;
-expectType<never>(y2);
+expect(y2).type.toBeNever();
