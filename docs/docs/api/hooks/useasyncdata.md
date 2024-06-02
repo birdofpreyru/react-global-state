@@ -2,15 +2,15 @@
 ```jsx
 import { useAsyncData } from '@dr.pogodin/react-global-state';
 ```
-Resolves asynchronous data, and stores them at the given `path` of global
-state. When multiple components rely on asynchronous data at the same `path`,
-the data are resolved once, and reused until their age is within specified
-bounds. Once the data are stale, the hook allows to refreshes them. It also
+Resolves asynchronous (or synchronous) data, and stores them at the given `path` of global
+state. When multiple components rely on data stored at the same `path`,
+these data are resolved once, and reused until their age is within specified
+bounds. Once these data are stale, this hook refreshes them. It also
 garbage-collects stale data from the global state when the last component
 relying on them is unmounted.
 
 :::info
-The hook stores loaded async data and related meta data at the `path` of global
+The hook stores loaded data, and related meta-data at a `path` of global
 state in form of [AsyncDataEnvelopeT] object. That global state segment can be
 accessed, and even modified using other hooks,
 _e.g_ [useGlobalState()], but doing so you should be careful to not interfere
@@ -118,12 +118,21 @@ making convenient and safe static type analysis possible.
   state path, where data envelope is stored. _null_ or _undefined_ mean the entire
   state is just the envelope for this hook.
 
-- `loader` &mdash; [AsyncDataLoaderT] &mdash; Asynchronous function which resolves (loads)
-  async data, which should be stored at the global state `path`. When multiple
-  components use [useAsyncData()] hook for the same `path`, the library assumes
-  that all hook instances are called with the same `loader` (_i.e._ whichever of
-  these loaders is used to resolve async data, the result is acceptable to be
-  reused in all related components).
+- `loader` &mdash; [AsyncDataLoaderT] &mdash; Asynchronous, or synchronous
+  function which resolves (loads) some data that should be stored at the global
+  state `path`. When multiple components use [useAsyncData()] hook for the same
+  `path`, the library assumes that all hook instances are called with the same
+  `loader` (_i.e._ whichever of these loaders is used to resolve async data,
+  the result it returns will be reused by all these hooks until re-loaded again).
+
+  :::tip
+  When `loader` returns a promise, the corresponding data envelope in the global
+  state is moved into the intermediate (re-)loading state, and once that promise
+  is resolved that envelope ends in the final state with resolved data stored
+  into it. However, if `loader` directly returns data (_i.e._ non-promise result),
+  these data are stored into the envelope immediately (synchronously), without
+  passing by the (re-)loading state.
+  :::
 
 - `options` &mdash; [UseAsyncDataOptionsT] &mdash; Optional object
   with additional settings.
