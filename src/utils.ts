@@ -1,4 +1,4 @@
-import { type GetFieldType } from 'lodash';
+import { type GetFieldType, cloneDeep } from 'lodash';
 
 export type CallbackT = () => void;
 
@@ -64,4 +64,29 @@ export function isDebugMode(): boolean {
   } catch (error) {
     return false;
   }
+}
+
+const cloneDeepBailKeys = new Set<string>();
+
+/**
+ * Deep-clones given value for logging purposes, or returns the value itself
+ * if the previous clone attempt, with the same key, took more than 300ms
+ * (to avoid situations when large payload in the global state slows down
+ * development versions of the app due to the logging overhead).
+ */
+export function cloneDeepForLog<T>(value: T, key: string = ''): T {
+  if (cloneDeepBailKeys.has(key)) {
+    console.warn(`The logged value won't be clonned (key "${key}").`);
+    return value;
+  }
+
+  const start = Date.now();
+  const res = cloneDeep(value);
+  const time = Date.now() - start;
+  if (time > 300) {
+    console.warn(`${time}ms spent to clone the logged value (key "${key}").`);
+    cloneDeepBailKeys.add(key);
+  }
+
+  return res;
 }

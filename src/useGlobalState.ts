@@ -1,6 +1,6 @@
 // Hook for updates of global state.
 
-import { cloneDeep, isFunction } from 'lodash';
+import { isFunction } from 'lodash';
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 
 import { Emitter } from '@dr.pogodin/js-utils';
@@ -15,6 +15,7 @@ import {
   type TypeLock,
   type ValueAtPathT,
   type ValueOrInitializerT,
+  cloneDeepForLog,
   isDebugMode,
 } from './utils';
 
@@ -133,7 +134,7 @@ function useGlobalState(
               rc!.path || ''
             }`,
           );
-          console.log('New value:', cloneDeep(newState));
+          console.log('New value:', cloneDeepForLog(newState, rc.path ?? ''));
           console.groupEnd();
           /* eslint-enable no-console */
         }

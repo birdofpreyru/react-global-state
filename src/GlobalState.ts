@@ -1,5 +1,4 @@
 import {
-  cloneDeep,
   get,
   isFunction,
   isObject,
@@ -17,6 +16,7 @@ import {
   type TypeLock,
   type ValueAtPathT,
   type ValueOrInitializerT,
+  cloneDeepForLog,
   isDebugMode,
 } from './utils';
 
@@ -74,7 +74,7 @@ export default class GlobalState<
       let msg = 'New ReactGlobalState created';
       if (ssrContext) msg += ' (SSR mode)';
       console.groupCollapsed(msg);
-      console.log('Initial state:', cloneDeep(initialState));
+      console.log('Initial state:', cloneDeepForLog(initialState));
       console.groupEnd();
       /* eslint-enable no-console */
     }
@@ -127,8 +127,8 @@ export default class GlobalState<
       const p = typeof path === 'string'
         ? `"${path}"` : 'none (entire state update)';
       console.groupCollapsed(`ReactGlobalState update. Path: ${p}`);
-      console.log('New value:', cloneDeep(value));
-      console.log('New state:', cloneDeep(this.#currentState));
+      console.log('New value:', cloneDeepForLog(value, path ?? ''));
+      console.log('New state:', cloneDeepForLog(this.#currentState));
       console.groupEnd();
       /* eslint-enable no-console */
     }

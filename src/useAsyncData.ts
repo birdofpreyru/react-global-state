@@ -2,7 +2,6 @@
  * Loads and uses async data into the GlobalState path.
  */
 
-import { cloneDeep } from 'lodash';
 import { useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 
@@ -16,6 +15,7 @@ import {
   type LockT,
   type TypeLock,
   type ValueAtPathT,
+  cloneDeepForLog,
   isDebugMode,
 } from './utils';
 
@@ -112,7 +112,7 @@ async function load<DataT>(
           path || ''
         }"`,
       );
-      console.log('Data:', cloneDeep(data));
+      console.log('Data:', cloneDeepForLog(data, path ?? ''));
       /* eslint-enable no-console */
     }
     globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
