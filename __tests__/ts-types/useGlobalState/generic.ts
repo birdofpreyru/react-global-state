@@ -5,15 +5,15 @@ import {
   useGlobalState,
 } from '../../../src';
 
-expect(useGlobalState()).type.toEqual<UseGlobalStateResT<unknown>>();
-expect(useGlobalState<'OK'>()).type.toEqual<UseGlobalStateResT<'OK'>>();
+expect(useGlobalState()).type.toBe<UseGlobalStateResT<unknown>>();
+expect(useGlobalState<'OK'>()).type.toBe<UseGlobalStateResT<'OK'>>();
 
 type ValueT = 'value-a' | 'value-b';
 type StateT = { some: { path: ValueT } };
 const SOME_PATH = 'some.path';
 
-expect(useGlobalState<StateT>()).type.toEqual<UseGlobalStateResT<StateT>>();
-expect(useGlobalState(null)).type.toEqual<UseGlobalStateResT<void>>();
+expect(useGlobalState<StateT>()).type.toBe<UseGlobalStateResT<StateT>>();
+expect(useGlobalState(null)).type.toBe<UseGlobalStateResT<void>>();
 expect(useGlobalState(null)[0]).type.toBeVoid();
 
 expect(() => {
@@ -28,7 +28,7 @@ expect(() => {
 
 expect(
   useGlobalState<StateT, typeof SOME_PATH>(SOME_PATH),
-).type.toEqual<UseGlobalStateResT<ValueT>>();
+).type.toBe<UseGlobalStateResT<ValueT>>();
 
 expect(() => {
   const x: string = useGlobalState(SOME_PATH, 'XXX');

@@ -10,10 +10,10 @@ type StateT1 = {
 };
 
 declare const x1: ValueAtPathT<StateT1, 'some.path', never>;
-expect(x1).type.toEqual<'value-a' | 'value-b'>();
+expect(x1).type.toBe<'value-a' | 'value-b'>();
 
 declare const x2: ValueAtPathT<StateT1, 'some.path', undefined>;
-expect(x2).type.toEqual<'value-a' | 'value-b'>();
+expect(x2).type.toBe<'value-a' | 'value-b'>();
 
 declare const x3: ValueAtPathT<StateT1, 'some.array[3].key', never>;
 expect(x3).type.toBeString();
@@ -32,13 +32,13 @@ expect(() => {
 }).type.toRaiseError(2344);
 
 declare const x7: ValueAtPathT<StateT1, null, void>;
-expect(x7).type.toEqual<StateT1>();
+expect(x7).type.toBe<StateT1>();
 
 declare const x8: ValueAtPathT<StateT1, undefined, void>;
-expect(x8).type.toEqual<StateT1>();
+expect(x8).type.toBe<StateT1>();
 
 declare const x9: ValueAtPathT<StateT1, null | undefined, void>;
-expect(x9).type.toEqual<StateT1>();
+expect(x9).type.toBe<StateT1>();
 
 expect(() => {
   const x: ValueAtPathT<StateT1, null | string, never> = 'XXX';
@@ -54,7 +54,7 @@ expect(() => {
 }).type.toRaiseError(2322);
 
 declare const x10: ValueAtPathT<string | StateT1, 'some.path', never>;
-expect(x10).type.toBeNever();
+expect(x10).type.toBe<'value-a' | 'value-b' | undefined>();
 
 // When the state type is unknown.
 

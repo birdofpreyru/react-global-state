@@ -10,8 +10,8 @@ import {
 declare function loader1(): 'OK';
 declare function loader2(): Promise<'OK'>;
 
-expect<AsyncCollectionLoaderT<'OK'>>().type.toBeAssignable(loader1);
-expect<AsyncCollectionLoaderT<'OK'>>().type.toBeAssignable(loader2);
+expect<AsyncCollectionLoaderT<'OK'>>().type.toBeAssignableWith(loader1);
+expect<AsyncCollectionLoaderT<'OK'>>().type.toBeAssignableWith(loader2);
 
 type StateT = {
   some: {
@@ -30,4 +30,4 @@ expect(
     SOME_PATH,
     loader1,
   ),
-).type.toEqual<UseAsyncDataResT<'OK'>>();
+).type.toBe<UseAsyncDataResT<'OK'>>();

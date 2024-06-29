@@ -19,7 +19,7 @@ type StateT = {
 
 // Entire state overload.
 const [t03] = useGlobalState<StateT>();
-expect(t03).type.toEqual<StateT>();
+expect(t03).type.toBe<StateT>();
 
 // State evaluation overload.
 const [t04] = useGlobalState<StateT, 'real.path'>('real.path');
@@ -47,5 +47,5 @@ const useGS = useGlobalState as UseGlobalStateI<StateT>;
 
 { // Entire state overload.
   const [t] = useGS();
-  expect(t).type.toEqual<StateT>();
+  expect(t).type.toBe<StateT>();
 }

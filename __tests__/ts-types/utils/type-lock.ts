@@ -10,4 +10,4 @@ declare const t02: TypeLock<LockT, void, 'x'>;
 expect(t02).type.toBeVoid();
 
 declare const t03: TypeLock<ForceT, never, 'x'>;
-expect(t03).type.toEqual<'x'>();
+expect(t03).type.toBe<'x'>();
