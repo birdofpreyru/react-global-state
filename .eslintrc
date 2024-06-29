@@ -11,6 +11,7 @@
     // NOTE: defaultProps will be deprecated in React@19. Presumably,
     // once AirBnB ESLint config is updated there will be no need to disable
     // this rule explicitly, but for now here it is disabled.
+    "react/prop-types": "off",
     "react/require-default-props": 0
   },
   "settings": {
