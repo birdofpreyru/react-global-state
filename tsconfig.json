@@ -7,9 +7,8 @@
     "moduleResolution": "Node",
     "outDir": "build",
     "paths": {
-      "*": ["./*"],
+      "*": ["./*"]
     },
-    "strict": true,
-    "verbatimModuleSyntax": true,
-  },
+    "verbatimModuleSyntax": true
+  }
 }
