@@ -1,10 +1,9 @@
 import mockdate from 'mockdate';
-import pretty from 'pretty';
 import { type JSXElementConstructor } from 'react';
 import ReactDOM from 'react-dom/server';
 
 import {
-  type DestroyableHtmlElement,
+  type MountedSceneT,
   consoleLogs,
   mockConsoleLog,
   unMockConsoleLog,
@@ -21,7 +20,7 @@ mockdate.set('2019-11-07Z');
 let loaderA;
 let loaderB;
 let Scene: JSXElementConstructor<unknown>;
-let scene: DestroyableHtmlElement | undefined;
+let scene: MountedSceneT | undefined;
 let ssrRound: number;
 
 beforeEach(() => {
@@ -55,7 +54,7 @@ test('Naive server-side rendering', (done) => {
       async onAllReady() {
         const dest = new StringDestination();
         stream.pipe(dest);
-        expect(pretty(await dest.waitResult())).toMatchSnapshot();
+        expect(await dest.waitResult()).toMatchSnapshot();
         done();
       },
     },

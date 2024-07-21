@@ -1,6 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[` 1`] = `"<div>value-b</div>"`;
+exports[` 1`] = `
+<div>
+  <div>
+    value-b
+  </div>
+</div>
+`;
 
 exports[`withGlobalStateType() result matches snapshot 1`] = `
 {

@@ -3,7 +3,6 @@
 // A very generic test of basic useAsyncCollection() functionality.
 
 import mockdate from 'mockdate';
-import pretty from 'pretty';
 import { useState } from 'react';
 
 import { timer } from '@dr.pogodin/js-utils';
@@ -63,7 +62,7 @@ it('works as expected', async () => {
   const globalState = new GlobalState(newZeroState());
   const scene = mount(<Scene globalState={globalState} />);
   await act(() => timer(10));
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 
   const button = document.getElementsByTagName('button')[0];
@@ -71,6 +70,6 @@ it('works as expected', async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
   await act(() => timer(10));
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 });

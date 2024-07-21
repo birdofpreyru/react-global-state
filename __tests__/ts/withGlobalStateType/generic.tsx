@@ -1,7 +1,6 @@
 /** @jest-environment jsdom */
 
-import pretty from 'pretty';
-import { type DestroyableHtmlElement, mount } from 'jest/utils';
+import { type MountedSceneT, mount } from 'jest/utils';
 
 import { withGlobalStateType } from 'src/index';
 
@@ -25,7 +24,7 @@ const TestScene: React.FunctionComponent = () => (
   </GS.GlobalStateProvider>
 );
 
-let scene: DestroyableHtmlElement | undefined;
+let scene: MountedSceneT | undefined;
 
 afterEach(() => {
   if (scene) {
@@ -36,5 +35,5 @@ afterEach(() => {
 
 describe('withGlobalStateType().useGlobalState()', () => {
   scene = mount(<TestScene />);
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });

@@ -4,10 +4,9 @@
  * Updates of nested state paths should notify watchers of the wrapping paths.
  */
 
-import pretty from 'pretty';
 import { timer } from '@dr.pogodin/js-utils';
 
-import { type DestroyableHtmlElement, act, mount } from 'jest/utils';
+import { type MountedSceneT, act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 /* Test with the state containing only objects. */
@@ -49,31 +48,31 @@ const Scene1: React.FunctionComponent = () => (
   </GlobalStateProvider>
 );
 
-let currentScene: DestroyableHtmlElement | undefined;
+let scene: MountedSceneT | undefined;
 
-function getButton(scene: DestroyableHtmlElement): Element {
-  const button = scene.querySelector('#button');
+function getButton(mountedScene: MountedSceneT): Element {
+  const button = mountedScene.querySelector('#button');
   if (!button) throw Error('Failed to find the button');
   return button;
 }
 
 afterEach(() => {
-  if (currentScene) {
-    currentScene.destroy();
-    currentScene = undefined;
+  if (scene) {
+    scene.destroy();
+    scene = undefined;
   }
 });
 
 test('Test with objects', async () => {
-  currentScene = mount(<Scene1 />);
+  scene = mount(<Scene1 />);
   await act(() => timer(1));
-  expect(pretty(currentScene.innerHTML)).toMatchSnapshot();
-  const button = getButton(currentScene);
+  scene.snapshot();
+  const button = getButton(scene);
   await act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await timer(1);
   });
-  expect(pretty(currentScene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });
 
 /* Test with the state containing an array. */
@@ -127,15 +126,15 @@ const Scene2: React.FunctionComponent = () => (
 );
 
 test('Test with arrays', async () => {
-  currentScene = mount(<Scene2 />);
+  scene = mount(<Scene2 />);
   await act(() => timer(1));
-  expect(pretty(currentScene.innerHTML)).toMatchSnapshot();
-  const button = getButton(currentScene);
+  scene.snapshot();
+  const button = getButton(scene);
   await act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await timer(1);
   });
-  expect(pretty(currentScene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });
 
 /* Test with strings in the path. */
@@ -178,13 +177,13 @@ const Scene3: React.FunctionComponent = () => (
 );
 
 test('Test with strings', async () => {
-  currentScene = mount(<Scene3 />);
+  scene = mount(<Scene3 />);
   await act(() => timer(1));
-  expect(pretty(currentScene.innerHTML)).toMatchSnapshot();
-  const button = getButton(currentScene);
+  scene.snapshot();
+  const button = getButton(scene);
   await act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await timer(1);
   });
-  expect(pretty(currentScene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });

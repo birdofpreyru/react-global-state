@@ -8,7 +8,6 @@
  */
 
 import mockdate from 'mockdate';
-import pretty from 'pretty';
 
 let JU;
 let LIB;
@@ -53,11 +52,11 @@ test('Scene test in the front-end mode', async () => {
       <Scene />
     </LIB.GlobalStateProvider>
   ));
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   await JU.act(async () => {
     await JU.mockTimer(100);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
   await JU.act(async () => {
@@ -66,7 +65,7 @@ test('Scene test in the front-end mode', async () => {
   await JU.act(async () => {
     await JU.mockTimer(0);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
 });
@@ -113,7 +112,7 @@ describe('Test `getSsrContext()` function', () => {
         <SceneUsingSsrContext />
       </LIB.GlobalStateProvider>
     ));
-    expect(pretty(scene.innerHTML)).toMatchSnapshot();
+    scene.snapshot();
   });
 
   test('Get SSR context when does not exist', () => {
@@ -139,6 +138,6 @@ describe('Test `getSsrContext()` function', () => {
         <SceneUsingSsrContext throwWithoutSsrContext={false} />
       </LIB.GlobalStateProvider>
     ));
-    expect(pretty(scene.innerHTML)).toMatchSnapshot();
+    scene.snapshot();
   });
 });

@@ -1,63 +1,95 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Scene test in the front-end mode 1`] = `
-"<div>
-  <h1>defaultValue</h1>
-  <div>{
-    "data": null,
-    "loading": true,
-    "timestamp": 0
-    }</div>
-  <div>{
-    "data": null,
-    "loading": true,
-    "timestamp": 0
-    }</div>
-</div>"
+<div>
+  <div>
+    <h1>
+      defaultValue
+    </h1>
+    <div>
+      {
+  "data": null,
+  "loading": true,
+  "timestamp": 0
+}
+    </div>
+    <div>
+      {
+  "data": null,
+  "loading": true,
+  "timestamp": 0
+}
+    </div>
+  </div>
+</div>
 `;
 
 exports[`Scene test in the front-end mode 2`] = `
-"<div>
-  <h1>defaultValue</h1>
-  <div>{
-    "data": null,
-    "loading": true,
-    "timestamp": 0
-    }</div>
-  <div>{
-    "data": null,
-    "loading": true,
-    "timestamp": 0
-    }</div>
-</div>"
+<div>
+  <div>
+    <h1>
+      defaultValue
+    </h1>
+    <div>
+      {
+  "data": null,
+  "loading": true,
+  "timestamp": 0
+}
+    </div>
+    <div>
+      {
+  "data": null,
+  "loading": true,
+  "timestamp": 0
+}
+    </div>
+  </div>
+</div>
 `;
 
 exports[`Scene test in the front-end mode 3`] = `
-"<div>
-  <h1>defaultValue</h1>
-  <div>{
-    "data": "data",
-    "loading": false,
-    "timestamp": 1573084801100
-    }</div>
-  <div>{
-    "data": "data",
-    "loading": false,
-    "timestamp": 1573084801100
-    }</div>
-</div>"
+<div>
+  <div>
+    <h1>
+      defaultValue
+    </h1>
+    <div>
+      {
+  "data": "data",
+  "loading": false,
+  "timestamp": 1573084801100
+}
+    </div>
+    <div>
+      {
+  "data": "data",
+  "loading": false,
+  "timestamp": 1573084801100
+}
+    </div>
+  </div>
+</div>
 `;
 
 exports[`Test \`getSsrContext()\` function Get SSR context when does not exist 1`] = `"No SSR context found"`;
 
-exports[`Test \`getSsrContext()\` function Get SSR context when does not exist, but no throw is opted in 1`] = `"<div></div>"`;
+exports[`Test \`getSsrContext()\` function Get SSR context when does not exist, but no throw is opted in 1`] = `
+<div>
+  <div />
+</div>
+`;
 
 exports[`Test \`getSsrContext()\` function Get SSR context when exists 1`] = `
-"<div>{
+<div>
+  <div>
+    {
   "dirty": false,
   "pending": [],
   "key": "Dummy SSR Context"
-  }</div>"
+}
+  </div>
+</div>
 `;
 
 exports[`Test \`getSsrContext()\` function Missing GlobalStateProvider 1`] = `"Missing GlobalStateProvider"`;

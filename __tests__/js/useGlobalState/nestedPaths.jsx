@@ -4,7 +4,6 @@
  * Updates of nested state paths should notify watchers of the wrapping paths.
  */
 
-import pretty from 'pretty';
 import { timer } from '@dr.pogodin/js-utils';
 import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
@@ -55,13 +54,13 @@ afterEach(() => {
 test('Test with objects', async () => {
   scene = mount(<Scene1 />);
   await act(() => timer(1));
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   const button = scene.querySelector('#button');
   await act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await timer(1);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });
 
 /* Test with the state containing an array. */
@@ -111,13 +110,13 @@ function Scene2() {
 test('Test with arrays', async () => {
   scene = mount(<Scene2 />);
   await act(() => timer(1));
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   const button = scene.querySelector('#button');
   await act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await timer(1);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });
 
 /* Test with strings in the path. */
@@ -163,11 +162,11 @@ function Scene3() {
 test('Test with strings', async () => {
   scene = mount(<Scene3 />);
   await act(() => timer(1));
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   const button = scene.querySelector('#button');
   await act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await timer(1);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });

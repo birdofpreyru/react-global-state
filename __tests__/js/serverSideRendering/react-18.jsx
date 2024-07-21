@@ -1,5 +1,4 @@
 import mockdate from 'mockdate';
-import pretty from 'pretty';
 
 import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils';
 
@@ -50,7 +49,7 @@ test('Naive server-side rendering', (done) => {
       async onAllReady() {
         const dest = new StringDestination();
         stream.pipe(dest);
-        expect(pretty(await dest.waitResult())).toMatchSnapshot();
+        expect(await dest.waitResult()).toMatchSnapshot();
         done();
       },
     },

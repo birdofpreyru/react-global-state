@@ -8,10 +8,9 @@
  */
 
 import mockdate from 'mockdate';
-import pretty from 'pretty';
 
 import {
-  type DestroyableHtmlElement,
+  type MountedSceneT,
   act,
   mockTimer,
   mount,
@@ -27,7 +26,7 @@ jest.mock('uuid');
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
 
-let scene: DestroyableHtmlElement | undefined;
+let scene: MountedSceneT | undefined;
 
 beforeEach(() => {
   delete process.env.REACT_GLOBAL_STATE_DEBUG;
@@ -55,11 +54,11 @@ test('Scene test in the front-end mode', async () => {
       <Scene />
     </GlobalStateProvider>
   ));
-  expect(pretty(scene!.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   await act(async () => {
     await mockTimer(100);
   });
-  expect(pretty(scene!.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
   await act(async () => {
@@ -68,7 +67,7 @@ test('Scene test in the front-end mode', async () => {
   await act(async () => {
     await mockTimer(0);
   });
-  expect(pretty(scene!.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
 });
@@ -129,7 +128,7 @@ describe('Test `getSsrContext()` function', () => {
         <SceneUsingSsrContext />
       </GlobalStateProvider>
     ));
-    expect(pretty(scene!.innerHTML)).toMatchSnapshot();
+    scene.snapshot();
   });
 
   test('Get SSR context when does not exist', () => {
@@ -153,6 +152,6 @@ describe('Test `getSsrContext()` function', () => {
         <SceneUsingSsrContext throwWithoutSsrContext={false} />
       </GlobalStateProvider>
     ));
-    expect(pretty(scene!.innerHTML)).toMatchSnapshot();
+    scene.snapshot();
   });
 });

@@ -1,9 +1,8 @@
 import mockdate from 'mockdate';
-import pretty from 'pretty';
 import ReactDOM from 'react-dom/server';
 
 import {
-  type DestroyableHtmlElement,
+  type MountedSceneT,
   consoleLogs,
   mockConsoleLog,
   unMockConsoleLog,
@@ -19,7 +18,7 @@ mockdate.set('2019-11-07Z');
 let loaderA;
 let loaderB;
 let Scene: JSX.ElementType;
-let scene: DestroyableHtmlElement | undefined;
+let scene: MountedSceneT | undefined;
 let ssrRound: number;
 
 beforeEach(() => {
@@ -50,7 +49,7 @@ test('Naive server-side rendering', () => {
       <Scene />
     </GlobalStateProvider>
   ));
-  expect(pretty(render)).toMatchSnapshot();
+  expect(render).toMatchSnapshot();
 });
 
 /**

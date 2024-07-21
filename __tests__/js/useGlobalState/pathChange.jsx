@@ -3,7 +3,6 @@
 // These tests cover useGlobalState behavior when its "path" argument value
 // changes.
 
-import pretty from 'pretty';
 import { useState } from 'react';
 import { timer } from '@dr.pogodin/js-utils';
 
@@ -46,7 +45,7 @@ function Scene({ globalState }) {
 it('works as expected', async () => {
   const globalState = new GlobalState();
   const scene = mount(<Scene globalState={globalState} />);
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 
   let button = document.querySelector('#changePath');
@@ -54,7 +53,7 @@ it('works as expected', async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     return timer(10);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 
   button = document.querySelector('#changeValue');
@@ -62,6 +61,6 @@ it('works as expected', async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     return timer(10);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 });

@@ -46,25 +46,27 @@ export async function mockTimer(time: number) {
   jest.advanceTimersByTime(time);
 }
 
-export type DestroyableHtmlElement = HTMLElement & { destroy: () => void };
+export type MountedSceneT = HTMLElement & {
+  destroy: () => void;
+  snapshot: () => void;
+};
 
 /**
  * Mounts `Scene` to the DOM, and returns the root scene element.
- * @param scene
- * @return {HTMLElement} Created container DOM element with unmount
- *  function attached.
  */
-export function mount(scene: ReactNode): DestroyableHtmlElement {
+export function mount(scene: ReactNode): MountedSceneT {
   let root: Root;
 
   const rootElement = document.createElement('div');
 
-  const res: DestroyableHtmlElement = (rootElement as unknown) as DestroyableHtmlElement;
+  const res: MountedSceneT = (rootElement as unknown) as MountedSceneT;
 
   res.destroy = () => {
     act(() => root.unmount());
     res.remove();
   };
+
+  res.snapshot = () => expect(res).toMatchSnapshot();
 
   document.body.appendChild(rootElement);
   act(() => {

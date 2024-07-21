@@ -9,7 +9,7 @@ import mockdate from 'mockdate';
 import { timer } from '@dr.pogodin/js-utils';
 
 import {
-  type DestroyableHtmlElement,
+  type MountedSceneT,
   act,
   mockTimer,
   mount,
@@ -54,7 +54,7 @@ const Scene: React.FunctionComponent = () => (
 );
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-let scene: DestroyableHtmlElement | undefined;
+let scene: MountedSceneT | undefined;
 
 // TODO: Move it to jest/utils?
 async function wait(time: number) {

@@ -1,6 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Scene works as expected 1`] = `
-"<div>C</div>
-<div>C</div>"
+<div>
+  <div>
+    C
+  </div>
+  <div>
+    C
+  </div>
+</div>
 `;

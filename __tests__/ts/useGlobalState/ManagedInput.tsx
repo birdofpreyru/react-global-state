@@ -6,8 +6,7 @@
 // the input element only in subsequent render cycle, see the issue
 // https://github.com/birdofpreyru/react-global-state/issues/22).
 
-import pretty from 'pretty';
-import { type DestroyableHtmlElement, act, mount } from 'jest/utils';
+import { type MountedSceneT, act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
 jest.useFakeTimers();
@@ -34,7 +33,7 @@ const TestScene: React.FunctionComponent = () => (
   </GlobalStateProvider>
 );
 
-let scene: DestroyableHtmlElement | undefined;
+let scene: MountedSceneT | undefined;
 
 it('works as expected', () => {
   scene = mount(<TestScene />);
@@ -63,5 +62,5 @@ it('works as expected', () => {
   });
 
   expect(input.selectionStart).toBe(3);
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });

@@ -6,7 +6,6 @@
 
 import { useState } from 'react';
 import mockdate from 'mockdate';
-import pretty from 'pretty';
 
 import { timer } from '@dr.pogodin/js-utils';
 
@@ -83,17 +82,17 @@ afterEach(() => {
 
 test('Scenario I', async () => {
   /* Check of the initial state. */
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 
   /* Data are not stale. */
   await wait(10);
   await wait(10);
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 
   /* Press of button forces data refresh via "deps" option. */
   act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
   await wait(10);
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });

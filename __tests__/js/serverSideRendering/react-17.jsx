@@ -1,5 +1,4 @@
 import mockdate from 'mockdate';
-import pretty from 'pretty';
 
 import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils';
 
@@ -46,7 +45,7 @@ test('Naive server-side rendering', () => {
       <Scene />
     </LIB.GlobalStateProvider>
   ));
-  expect(pretty(render)).toMatchSnapshot();
+  expect(render).toMatchSnapshot();
 });
 
 /**

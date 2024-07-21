@@ -1,7 +1,6 @@
 /** @jest-environment jsdom */
 
-import pretty from 'pretty';
-import { type DestroyableHtmlElement, act, mount } from 'jest/utils';
+import { type MountedSceneT, act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 jest.useFakeTimers();
@@ -30,7 +29,7 @@ const Scene: React.FunctionComponent = () => (
   </GlobalStateProvider>
 );
 
-let scene: DestroyableHtmlElement | undefined;
+let scene: MountedSceneT | undefined;
 
 afterEach(() => {
   if (scene) {
@@ -41,16 +40,16 @@ afterEach(() => {
 
 test('The scene works as expected', () => {
   scene = mount(<Scene />);
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   const button = document.getElementsByTagName('button')[0];
   act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });

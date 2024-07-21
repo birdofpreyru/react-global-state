@@ -1,24 +1,84 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Test of \`stateProxy\` prop of the state provider 1`] = `
-"<div>0</div>
-<div><button data-testid="button-1" type="button">Bump!</button></div>
-<div>0</div>
-<div><button data-testid="button-2" type="button">Bump!</button></div>"
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    <button
+      data-testid="button-1"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    <button
+      data-testid="button-2"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider 2`] = `
-"<div>1</div>
-<div><button data-testid="button-1" type="button">Bump!</button></div>
-<div>1</div>
-<div><button data-testid="button-2" type="button">Bump!</button></div>"
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    <button
+      data-testid="button-1"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    <button
+      data-testid="button-2"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider 3`] = `
-"<div>2</div>
-<div><button data-testid="button-1" type="button">Bump!</button></div>
-<div>2</div>
-<div><button data-testid="button-2" type="button">Bump!</button></div>"
+<div>
+  <div>
+    2
+  </div>
+  <div>
+    <button
+      data-testid="button-1"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+  <div>
+    2
+  </div>
+  <div>
+    <button
+      data-testid="button-2"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider II 1`] = `
@@ -28,10 +88,30 @@ exports[`Test of \`stateProxy\` prop of the state provider II 1`] = `
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider II 2`] = `
-"<div>0</div>
-<div><button data-testid="button-1" type="button">Bump!</button></div>
-<div>0</div>
-<div><button data-testid="button-2" type="button">Bump!</button></div>"
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    <button
+      data-testid="button-1"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    <button
+      data-testid="button-2"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider II 3`] = `
@@ -41,10 +121,30 @@ exports[`Test of \`stateProxy\` prop of the state provider II 3`] = `
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider II 4`] = `
-"<div>1</div>
-<div><button data-testid="button-1" type="button">Bump!</button></div>
-<div>0</div>
-<div><button data-testid="button-2" type="button">Bump!</button></div>"
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    <button
+      data-testid="button-1"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    <button
+      data-testid="button-2"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider II 5`] = `
@@ -54,31 +154,111 @@ exports[`Test of \`stateProxy\` prop of the state provider II 5`] = `
 `;
 
 exports[`Test of \`stateProxy\` prop of the state provider II 6`] = `
-"<div>1</div>
-<div><button data-testid="button-1" type="button">Bump!</button></div>
-<div>1</div>
-<div><button data-testid="button-2" type="button">Bump!</button></div>"
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    <button
+      data-testid="button-1"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    <button
+      data-testid="button-2"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+</div>
 `;
 
 exports[`The scene works as expected 1`] = `
-"<div>0</div>
-<div><button data-testid="button-1" type="button">Bump!</button></div>
-<div>0</div>
-<div><button data-testid="button-2" type="button">Bump!</button></div>"
+<div>
+  <div>
+    0
+  </div>
+  <div>
+    <button
+      data-testid="button-1"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    <button
+      data-testid="button-2"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+</div>
 `;
 
 exports[`The scene works as expected 2`] = `
-"<div>1</div>
-<div><button data-testid="button-1" type="button">Bump!</button></div>
-<div>0</div>
-<div><button data-testid="button-2" type="button">Bump!</button></div>"
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    <button
+      data-testid="button-1"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+  <div>
+    0
+  </div>
+  <div>
+    <button
+      data-testid="button-2"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+</div>
 `;
 
 exports[`The scene works as expected 3`] = `
-"<div>1</div>
-<div><button data-testid="button-1" type="button">Bump!</button></div>
-<div>1</div>
-<div><button data-testid="button-2" type="button">Bump!</button></div>"
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    <button
+      data-testid="button-1"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+  <div>
+    1
+  </div>
+  <div>
+    <button
+      data-testid="button-2"
+      type="button"
+    >
+      Bump!
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Throws if GlobalStateProvider is missing 1`] = `"Missing GlobalStateProvider"`;

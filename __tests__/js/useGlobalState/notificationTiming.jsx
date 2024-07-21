@@ -5,8 +5,6 @@
  * in an async manner.
  */
 
-import pretty from 'pretty';
-
 import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
@@ -49,5 +47,5 @@ afterAll(() => {
 test('Scene works as expected', () => {
   scene = mount(<Scene />);
   act(() => jest.runAllTimers());
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });

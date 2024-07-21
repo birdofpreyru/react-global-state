@@ -1,19 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Naive server-side rendering 1`] = `
-"<div>
-  <h1>defaultValue</h1>
-  <div>{
-    &quot;data&quot;: null,
-    &quot;loading&quot;: false,
-    &quot;timestamp&quot;: 0
-    }</div>
-  <div>{
-    &quot;data&quot;: null,
-    &quot;loading&quot;: false,
-    &quot;timestamp&quot;: 0
-    }</div>
-</div>"
+"<div><h1>defaultValue</h1><div>{
+  &quot;data&quot;: null,
+  &quot;loading&quot;: false,
+  &quot;timestamp&quot;: 0
+}</div><div>{
+  &quot;data&quot;: null,
+  &quot;loading&quot;: false,
+  &quot;timestamp&quot;: 0
+}</div></div>"
 `;
 
 exports[`Smart server-sider rendering 1`] = `

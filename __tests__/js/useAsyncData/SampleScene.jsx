@@ -6,7 +6,6 @@
  */
 
 import mockdate from 'mockdate';
-import pretty from 'pretty';
 import { useState } from 'react';
 
 import { timer } from '@dr.pogodin/js-utils';
@@ -106,14 +105,14 @@ test('Scenario I', async () => {
   initTestScene();
 
   /* Empty scene. */
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 
   /* Mounts ComponentA, checks the loading started. */
   act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
   await act(() => mockTimer(1));
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
 
@@ -124,7 +123,7 @@ test('Scenario I', async () => {
   await act(async () => {
     await mockTimer(0);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
 
@@ -134,7 +133,7 @@ test('Scenario I', async () => {
   for (let i = 0; i < 4; i += 1) {
     /* eslint-disable no-await-in-loop, no-loop-func */
     await clickButton();
-    expect(pretty(scene.innerHTML)).toMatchSnapshot();
+    scene.snapshot();
     expect(loaderA).toHaveBeenCalledTimes(1);
     expect(loaderB).toHaveBeenCalledTimes(0);
     /* eslint-enable no-await-in-loop */
@@ -147,7 +146,7 @@ test('Scenario I', async () => {
    */
   await wait(6 * 60 * 1000);
   await clickButton();
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(0);
 
@@ -155,7 +154,7 @@ test('Scenario I', async () => {
    * are mounted. */
   await wait(1000);
   await wait(0);
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(0);
 
@@ -163,14 +162,14 @@ test('Scenario I', async () => {
    * are re-loaded by ComponentB, which is still mounted. */
   await wait(6 * 60 * 1000);
   await clickButton();
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);
 
   /* Waits 1 sec, unmounts ComponentB, checks the data are loaded. */
   await wait(1000);
   await clickButton();
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);
 

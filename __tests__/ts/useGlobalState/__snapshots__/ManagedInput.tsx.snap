@@ -1,3 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`works as expected 1`] = `"<input value="12A345">"`;
+exports[`works as expected 1`] = `
+<div>
+  <input
+    value="12A345"
+  />
+</div>
+`;

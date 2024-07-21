@@ -1,97 +1,224 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Scenario I 1`] = `"<div><button data-testid="button" type="button">Move</button></div>"`;
+exports[`Scenario I 1`] = `
+<div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
+`;
 
 exports[`Scenario I 2`] = `
-"<div>{
+<div>
+  <div>
+    {
   "data": null,
   "loading": true,
   "timestamp": 0
-  }</div>
-<div><button data-testid="button" type="button">Move</button></div>"
+}
+  </div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Scenario I 3`] = `
-"<div>{
+<div>
+  <div>
+    {
   "data": "data",
   "loading": false,
   "timestamp": 1572220801001
-  }</div>
-<div><button data-testid="button" type="button">Move</button></div>"
+}
+  </div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Scenario I 4`] = `
-"<div>{
+<div>
+  <div>
+    {
   "data": "data",
   "loading": false,
   "timestamp": 1572220801001
-  }</div>
-<div>{
+}
+  </div>
+  <div>
+    {
   "data": "data",
   "loading": false,
   "timestamp": 1572220801001
-  }</div>
-<div><button data-testid="button" type="button">Move</button></div>"
+}
+  </div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Scenario I 5`] = `
-"<div>{
+<div>
+  <div>
+    {
   "data": "data",
   "loading": false,
   "timestamp": 1572220801001
-  }</div>
-<div><button data-testid="button" type="button">Move</button></div>"
+}
+  </div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
 `;
 
-exports[`Scenario I 6`] = `"<div><button data-testid="button" type="button">Move</button></div>"`;
+exports[`Scenario I 6`] = `
+<div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
+`;
 
 exports[`Scenario I 7`] = `
-"<div>{
+<div>
+  <div>
+    {
   "data": "data",
   "loading": false,
   "timestamp": 1572220801001
-  }</div>
-<div><button data-testid="button" type="button">Move</button></div>"
+}
+  </div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Scenario I 8`] = `
-"<div>{
+<div>
+  <div>
+    {
   "data": null,
   "loading": true,
   "timestamp": 1572220801001
-  }</div>
-<div>{
+}
+  </div>
+  <div>
+    {
   "data": null,
   "loading": true,
   "timestamp": 1572220801001
-  }</div>
-<div><button data-testid="button" type="button">Move</button></div>"
+}
+  </div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Scenario I 9`] = `
-"<div>{
+<div>
+  <div>
+    {
   "data": "data",
   "loading": false,
   "timestamp": 1572221162051
-  }</div>
-<div>{
+}
+  </div>
+  <div>
+    {
   "data": "data",
   "loading": false,
   "timestamp": 1572221162051
-  }</div>
-<div><button data-testid="button" type="button">Move</button></div>"
+}
+  </div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
 `;
 
 exports[`Scenario I 10`] = `
-"<div>{
+<div>
+  <div>
+    {
   "data": null,
   "loading": true,
   "timestamp": 1572221162051
-  }</div>
-<div><button data-testid="button" type="button">Move</button></div>"
+}
+  </div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
 `;
 
-exports[`Scenario I 11`] = `"<div><button data-testid="button" type="button">Move</button></div>"`;
+exports[`Scenario I 11`] = `
+<div>
+  <div>
+    <button
+      data-testid="button"
+      type="button"
+    >
+      Move
+    </button>
+  </div>
+</div>
+`;
 
 exports[`Scenario I 12`] = `
 [

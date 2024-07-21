@@ -5,9 +5,7 @@
  * in an async manner.
  */
 
-import pretty from 'pretty';
-
-import { type DestroyableHtmlElement, act, mount } from 'jest/utils';
+import { type MountedSceneT, act, mount } from 'jest/utils';
 
 import { GlobalStateProvider, useGlobalState } from 'src/index';
 
@@ -41,7 +39,7 @@ const Scene: React.FunctionComponent = () => (
   </GlobalStateProvider>
 );
 
-let scene: DestroyableHtmlElement | null = null;
+let scene: MountedSceneT | null = null;
 
 afterAll(() => {
   if (scene) {
@@ -53,5 +51,5 @@ afterAll(() => {
 test('Scene works as expected', () => {
   scene = mount(<Scene />);
   act(() => jest.runAllTimers());
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
 });

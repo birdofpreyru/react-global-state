@@ -4,10 +4,8 @@
 // mounting the useAsyncData() hook related to those data does not trigger
 // unnecessary reload.
 
-import pretty from 'pretty';
-
 import {
-  type DestroyableHtmlElement,
+  type MountedSceneT,
   act,
   mount,
   timer,
@@ -44,7 +42,7 @@ const Scene: React.FunctionComponent = () => (
   </GlobalStateProvider>
 );
 
-let scene: DestroyableHtmlElement | undefined;
+let scene: MountedSceneT | undefined;
 
 beforeEach(async () => {
   loader.mockClear();
@@ -54,5 +52,5 @@ beforeEach(async () => {
 
 it('does not reload data', () => {
   expect(loader).not.toHaveBeenCalled();
-  expect(pretty(scene!.innerHTML)).toMatchSnapshot();
+  scene?.snapshot();
 });

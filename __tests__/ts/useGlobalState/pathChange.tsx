@@ -7,7 +7,6 @@ import { timer } from '@dr.pogodin/js-utils';
 
 import { act, mount } from 'jest/utils';
 
-import pretty from 'pretty';
 import { useState } from 'react';
 import { GlobalStateProvider, useGlobalState } from 'src/index';
 import GlobalState from 'src/GlobalState';
@@ -55,7 +54,7 @@ const Scene: React.FunctionComponent<{
 it('works as expected', async () => {
   const globalState = new GlobalState({});
   const scene = mount(<Scene globalState={globalState} />);
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 
   let button = document.querySelector('#changePath');
@@ -63,7 +62,7 @@ it('works as expected', async () => {
     button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     return timer(10);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 
   button = document.querySelector('#changeValue');
@@ -71,6 +70,6 @@ it('works as expected', async () => {
     button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     return timer(10);
   });
-  expect(pretty(scene.innerHTML)).toMatchSnapshot();
+  scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 });
