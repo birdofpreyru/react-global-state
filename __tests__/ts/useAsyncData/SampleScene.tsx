@@ -36,17 +36,17 @@ const loaderB = jest.fn(async () => {
   return 'data';
 });
 
-function ComponentA() {
+const ComponentA: React.FunctionComponent = () => {
   const envelop = useAsyncData<ForceT, string>('x', loaderA);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
-}
+};
 
-function ComponentB() {
+const ComponentB: React.FunctionComponent = () => {
   const envelop = useAsyncData<ForceT, string>('x', loaderB);
   return <div>{JSON.stringify(envelop, null, 2)}</div>;
-}
+};
 
-function Scene() {
+const Scene: React.FunctionComponent = () => {
   const [value, setValue] = useState(0);
   return (
     <GlobalStateProvider initialState={undefined}>
@@ -63,7 +63,7 @@ function Scene() {
       </div>
     </GlobalStateProvider>
   );
-}
+};
 
 let scene: DestroyableHtmlElement | undefined;
 let button: Element | null = null;

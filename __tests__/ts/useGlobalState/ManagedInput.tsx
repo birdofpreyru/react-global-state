@@ -16,7 +16,7 @@ type StateT = {
   value: string;
 };
 
-function Input() {
+const Input: React.FunctionComponent = () => {
   const [value, setValue] = useGlobalState<StateT, 'value'>('value');
   return (
     <input
@@ -26,15 +26,13 @@ function Input() {
       value={value}
     />
   );
-}
+};
 
-function TestScene() {
-  return (
-    <GlobalStateProvider<StateT> initialState={{ value: '12345' }}>
-      <Input />
-    </GlobalStateProvider>
-  );
-}
+const TestScene: React.FunctionComponent = () => (
+  <GlobalStateProvider<StateT> initialState={{ value: '12345' }}>
+    <Input />
+  </GlobalStateProvider>
+);
 
 let scene: DestroyableHtmlElement | undefined;
 

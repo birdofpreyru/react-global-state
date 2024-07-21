@@ -10,7 +10,7 @@ const PATH = 'path';
 
 type StateT = { [PATH]: boolean };
 
-function Component() {
+const Component: React.FunctionComponent = () => {
   const [value, setValue] = useGlobalState<StateT, typeof PATH>('path');
   return (
     <div>
@@ -22,15 +22,13 @@ function Component() {
       </button>
     </div>
   );
-}
+};
 
-function Scene() {
-  return (
-    <GlobalStateProvider<StateT> initialState={{ path: false }}>
-      <Component />
-    </GlobalStateProvider>
-  );
-}
+const Scene: React.FunctionComponent = () => (
+  <GlobalStateProvider<StateT> initialState={{ path: false }}>
+    <Component />
+  </GlobalStateProvider>
+);
 
 let scene: DestroyableHtmlElement | undefined;
 

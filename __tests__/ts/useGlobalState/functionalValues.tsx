@@ -17,81 +17,83 @@ type ValueT = jest.Mock | number | string | undefined;
 type StateT = { [PATH]?: ValueT };
 type State2T = { key: number };
 
-function Wrapper({ children }: { children: ReactNode }) {
-  return (
-    <GlobalStateProvider<StateT> initialState={{}}>
-      {children}
-    </GlobalStateProvider>
-  );
-}
+const Wrapper: React.FunctionComponent<{
+  children: ReactNode;
+}> = ({ children }) => (
+  <GlobalStateProvider<StateT> initialState={{}}>
+    {children}
+  </GlobalStateProvider>
+);
 
-function TestComponent01() {
-  TestComponent01.pass += 1;
+let pass01 = 0;
+
+const TestComponent01: React.FunctionComponent = () => {
+  pass01 += 1;
   const [value] = useGlobalState<StateT, typeof PATH>(PATH, 'value-01');
   expect(value).toBe('value-01');
   return null;
-}
-
-TestComponent01.pass = 0;
+};
 
 test('Non-functional initial value', () => {
   mount(<Wrapper><TestComponent01 /></Wrapper>);
-  expect(TestComponent01.pass).toBe(1);
+  expect(pass01).toBe(1);
 });
 
-function TestComponent02() {
-  TestComponent02.pass += 1;
+let pass02 = 0;
+
+const TestComponent02: React.FunctionComponent = () => {
+  pass02 += 1;
   const [value] = useGlobalState<StateT, typeof PATH>(PATH, () => 'value-02');
   expect(value).toBe('value-02');
   return null;
-}
-
-TestComponent02.pass = 0;
+};
 
 test('Functional initial value', () => {
   mount(<Wrapper><TestComponent02 /></Wrapper>);
-  expect(TestComponent02.pass).toBe(1);
+  expect(pass02).toBe(1);
 });
 
-function TestComponent03() {
-  TestComponent03.pass += 1;
+let pass03 = 0;
+const func03 = jest.fn();
+
+const TestComponent03: React.FunctionComponent = () => {
+  pass03 += 1;
   const [value] = useGlobalState<StateT, typeof PATH>(
     PATH,
-    () => TestComponent03.func,
+    () => func03,
   );
-  expect(value === TestComponent03.func).toBe(true);
+  expect(value === func03).toBe(true);
   return null;
-}
-
-TestComponent03.pass = 0;
-TestComponent03.func = jest.fn();
+};
 
 test('Functional initial value, returing a function', () => {
   mount(<Wrapper><TestComponent03 /></Wrapper>);
-  expect(TestComponent03.pass).toBe(1);
-  expect(TestComponent03.func).not.toHaveBeenCalled();
+  expect(pass03).toBe(1);
+  expect(func03).not.toHaveBeenCalled();
 });
 
-function TestComponent04() {
-  TestComponent04.pass += 1;
+let pass04 = 0;
+
+const TestComponent04: React.FunctionComponent = () => {
+  pass04 += 1;
   const [value, set] = useGlobalState<StateT, typeof PATH>(PATH, 'value-04');
   setTimeout(() => set('value-04-2'));
-  switch (TestComponent04.pass) {
+  switch (pass04) {
     case 1: expect(value).toBe('value-04'); break;
     case 2: expect(value).toBe('value-04-2'); break;
     default: throw Error('Unexpected render pass');
   }
   return null;
-}
-
-TestComponent04.pass = 0;
+};
 
 test('Setting a non-functional value', () => {
   mount(<Wrapper><TestComponent04 /></Wrapper>);
 });
 
-function TestComponent05() {
-  TestComponent05.pass += 1;
+let pass05 = 0;
+
+const TestComponent05: React.FunctionComponent = () => {
+  pass05 += 1;
   const [value, set] = useGlobalState<StateT, typeof PATH>(
     PATH,
     () => 'value-05',
@@ -99,15 +101,13 @@ function TestComponent05() {
   if (typeof value === 'string' && value.endsWith('05')) {
     set((v: ValueT) => `${v}-2`);
   }
-  switch (TestComponent05.pass) {
+  switch (pass05) {
     case 1: expect(value).toBe('value-05'); break;
     case 2: expect(value).toBe('value-05-2'); break;
     default: throw Error('Unexpected render pass');
   }
   return null;
-}
-
-TestComponent05.pass = 0;
+};
 
 test('Functional update', () => {
   mount(<Wrapper><TestComponent05 /></Wrapper>);
@@ -117,7 +117,7 @@ test('Functional update', () => {
 // each subsequent one should get the current (previously updated) state,
 // and not the very original one.
 
-function TestComponent05b() {
+const TestComponent05b: React.FunctionComponent = () => {
   const [, set] = useGlobalState<State2T, 'key'>('key', 0);
   set((x) => Math.min(1, x + 1));
   set((x) => {
@@ -125,41 +125,43 @@ function TestComponent05b() {
     return x;
   });
   return null;
-}
+};
 
 test('Functional update - sequential updates within the same render', () => {
   mount(<Wrapper><TestComponent05b /></Wrapper>);
 });
 
-function TestComponent06() {
-  TestComponent06.pass += 1;
+let pass06 = 0;
+const func06a = jest.fn();
+const func06b = jest.fn();
+
+const TestComponent06: React.FunctionComponent = () => {
+  pass06 += 1;
   const [value, set] = useGlobalState<StateT, typeof PATH>(
     'path',
-    () => TestComponent06.func,
+    () => func06a,
   );
-  setTimeout(() => set(() => TestComponent06.func2));
-  switch (TestComponent06.pass) {
-    case 1: expect(value === TestComponent06.func).toBe(true); break;
-    case 2: expect(value === TestComponent06.func2).toBe(true); break;
+  setTimeout(() => set(() => func06b));
+  switch (pass06) {
+    case 1: expect(value === func06a).toBe(true); break;
+    case 2: expect(value === func06b).toBe(true); break;
     default: throw Error('Unexpected render pass');
   }
   return null;
-}
-
-TestComponent06.pass = 0;
-TestComponent06.func = jest.fn();
-TestComponent06.func2 = jest.fn();
+};
 
 test('Functional update to a function value', () => {
   mount(<Wrapper><TestComponent06 /></Wrapper>);
-  expect(TestComponent06.func).not.toHaveBeenCalled();
-  expect(TestComponent06.func2).not.toHaveBeenCalled();
+  expect(func06a).not.toHaveBeenCalled();
+  expect(func06b).not.toHaveBeenCalled();
 });
 
 let t07Set: SetterT<ValueT>;
 
-function TestComponent07() {
-  TestComponent07.pass += 1;
+let pass07 = 0;
+
+const TestComponent07: React.FunctionComponent = () => {
+  pass07 += 1;
   const [value, set] = useGlobalState<StateT, typeof PATH>(
     PATH,
     () => 'value-07',
@@ -176,7 +178,7 @@ function TestComponent07() {
     } else if (typeof value === 'string' && value.endsWith('-2')) {
       set((v: ValueT) => `${v}-3`);
     }
-    switch (TestComponent07.pass) {
+    switch (pass07) {
       case 1: expect(value).toBe('value-07'); break;
       case 2: expect(value).toBe('value-07-2'); break;
       case 3: expect(value).toBe('value-07-2-3'); break;
@@ -185,9 +187,7 @@ function TestComponent07() {
   });
 
   return null;
-}
-
-TestComponent07.pass = 0;
+};
 
 test('Update function is stable', () => {
   mount(<Wrapper><TestComponent07 /></Wrapper>);

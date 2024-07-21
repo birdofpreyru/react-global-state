@@ -74,16 +74,18 @@ test('Scene test in the front-end mode', async () => {
 });
 
 describe('Test `getSsrContext()` function', () => {
-  function SceneUsingSsrContext(
-    { throwWithoutSsrContext = true }: { throwWithoutSsrContext?: boolean },
-  ) {
+  const SceneUsingSsrContext: React.FunctionComponent<{
+    throwWithoutSsrContext?: boolean;
+  }> = ({
+    throwWithoutSsrContext = true,
+  }) => {
     const ssrContext = getSsrContext(throwWithoutSsrContext);
     return (
       <div>
         {JSON.stringify(ssrContext, null, 2)}
       </div>
     );
-  }
+  };
 
   let consoleError: typeof console.error;
   beforeAll(() => {

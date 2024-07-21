@@ -89,12 +89,10 @@ type GlobalStateProviderProps<
  * - If `GlobalState` instance, it will be used by this provider.
  * - If not given, a new `GlobalState` instance will be created and used.
  */
-export default function GlobalStateProvider<
+const GlobalStateProvider = <
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
->(
-  { children, ...rest }: GlobalStateProviderProps<StateT, SsrContextT>,
-) {
+>({ children, ...rest }: GlobalStateProviderProps<StateT, SsrContextT>) => {
   const state = useRef<GlobalState<StateT, SsrContextT>>();
   if (!state.current) {
     // NOTE: The last part of condition, "&& rest.stateProxy", is needed for
@@ -118,4 +116,6 @@ export default function GlobalStateProvider<
       {children}
     </context.Provider>
   );
-}
+};
+
+export default GlobalStateProvider;

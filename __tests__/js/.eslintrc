@@ -1,0 +1,8 @@
+{
+  "rules": {
+    // This keeps original config of this rule for JS code.
+    "react/function-component-definition": ["error", {
+      "namedComponents": "function-declaration"
+    }]
+  }
+}

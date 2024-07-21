@@ -26,7 +26,7 @@ type StateT = {
 let aReload: AsyncDataReloaderT<string> | undefined;
 let sReload: AsyncDataReloaderT<string> | undefined;
 
-function AsyncComponent() {
+const AsyncComponent: React.FunctionComponent = () => {
   const x = useAsyncData<ForceT, string>('async', async () => {
     await timer(100);
     return 'ok';
@@ -34,14 +34,14 @@ function AsyncComponent() {
   if (aReload) expect(aReload).toBe(x.reload);
   else aReload = x.reload;
   return null;
-}
+};
 
-function SyncComponent() {
+const SyncComponent: React.FunctionComponent = () => {
   const x = useAsyncData<ForceT, string>('sync', () => 'ok');
   if (sReload) expect(sReload).toBe(x.reload);
   else sReload = x.reload;
   return null;
-}
+};
 
 test('useAsyncData() behavior with async and sync loaders', async () => {
   const gs = new GlobalState<StateT>({

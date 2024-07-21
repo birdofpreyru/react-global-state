@@ -15,14 +15,14 @@ jest.useFakeTimers();
 
 type StateT = string;
 
-function ComponentA() {
+const ComponentA: React.FunctionComponent = () => {
   const P = null;
   const [value, setValue] = useGlobalState<StateT, typeof P>(P, '');
   if (value === 'B') setTimeout(() => setValue('A'));
   return <div>{value}</div>;
-}
+};
 
-function ComponentB() {
+const ComponentB: React.FunctionComponent = () => {
   const P = null;
   const [value, setValue] = useGlobalState<StateT, typeof P>(P, '');
   if (value !== 'C') {
@@ -32,16 +32,14 @@ function ComponentB() {
     });
   }
   return <div>{value}</div>;
-}
+};
 
-function Scene() {
-  return (
-    <GlobalStateProvider initialState={undefined}>
-      <ComponentA />
-      <ComponentB />
-    </GlobalStateProvider>
-  );
-}
+const Scene: React.FunctionComponent = () => (
+  <GlobalStateProvider initialState={undefined}>
+    <ComponentA />
+    <ComponentB />
+  </GlobalStateProvider>
+);
 
 let scene: DestroyableHtmlElement | null = null;
 

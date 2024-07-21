@@ -17,7 +17,7 @@ type StateT = {
   pathB?: string;
 };
 
-function Component() {
+const Component: React.FunctionComponent = () => {
   const [path, setPath] = useState<keyof StateT>('pathA');
   const [value, setValue] = useGlobalState<StateT, typeof path>(
     path,
@@ -42,15 +42,15 @@ function Component() {
       </button>
     </div>
   );
-}
+};
 
-function Scene({ globalState }: { globalState: GlobalState<unknown> }) {
-  return (
-    <GlobalStateProvider initialState={undefined} stateProxy={globalState}>
-      <Component />
-    </GlobalStateProvider>
-  );
-}
+const Scene: React.FunctionComponent<{
+  globalState: GlobalState<unknown>;
+}> = ({ globalState }) => (
+  <GlobalStateProvider initialState={undefined} stateProxy={globalState}>
+    <Component />
+  </GlobalStateProvider>
+);
 
 it('works as expected', async () => {
   const globalState = new GlobalState({});

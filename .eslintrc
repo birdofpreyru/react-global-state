@@ -5,6 +5,15 @@
   },
   "rules": {
     "no-plusplus": 0,
+
+    // In TypeScript arrow-functions are better for component definitions as
+    // they allow typing like this, which helps to avoid many errors early:
+    // const Component: React.FunctionComponent<Props> = ({ ... }) => { ... };
+    "react/function-component-definition": ["error", {
+      "namedComponents": "arrow-function",
+      "unnamedComponents": "arrow-function"
+    }],
+
     "react/jsx-one-expression-per-line": 0,
     "react/react-in-jsx-scope": 0,
 

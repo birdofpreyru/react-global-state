@@ -20,12 +20,14 @@ type StateT = {
   [COUNTER_PATH]: number;
 };
 
-function CounterView() {
+const CounterView: React.FunctionComponent = () => {
   const [count] = useGlobalState<StateT, typeof COUNTER_PATH>(COUNTER_PATH);
   return <div>{count}</div>;
-}
+};
 
-function CounterButton({ testButtonId }: { testButtonId: string }) {
+const CounterButton: React.FunctionComponent<{
+  testButtonId: string;
+}> = ({ testButtonId }) => {
   const [
     count,
     setCount,
@@ -41,38 +43,36 @@ function CounterButton({ testButtonId }: { testButtonId: string }) {
       </button>
     </div>
   );
-}
+};
 
 /**
  * This is the test scene.
  */
-function TestScene(
-  { stateProxy }: { stateProxy?: boolean | GlobalState<StateT> },
-) {
-  return (
-    <GlobalStateProvider<StateT>
-      initialState={{ counter: 0 }}
-    >
-      <CounterView />
-      <CounterButton testButtonId="button-1" />
-      {
-        stateProxy ? (
-          <GlobalStateProvider<StateT> stateProxy={stateProxy}>
-            <CounterView />
-            <CounterButton testButtonId="button-2" />
-          </GlobalStateProvider>
-        ) : (
-          <GlobalStateProvider<StateT>
-            initialState={{ counter: 0 }}
-          >
-            <CounterView />
-            <CounterButton testButtonId="button-2" />
-          </GlobalStateProvider>
-        )
-      }
-    </GlobalStateProvider>
-  );
-}
+const TestScene: React.FunctionComponent<{
+  stateProxy?: boolean | GlobalState<StateT>;
+}> = ({ stateProxy }) => (
+  <GlobalStateProvider<StateT>
+    initialState={{ counter: 0 }}
+  >
+    <CounterView />
+    <CounterButton testButtonId="button-1" />
+    {
+      stateProxy ? (
+        <GlobalStateProvider<StateT> stateProxy={stateProxy}>
+          <CounterView />
+          <CounterButton testButtonId="button-2" />
+        </GlobalStateProvider>
+      ) : (
+        <GlobalStateProvider<StateT>
+          initialState={{ counter: 0 }}
+        >
+          <CounterView />
+          <CounterButton testButtonId="button-2" />
+        </GlobalStateProvider>
+      )
+    }
+  </GlobalStateProvider>
+);
 
 let scene: DestroyableHtmlElement | undefined;
 

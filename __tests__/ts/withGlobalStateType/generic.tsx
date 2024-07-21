@@ -14,18 +14,16 @@ it('withGlobalStateType() result matches snapshot', () => {
   expect(GS).toMatchSnapshot();
 });
 
-function TestComponent() {
+const TestComponent: React.FunctionComponent = () => {
   const [x] = GS.useGlobalState('some.path');
   return <div>{x}</div>;
-}
+};
 
-function TestScene() {
-  return (
-    <GS.GlobalStateProvider initialState={{ some: { path: 'value-b' } }}>
-      <TestComponent />
-    </GS.GlobalStateProvider>
-  );
-}
+const TestScene: React.FunctionComponent = () => (
+  <GS.GlobalStateProvider initialState={{ some: { path: 'value-b' } }}>
+    <TestComponent />
+  </GS.GlobalStateProvider>
+);
 
 let scene: DestroyableHtmlElement | undefined;
 

@@ -29,7 +29,7 @@ const loader = jest.fn(async () => {
   return nextLoaderValue;
 });
 
-function Component() {
+const Component: React.FunctionComponent = () => {
   const [epoch, setEpoch] = useState(0);
   const envelop = useAsyncData<ForceT, number>('test-path', loader, {
     deps: [epoch],
@@ -49,15 +49,13 @@ function Component() {
       </button>
     </div>
   );
-}
+};
 
-function Scene() {
-  return (
-    <GlobalStateProvider initialState={undefined}>
-      <Component />
-    </GlobalStateProvider>
-  );
-}
+const Scene: React.FunctionComponent = () => (
+  <GlobalStateProvider initialState={undefined}>
+    <Component />
+  </GlobalStateProvider>
+);
 
 let scene: DestroyableHtmlElement | undefined;
 let button: Element | null;

@@ -27,24 +27,22 @@ const { GlobalStateProvider, useAsyncData } = withGlobalStateType<StateT>();
 
 const loader = jest.fn(() => 'bad');
 
-function Component() {
+const Component: React.FunctionComponent = () => {
   const e = useAsyncData('key', loader);
   return <div>{e.data}</div>;
-}
+};
 
-function Scene() {
-  return (
-    <GlobalStateProvider
-      initialState={{
-        key: newAsyncDataEnvelope('ok', {
-          timestamp: Date.now(),
-        }),
-      }}
-    >
-      <Component />
-    </GlobalStateProvider>
-  );
-}
+const Scene: React.FunctionComponent = () => (
+  <GlobalStateProvider
+    initialState={{
+      key: newAsyncDataEnvelope('ok', {
+        timestamp: Date.now(),
+      }),
+    }}
+  >
+    <Component />
+  </GlobalStateProvider>
+);
 
 let scene: DestroyableHtmlElement | undefined;
 

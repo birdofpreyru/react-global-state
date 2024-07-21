@@ -35,7 +35,7 @@ async function loader(id: string) {
   return `Value for ID ${id}`;
 }
 
-function Component() {
+const Component: React.FunctionComponent = () => {
   const [id, setId] = useState(0);
   const { data } = useAsyncCollection<ForceT, string>(id.toString(), 'test.path', loader);
   return (
@@ -49,15 +49,15 @@ function Component() {
       </button>
     </div>
   );
-}
+};
 
-function Scene({ globalState }: { globalState: GlobalState<DataT> }) {
-  return (
-    <GlobalStateProvider stateProxy={globalState}>
-      <Component />
-    </GlobalStateProvider>
-  );
-}
+const Scene: React.FunctionComponent<{
+  globalState: GlobalState<DataT>;
+}> = ({ globalState }) => (
+  <GlobalStateProvider stateProxy={globalState}>
+    <Component />
+  </GlobalStateProvider>
+);
 
 it('works as expected', async () => {
   const globalState = new GlobalState(newZeroState());

@@ -14,16 +14,16 @@ import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 type StateT1 = { path?: { nested?: number } };
 
-function ComponentA1() {
+const ComponentA1: React.FunctionComponent = () => {
   const [state] = useGlobalState<StateT1, 'path'>('path', {});
   return (
     <div>
       {JSON.stringify(state)}
     </div>
   );
-}
+};
 
-function ComponentB1() {
+const ComponentB1: React.FunctionComponent = () => {
   const [state, setState] = useGlobalState<StateT1, 'path.nested'>(
     'path.nested',
     0,
@@ -40,16 +40,14 @@ function ComponentB1() {
       </button>
     </div>
   );
-}
+};
 
-function Scene1() {
-  return (
-    <GlobalStateProvider<StateT1> initialState={{}}>
-      <ComponentA1 />
-      <ComponentB1 />
-    </GlobalStateProvider>
-  );
-}
+const Scene1: React.FunctionComponent = () => (
+  <GlobalStateProvider<StateT1> initialState={{}}>
+    <ComponentA1 />
+    <ComponentB1 />
+  </GlobalStateProvider>
+);
 
 let currentScene: DestroyableHtmlElement | undefined;
 
@@ -86,7 +84,7 @@ type StateT2 = {
   }[];
 };
 
-function ComponentA2() {
+const ComponentA2: React.FunctionComponent = () => {
   const [state] = useGlobalState<StateT2, 'path'>(
     'path',
     [
@@ -100,9 +98,9 @@ function ComponentA2() {
       {JSON.stringify(state)}
     </div>
   );
-}
+};
 
-function ComponentB2() {
+const ComponentB2: React.FunctionComponent = () => {
   const P = 'path[1].key1';
   const [state, setState] = useGlobalState<StateT2, typeof P>(
     P,
@@ -119,16 +117,14 @@ function ComponentB2() {
       </button>
     </div>
   );
-}
+};
 
-function Scene2() {
-  return (
-    <GlobalStateProvider<StateT2> initialState={{}}>
-      <ComponentA2 />
-      <ComponentB2 />
-    </GlobalStateProvider>
-  );
-}
+const Scene2: React.FunctionComponent = () => (
+  <GlobalStateProvider<StateT2> initialState={{}}>
+    <ComponentA2 />
+    <ComponentB2 />
+  </GlobalStateProvider>
+);
 
 test('Test with arrays', async () => {
   currentScene = mount(<Scene2 />);
@@ -148,7 +144,7 @@ type StateT3 = {
   path?: string;
 };
 
-function ComponentA3() {
+const ComponentA3: React.FunctionComponent = () => {
   const P = 'path';
   const [state] = useGlobalState<StateT3, typeof P>(P, 'value');
   return (
@@ -156,9 +152,9 @@ function ComponentA3() {
       {JSON.stringify(state)}
     </div>
   );
-}
+};
 
-function ComponentB3() {
+const ComponentB3: React.FunctionComponent = () => {
   const P = 'path[1]';
   const [state, setState] = useGlobalState<StateT3, typeof P>(P);
   return (
@@ -172,16 +168,14 @@ function ComponentB3() {
       </button>
     </div>
   );
-}
+};
 
-function Scene3() {
-  return (
-    <GlobalStateProvider initialState={undefined}>
-      <ComponentA3 />
-      <ComponentB3 />
-    </GlobalStateProvider>
-  );
-}
+const Scene3: React.FunctionComponent = () => (
+  <GlobalStateProvider initialState={undefined}>
+    <ComponentA3 />
+    <ComponentB3 />
+  </GlobalStateProvider>
+);
 
 test('Test with strings', async () => {
   currentScene = mount(<Scene3 />);

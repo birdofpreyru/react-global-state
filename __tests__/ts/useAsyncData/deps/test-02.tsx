@@ -35,25 +35,23 @@ const loader = jest.fn(async () => {
   return 'value';
 });
 
-function Component() {
+const Component: React.FunctionComponent = () => {
   const envelope = useAsyncData('test', loader, {
     deps: ['dependency-value'],
   });
   return <div>{envelope.data}</div>;
-}
+};
 
-function Scene() {
-  return (
-    <GlobalStateProvider
-      initialState={{
-        test: newAsyncDataEnvelope(),
-      }}
-    >
-      <Component />
-      <Component />
-    </GlobalStateProvider>
-  );
-}
+const Scene: React.FunctionComponent = () => (
+  <GlobalStateProvider
+    initialState={{
+      test: newAsyncDataEnvelope(),
+    }}
+  >
+    <Component />
+    <Component />
+  </GlobalStateProvider>
+);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let scene: DestroyableHtmlElement | undefined;
