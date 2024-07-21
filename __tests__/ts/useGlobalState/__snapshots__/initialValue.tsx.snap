@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base behavior 1`] = `
+<div>
+  <div>
+    initial
+    <button
+      type="button"
+    >
+      Set Value
+    </button>
+    <button
+      type="button"
+    >
+      Reset
+    </button>
+  </div>
+</div>
+`;
+
+exports[`base behavior 2`] = `
+<div>
+  <div>
+    value
+    <button
+      type="button"
+    >
+      Set Value
+    </button>
+    <button
+      type="button"
+    >
+      Reset
+    </button>
+  </div>
+</div>
+`;
+
+exports[`base behavior 3`] = `
+<div>
+  <div>
+    initial
+    <button
+      type="button"
+    >
+      Set Value
+    </button>
+    <button
+      type="button"
+    >
+      Reset
+    </button>
+  </div>
+</div>
+`;

@@ -156,7 +156,7 @@ test('Functional update to a function value', () => {
   expect(func06b).not.toHaveBeenCalled();
 });
 
-let t07Set: SetterT<ValueT>;
+let t07Set: SetterT<Exclude<ValueT, undefined>>;
 
 let pass07 = 0;
 

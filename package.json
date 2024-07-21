@@ -59,6 +59,8 @@
     "@babel/preset-env": "^7.24.8",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
+    "@testing-library/dom": "^10.3.2",
+    "@testing-library/react": "^16.0.0",
     "@tsconfig/recommended": "^1.0.7",
     "@types/jest": "^29.5.12",
     "@types/pretty": "^2.0.3",

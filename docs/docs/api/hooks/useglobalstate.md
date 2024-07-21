@@ -10,10 +10,15 @@ a function to update it. Each time the value at `path` changes, the hook
 triggers re-render of its host component.
 
 :::caution
-For performance, the library does not copy objects written to / read from
-global state paths. You **MUST NOT** manually mutate returned state values,
-or change objects already written into the global state, without explicitly
-clonning them first yourself.
+For the best performance and flexibility, the library does not copy, nor freezes
+the objects written to (read from) the global state. You **SHOULD NOT** directly
+mutate any objects stored in the global state; if you do, such mutations won't
+be detected and handled by the library.
+
+Technically, such mutations might be useful and legit when some internal data of
+an object stored in the global state are not considered a part of the proper state,
+but if you are to use such direct mutations, you better know and understand well
+what you are doing!
 :::
 
 The TypeScript signature of [useGlobalState()] implementation is
@@ -111,12 +116,29 @@ to make convenient and safe static type analysis possible.
 
 - `initialValue` &mdash; [ValueOrInitializerT]&lt;**ValueT**&gt; &mdash; Initial
   value to set at the `path`, or _initializer function_ for this value:
+
   - If a function is given, it will act similar to
-    [the lazy initial state of the standard React's useState()](https://react.dev/reference/react/useState#avoiding-recreating-the-initial-state).
-    only if the value at `path` is _undefined_, the function will be executed,
+    [the lazy initial state of the standard React's useState()](https://react.dev/reference/react/useState#avoiding-recreating-the-initial-state)
+    &mdash; only if the value at `path` is _undefined_, the function will be executed,
     and the value it returns will be written to the `path`.
+
   - Otherwise, the given value itself will be written to the `path`,
     if the current value at `path` is _undefined_.
+
+  :::caution Beware
+  Don't get misled by the `initialValue` name &mdash; it **DOES NOT IMPLY**
+  the initial value is used exclusively on the first [useGlobalState()] call;
+  instead the given initial value is applied on each call of [useGlobalState()]
+  hook, if the current value at the `path` is _undefined_.
+
+  For this reason in TypeScript code, if `initialValue` can't be `undefined`
+  (or it is a function that can't return _undefined_) the value setter returned
+  by [useGlobalState()] does not allow to set _undefined_ value either (as such
+  setting will be reverted in the very next [useGlobalState()] evaluation).
+
+  If that causes you a problem, you wan't to use _null_ as the no-value that is
+  not overwritten by `initialValue`.
+  :::
 
 ## Result
 It returns an array with two elements `[value, setValue]` (see the type
