@@ -12,7 +12,7 @@ import {
 import { type ForceT, type LockT, type TypeLock } from './utils';
 
 export type AsyncCollectionLoaderT<DataT> =
-  (id: string, oldData: null | DataT) => DataT | Promise<DataT>;
+  (id: string, oldData: null | DataT) => DataT | Promise<DataT | null> | null;
 
 /**
  * Resolves and stores at the given `path` of global state elements of
