@@ -216,14 +216,9 @@ function useAsyncData<DataT>(
   loader: AsyncDataLoaderT<DataT>,
   options: UseAsyncDataOptionsT = {},
 ): UseAsyncDataResT<DataT> {
-  const maxage: number = options.maxage === undefined
-    ? DEFAULT_MAXAGE : options.maxage;
-
-  const refreshAge: number = options.refreshAge === undefined
-    ? maxage : options.refreshAge;
-
-  const garbageCollectAge: number = options.garbageCollectAge === undefined
-    ? maxage : options.garbageCollectAge;
+  const maxage: number = options.maxage ?? DEFAULT_MAXAGE;
+  const refreshAge: number = options.refreshAge ?? maxage;
+  const garbageCollectAge: number = options.garbageCollectAge ?? maxage;
 
   // Note: here we can't depend on useGlobalState() to init the initial value,
   // because that way we'll have issues with SSR (see details below).
