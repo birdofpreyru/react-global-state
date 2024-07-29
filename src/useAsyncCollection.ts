@@ -12,7 +12,10 @@ import {
 import { type ForceT, type LockT, type TypeLock } from './utils';
 
 export type AsyncCollectionLoaderT<DataT> =
-  (id: string, oldData: null | DataT) => DataT | Promise<DataT | null> | null;
+  (id: string, oldData: null | DataT, meta: {
+    isAborted: () => boolean;
+    oldDataTimestamp: number;
+  }) => DataT | Promise<DataT | null> | null;
 
 /**
  * Resolves and stores at the given `path` of global state elements of
@@ -90,7 +93,7 @@ function useAsyncCollection<DataT>(
   const itemPath = path ? `${path}.${id}` : id;
   return useAsyncData<ForceT, DataT>(
     itemPath,
-    (oldData: null | DataT) => loader(id, oldData),
+    (oldData: null | DataT, meta) => loader(id, oldData, meta),
     options,
   );
 }

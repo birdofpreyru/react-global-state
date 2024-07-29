@@ -25,7 +25,10 @@ import SsrContext from './SsrContext';
 const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
 export type AsyncDataLoaderT<DataT>
-= (oldData: null | DataT) => DataT | Promise<DataT | null> | null;
+= (oldData: null | DataT, meta: {
+  isAborted: () => boolean;
+  oldDataTimestamp: number;
+}) => DataT | Promise<DataT | null> | null;
 
 export type AsyncDataReloaderT<DataT>
 = (loader?: AsyncDataLoaderT<DataT>) => Promise<void>;
@@ -82,7 +85,7 @@ async function load<DataT>(
   path: null | string | undefined,
   loader: AsyncDataLoaderT<DataT>,
   globalState: GlobalState<unknown, SsrContext<unknown>>,
-  oldData: DataT | null,
+  oldArg?: { data: DataT | null, timestamp: number },
   opIdPrefix: 'C' | 'S' = 'C',
 ): Promise<void> {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
@@ -96,12 +99,24 @@ async function load<DataT>(
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
   globalState.set<ForceT, string>(operationIdPath, operationId);
 
-  const dataOrLoader = loader(
-    oldData || (globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path)).data,
-  );
+  let old = oldArg;
+  if (!old) {
+    // TODO: Can we improve the typing, to avoid ForceT?
+    const e = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path);
+    old = { data: e.data, timestamp: e.timestamp };
+  }
 
-  const data: DataT | null = dataOrLoader instanceof Promise
-    ? await dataOrLoader : dataOrLoader;
+  const dataOrPromise = loader(old.data, {
+    isAborted: () => {
+      // TODO: Can we improve the typing, to avoid ForceT?
+      const opid = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path).operationId;
+      return opid !== operationId;
+    },
+    oldDataTimestamp: old.timestamp,
+  });
+
+  const data: DataT | null = dataOrPromise instanceof Promise
+    ? await dataOrPromise : dataOrPromise;
 
   const state: AsyncDataEnvelopeT<DataT> = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path);
   if (operationId === state.operationId) {
@@ -236,14 +251,17 @@ function useAsyncData<DataT>(
     heap.reload = (customLoader?: AsyncDataLoaderT<DataT>) => {
       const localLoader = customLoader || heap.loader;
       if (!localLoader || !heap.globalState) throw Error('Internal error');
-      return load(heap.path, localLoader, heap.globalState, null);
+      return load(heap.path, localLoader, heap.globalState);
     };
   }
 
   if (globalState.ssrContext && !options.noSSR) {
     if (!state.timestamp && !state.operationId) {
       globalState.ssrContext.pending.push(
-        load(path, loader, globalState, state.data, 'S'),
+        load(path, loader, globalState, {
+          data: state.data,
+          timestamp: state.timestamp,
+        }, 'S'),
       );
     }
   } else {
@@ -300,7 +318,10 @@ function useAsyncData<DataT>(
 
       if (refreshAge < Date.now() - state2.timestamp
       && (!state2.operationId || state2.operationId.charAt(0) === 'S')) {
-        load(path, loader, globalState, state2.data);
+        load(path, loader, globalState, {
+          data: state2.data,
+          timestamp: state2.timestamp,
+        });
         loadTriggered = true; // eslint-disable-line react-hooks/exhaustive-deps
       }
     });
@@ -308,7 +329,7 @@ function useAsyncData<DataT>(
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       const { deps } = options;
       if (deps && globalState.hasChangedDependencies(path || '', deps) && !loadTriggered) {
-        load(path, loader, globalState, null);
+        load(path, loader, globalState);
       }
 
     // Here we need to default to empty array, so that this hook is re-evaluated
