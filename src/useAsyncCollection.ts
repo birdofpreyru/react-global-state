@@ -11,8 +11,11 @@ import {
 
 import { type ForceT, type LockT, type TypeLock } from './utils';
 
-export type AsyncCollectionLoaderT<DataT> =
-  (id: string, oldData: null | DataT, meta: {
+export type AsyncCollectionLoaderT<
+  DataT,
+  IdT extends number | string = string,
+> =
+  (id: IdT, oldData: null | DataT, meta: {
     isAborted: () => boolean;
     oldDataTimestamp: number;
   }) => DataT | Promise<DataT | null> | null;
@@ -63,7 +66,7 @@ export type AsyncCollectionLoaderT<DataT> =
 function useAsyncCollection<
   StateT,
   PathT extends null | string | undefined,
-  IdT extends string,
+  IdT extends number | string,
 
   DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> =
   DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
@@ -77,8 +80,9 @@ function useAsyncCollection<
 function useAsyncCollection<
   Forced extends ForceT | LockT = LockT,
   DataT = unknown,
+  IdT extends number | string = string,
 >(
-  id: string,
+  id: IdT,
   path: null | string | undefined,
   loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
   options?: UseAsyncDataOptionsT,
@@ -101,15 +105,19 @@ function useAsyncCollection<DataT>(
 export default useAsyncCollection;
 
 export interface UseAsyncCollectionI<StateT> {
-  <PathT extends null | string | undefined, IdT extends string>(
+  <PathT extends null | string | undefined, IdT extends number | string>(
     id: IdT,
     path: PathT,
     loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>,
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>;
 
-  <Forced extends ForceT | LockT = LockT, DataT = unknown>(
-    id: string,
+  <
+    Forced extends ForceT | LockT = LockT,
+    DataT = unknown,
+    IdT extends number | string = string,
+  >(
+    id: IdT,
     path: null | string | undefined,
     loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
     options?: UseAsyncDataOptionsT,
