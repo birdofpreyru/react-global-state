@@ -16,13 +16,13 @@ exports[`Base scenario 2`] = `
     "data": "A",
     "numRefs": 0,
     "operationId": "",
-    "timestamp": 1722290400000,
+    "timestamp": 1722297600000,
   },
   "pathB": {
     "data": "A",
     "numRefs": 1,
     "operationId": "",
-    "timestamp": 1722290400000,
+    "timestamp": 1722297600000,
   },
 }
 `;
@@ -33,13 +33,13 @@ exports[`Base scenario 3`] = `
     "data": "A",
     "numRefs": 0,
     "operationId": "",
-    "timestamp": 1722290400000,
+    "timestamp": 1722297600000,
   },
   "pathB": {
     "data": "B",
     "numRefs": 1,
     "operationId": "",
-    "timestamp": 1722290400000,
+    "timestamp": 1722297600000,
   },
 }
 `;
@@ -50,13 +50,13 @@ exports[`Base scenario 4`] = `
     "data": "B",
     "numRefs": 1,
     "operationId": "",
-    "timestamp": 1722290400000,
+    "timestamp": 1722297600000,
   },
   "pathB": {
     "data": "B",
     "numRefs": 0,
     "operationId": "",
-    "timestamp": 1722290400000,
+    "timestamp": 1722297600000,
   },
 }
 `;

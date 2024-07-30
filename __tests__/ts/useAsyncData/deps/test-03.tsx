@@ -30,7 +30,7 @@ const {
   useAsyncData,
 } = withGlobalStateType<StateT>();
 
-mockdate.set('2024-07.30');
+mockdate.set('2024-07-30');
 
 const Component: React.FunctionComponent = () => {
   const [dep, setDep] = useState('A');
