@@ -271,7 +271,7 @@ exports[`Scenario I 12`] = `
     },
   ],
   [
-    "ReactGlobalState: useAsyncData data (re-)loading. Path: "x"",
+    "ReactGlobalState: async data (re-)loading. Path: "x"",
   ],
   [
     "ReactGlobalState update. Path: "x.operationId"",
@@ -292,7 +292,7 @@ exports[`Scenario I 12`] = `
     },
   ],
   [
-    "ReactGlobalState: useAsyncData data (re-)loaded. Path: "x"",
+    "ReactGlobalState: async data (re-)loaded. Path: "x"",
   ],
   [
     "Data:",
@@ -394,7 +394,7 @@ exports[`Scenario I 12`] = `
     },
   ],
   [
-    "ReactGlobalState: useAsyncData data (re-)loading. Path: "x"",
+    "ReactGlobalState: async data (re-)loading. Path: "x"",
   ],
   [
     "ReactGlobalState update. Path: "x.operationId"",
@@ -433,7 +433,7 @@ exports[`Scenario I 12`] = `
     },
   ],
   [
-    "ReactGlobalState: useAsyncData data (re-)loaded. Path: "x"",
+    "ReactGlobalState: async data (re-)loaded. Path: "x"",
   ],
   [
     "Data:",
@@ -481,7 +481,7 @@ exports[`Scenario I 12`] = `
     },
   ],
   [
-    "ReactGlobalState: useAsyncData data (re-)loading. Path: "x"",
+    "ReactGlobalState: async data (re-)loading. Path: "x"",
   ],
   [
     "ReactGlobalState update. Path: "x.operationId"",
@@ -502,7 +502,7 @@ exports[`Scenario I 12`] = `
     },
   ],
   [
-    "ReactGlobalState: useAsyncData data (re-)loaded. Path: "x"",
+    "ReactGlobalState: async data (re-)loaded. Path: "x"",
   ],
   [
     "Data:",

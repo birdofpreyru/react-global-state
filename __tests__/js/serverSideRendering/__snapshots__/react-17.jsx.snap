@@ -75,7 +75,7 @@ exports[`Smart server-sider rendering 2`] = `
     },
   ],
   [
-    "ReactGlobalState: useAsyncData data (re-)loading. Path: "x"",
+    "ReactGlobalState: async data (re-)loading. Path: "x"",
   ],
   [
     "ReactGlobalState update. Path: "x.operationId"",
@@ -99,7 +99,7 @@ exports[`Smart server-sider rendering 2`] = `
     },
   ],
   [
-    "ReactGlobalState: useAsyncData data (re-)loaded. Path: "x"",
+    "ReactGlobalState: async data (re-)loaded. Path: "x"",
   ],
   [
     "Data:",

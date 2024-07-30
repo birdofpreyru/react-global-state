@@ -22,7 +22,7 @@ import {
 import GlobalState from './GlobalState';
 import SsrContext from './SsrContext';
 
-const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
+export const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
 export type AsyncDataLoaderT<DataT>
 = (oldData: null | DataT, meta: {
@@ -39,6 +39,8 @@ export type AsyncDataEnvelopeT<DataT> = {
   operationId: string;
   timestamp: number;
 };
+
+export type OperationIdT = `${'C' | 'S'}${string}`;
 
 export function newAsyncDataEnvelope<DataT>(
   initialData: DataT | null = null,
@@ -81,38 +83,38 @@ export type UseAsyncDataResT<DataT> = {
  * @return Resolves once the operation is done.
  * @ignore
  */
-async function load<DataT>(
+export async function load<DataT>(
   path: null | string | undefined,
   loader: AsyncDataLoaderT<DataT>,
   globalState: GlobalState<unknown, SsrContext<unknown>>,
-  oldArg?: { data: DataT | null, timestamp: number },
-  opIdPrefix: 'C' | 'S' = 'C',
+  old?: { data: DataT | null, timestamp: number },
+  operationId: OperationIdT = `C${uuid()}`,
 ): Promise<void> {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
     console.log(
-      `ReactGlobalState: useAsyncData data (re-)loading. Path: "${path || ''}"`,
+      `ReactGlobalState: async data (re-)loading. Path: "${path || ''}"`,
     );
     /* eslint-enable no-console */
   }
-  const operationId = opIdPrefix + uuid();
+
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
   globalState.set<ForceT, string>(operationIdPath, operationId);
 
-  let old = oldArg;
-  if (!old) {
+  let definedOld = old;
+  if (!definedOld) {
     // TODO: Can we improve the typing, to avoid ForceT?
     const e = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path);
-    old = { data: e.data, timestamp: e.timestamp };
+    definedOld = { data: e.data, timestamp: e.timestamp };
   }
 
-  const dataOrPromise = loader(old.data, {
+  const dataOrPromise = loader(definedOld.data, {
     isAborted: () => {
       // TODO: Can we improve the typing, to avoid ForceT?
       const opid = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path).operationId;
       return opid !== operationId;
     },
-    oldDataTimestamp: old.timestamp,
+    oldDataTimestamp: definedOld.timestamp,
   });
 
   const data: DataT | null = dataOrPromise instanceof Promise
@@ -123,7 +125,7 @@ async function load<DataT>(
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
       /* eslint-disable no-console */
       console.groupCollapsed(
-        `ReactGlobalState: useAsyncData data (re-)loaded. Path: "${
+        `ReactGlobalState: async data (re-)loaded. Path: "${
           path || ''
         }"`,
       );
@@ -146,50 +148,7 @@ async function load<DataT>(
 
 /**
  * Resolves asynchronous data, and stores them at given `path` of global
- * state. When multiple components rely on asynchronous data at the same `path`,
- * the data are resolved once, and reused until their age is within specified
- * bounds. Once the data are stale, the hook allows to refresh them. It also
- * garbage-collects stale data from the global state when the last component
- * relying on them is unmounted.
- * @param path Dot-delimitered state path, where data envelop is
- * stored.
- * @param loader Asynchronous function which resolves (loads)
- * data, which should be stored at the global state `path`. When multiple
- * components
- * use `useAsyncData()` hook for the same `path`, the library assumes that all
- * hook instances are called with the same `loader` (_i.e._ whichever of these
- * loaders is used to resolve async data, the result is acceptable to be reused
- * in all related components).
- * @param options Additional options.
- * @param options.deps An array of dependencies, which trigger
- * data reload when changed. Given dependency changes are watched shallowly
- * (similarly to the standard React's
- * [useEffect()](https://reactjs.org/docs/hooks-reference.html#useeffect)).
- * @param options.noSSR If `true`, this hook won't load data during
- * server-side rendering.
- * @param options.garbageCollectAge The maximum age of data
- * (in milliseconds), after which they are dropped from the state when the last
- * component referencing them via `useAsyncData()` hook unmounts. Defaults to
- * `maxage` option value.
- * @param options.maxage The maximum age of
- * data (in milliseconds) acceptable to the hook's caller. If loaded data are
- * older than this value, `null` is returned instead. Defaults to 5 minutes.
- * @param options.refreshAge The maximum age of data
- * (in milliseconds), after which their refreshment will be triggered when
- * any component referencing them via `useAsyncData()` hook (re-)renders.
- * Defaults to `maxage` value.
- * @return Returns an object with three fields: `data` holds the actual result of
- * last `loader` invokation, if any, and if satisfies `maxage` limit; `loading`
- * is a boolean flag, which is `true` if data are being loaded (the hook is
- * waiting for `loader` function resolution); `timestamp` (in milliseconds)
- * is Unix timestamp of related data currently loaded into the global state.
- *
- * Note that loaded data, if any, are stored at the given `path` of global state
- * along with related meta-information, using slightly different state segment
- * structure (see {@link AsyncDataEnvelopeT}). That segment of the global state
- * can be accessed, and even modified using other hooks,
- * _e.g._ {@link useGlobalState}, but doing so you may interfere with related
- * `useAsyncData()` hooks logic.
+ * state.
  */
 
 export type DataInEnvelopeAtPathT<StateT, PathT extends null | string | undefined>
@@ -261,7 +220,7 @@ function useAsyncData<DataT>(
         load(path, loader, globalState, {
           data: state.data,
           timestamp: state.timestamp,
-        }, 'S'),
+        }, `S${uuid()}`),
       );
     }
   } else {
@@ -316,19 +275,34 @@ function useAsyncData<DataT>(
       const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
       ForceT, AsyncDataEnvelopeT<DataT>>(path);
 
-      if (refreshAge < Date.now() - state2.timestamp
-      && (!state2.operationId || state2.operationId.charAt(0) === 'S')) {
+      const { deps } = options;
+      if (
+        // The hook is called with a list of dependencies, that mismatch
+        // dependencies last used to retrieve the data at given path.
+        (deps && globalState.hasChangedDependencies(path || '', deps))
+
+        // Data at the path are stale, and are not being loaded.
+        || (
+          refreshAge < Date.now() - state2.timestamp
+          && (!state2.operationId || state2.operationId.charAt(0) === 'S')
+        )
+      ) {
+        loadTriggered = true; // eslint-disable-line react-hooks/exhaustive-deps
+        if (!deps) globalState.dropDependencies(path || '');
         load(path, loader, globalState, {
           data: state2.data,
           timestamp: state2.timestamp,
         });
-        loadTriggered = true; // eslint-disable-line react-hooks/exhaustive-deps
       }
     });
 
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       const { deps } = options;
-      if (deps && globalState.hasChangedDependencies(path || '', deps) && !loadTriggered) {
+      if (
+        deps
+        && globalState.hasChangedDependencies(path || '', deps)
+        && !loadTriggered
+      ) {
         load(path, loader, globalState);
       }
 
