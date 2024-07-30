@@ -151,10 +151,10 @@ export async function load<DataT>(
  * state.
  */
 
-export type DataInEnvelopeAtPathT<StateT, PathT extends null | string | undefined>
-= ValueAtPathT<StateT, PathT, never> extends AsyncDataEnvelopeT<unknown>
-  ? Exclude<ValueAtPathT<StateT, PathT, never>['data'], null>
-  : void;
+export type DataInEnvelopeAtPathT<
+  StateT,
+  PathT extends null | string | undefined,
+> = Exclude<Extract<ValueAtPathT<StateT, PathT, void>, AsyncDataEnvelopeT<unknown>>['data'], null>;
 
 type HeapT<DataT> = {
   // Note: these heap fields are necessary to make reload() a stable function.

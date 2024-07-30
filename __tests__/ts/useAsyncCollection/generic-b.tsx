@@ -32,13 +32,13 @@ function newZeroState(): DataT {
   return { test: { path: [] } };
 }
 
-async function loader(id: string) {
+async function loader(id: number) {
   return `Value for ID ${id}`;
 }
 
 const Component: React.FunctionComponent = () => {
   const [id, setId] = useState(0);
-  const { collection } = useAsyncCollection<ForceT, string>([id], 'test.path', loader);
+  const { collection } = useAsyncCollection<ForceT, string, number>([id], 'test.path', loader);
   return (
     <div>
       {collection[id]?.data}

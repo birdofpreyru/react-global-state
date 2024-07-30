@@ -31,7 +31,7 @@ import {
 
 export type AsyncCollectionLoaderT<
   DataT,
-  IdT extends number | string = string,
+  IdT extends number | string = number | string,
 > =
   (id: IdT, oldData: null | DataT, meta: {
     isAborted: () => boolean;
@@ -40,7 +40,7 @@ export type AsyncCollectionLoaderT<
 
 export type AsyncCollectionReloaderT<
   DataT,
-  IdT extends number | string = string,
+  IdT extends number | string = number | string,
 >
   = (loader?: AsyncCollectionLoaderT<DataT, IdT>) => Promise<void>;
 
@@ -52,7 +52,7 @@ type CollectionItemT<DataT> = {
 
 type UseAsyncCollectionRestT<
   DataT,
-  IdT extends number | string = string,
+  IdT extends number | string = number | string,
 > = {
   collection: {
     [id in IdT]: CollectionItemT<DataT>;
@@ -64,7 +64,7 @@ type UseAsyncCollectionRestT<
 
 type HeapT<
   DataT,
-  IdT extends number | string = string,
+  IdT extends number | string,
 > = {
   // Note: these heap fields are necessary to make reload() a stable function.
   globalState?: GlobalState<unknown>;
@@ -90,7 +90,7 @@ function useAsyncCollection<
 >(
   id: IdT,
   path: PathT,
-  loader: AsyncCollectionLoaderT<DataT>,
+  loader: AsyncCollectionLoaderT<DataT, IdT>,
   options?: UseAsyncDataOptionsT,
 ): UseAsyncDataResT<DataT>;
 
@@ -101,7 +101,7 @@ function useAsyncCollection<
 >(
   id: IdT,
   path: null | string | undefined,
-  loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
+  loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>, IdT>,
   options?: UseAsyncDataOptionsT,
 ): UseAsyncDataResT<TypeLock<Forced, void, DataT>>;
 
@@ -115,7 +115,7 @@ function useAsyncCollection<
 >(
   id: IdT[],
   path: PathT,
-  loader: AsyncCollectionLoaderT<DataT>,
+  loader: AsyncCollectionLoaderT<DataT, IdT>,
   options?: UseAsyncDataOptionsT,
 ): UseAsyncCollectionRestT<DataT, IdT>;
 
@@ -126,7 +126,7 @@ function useAsyncCollection<
 >(
   id: IdT[],
   path: null | string | undefined,
-  loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
+  loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>, IdT>,
   options?: UseAsyncDataOptionsT,
 ): UseAsyncCollectionRestT<DataT, IdT>;
 
@@ -135,7 +135,7 @@ function useAsyncCollection<
 // and reused in both hooks.
 function useAsyncCollection<
   DataT,
-  IdT extends number | string = string,
+  IdT extends number | string,
 >(
   idOrIds: IdT | IdT[],
   path: null | string | undefined,
@@ -370,40 +370,36 @@ export interface UseAsyncCollectionI<StateT> {
   <PathT extends null | string | undefined, IdT extends number | string>(
     id: IdT,
     path: PathT,
-    loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>,
+    loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>,
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>;
 
   <
     Forced extends ForceT | LockT = LockT,
     DataT = unknown,
-    IdT extends number | string = string,
+    IdT extends number | string = number | string,
   >(
     id: IdT,
     path: null | string | undefined,
-    loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
+    loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>, IdT>,
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<TypeLock<Forced, void, DataT>>;
 
   <PathT extends null | string | undefined, IdT extends number | string>(
     id: IdT[],
     path: PathT,
-    loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>,
+    loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>,
     options?: UseAsyncDataOptionsT,
-  ): UseAsyncDataResT<{
-    [id in IdT]: DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>
-  }>;
+  ): UseAsyncCollectionRestT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>;
 
   <
     Forced extends ForceT | LockT = LockT,
     DataT = unknown,
-    IdT extends number | string = string,
+    IdT extends number | string = number | string,
   >(
     id: IdT[],
     path: null | string | undefined,
-    loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>>,
+    loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>, IdT>,
     options?: UseAsyncDataOptionsT,
-  ): UseAsyncDataResT<{
-    [id in IdT]: TypeLock<Forced, void, DataT>
-  }>;
+  ): UseAsyncCollectionRestT<DataT, IdT>;
 }

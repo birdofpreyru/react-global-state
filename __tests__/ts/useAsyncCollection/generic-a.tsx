@@ -31,7 +31,7 @@ function newZeroState(): DataT {
   return { test: { path: [] } };
 }
 
-async function loader(id: string) {
+async function loader(id: number) {
   return `Value for ID ${id}`;
 }
 
