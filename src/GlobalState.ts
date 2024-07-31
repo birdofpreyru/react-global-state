@@ -97,7 +97,7 @@ export default class GlobalState<
     const prevDeps = this.#dependencies[path];
     let changed = !prevDeps || prevDeps.length !== deps.length;
     for (let i = 0; !changed && i < deps.length; ++i) {
-      changed = prevDeps[i] !== deps[i];
+      changed = prevDeps![i] !== deps[i];
     }
     this.#dependencies[path] = Object.freeze(deps);
     return changed;
@@ -141,7 +141,7 @@ export default class GlobalState<
         this.#nextNotifierId = undefined;
         const watchers = [...this.#watchers];
         for (let i = 0; i < watchers.length; ++i) {
-          watchers[i]();
+          watchers[i]!();
         }
       });
     }
@@ -245,7 +245,7 @@ export default class GlobalState<
       let pos: any = root;
       const pathSegments = toPath(`state.${path}`);
       for (; segIdx < pathSegments.length - 1; segIdx += 1) {
-        const seg = pathSegments[segIdx];
+        const seg = pathSegments[segIdx]!;
         const next = pos[seg];
         if (Array.isArray(next)) pos[seg] = [...next];
         else if (isObject(next)) pos[seg] = { ...next };
@@ -260,7 +260,7 @@ export default class GlobalState<
       }
 
       if (segIdx === pathSegments.length - 1) {
-        pos[pathSegments[segIdx]] = value;
+        pos[pathSegments[segIdx]!] = value;
       }
 
       this.#currentState = root.state;
@@ -283,7 +283,7 @@ export default class GlobalState<
     const watchers = this.#watchers;
     const pos = watchers.indexOf(callback);
     if (pos >= 0) {
-      watchers[pos] = watchers[watchers.length - 1];
+      watchers[pos] = watchers[watchers.length - 1]!;
       watchers.pop();
     }
   }

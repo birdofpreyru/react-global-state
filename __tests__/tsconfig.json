@@ -9,9 +9,10 @@
   "include": [".."],
   "compilerOptions": {
     "jsx": "react-jsx",
-    "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "Node",
+    "noEmit": true,
+    "noUncheckedIndexedAccess": true,
     "paths": {
       "jest/*": ["../jest/*"],
       "*": ["../*"],

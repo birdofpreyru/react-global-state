@@ -9,10 +9,15 @@ import SsrContext from './SsrContext';
 
 import useAsyncCollection, {
   type UseAsyncCollectionI,
+  type UseAsyncCollectionResT,
 } from './useAsyncCollection';
 
 import {
+  type AsyncDataEnvelopeT,
+  type AsyncDataLoaderT,
+  type AsyncDataReloaderT,
   type UseAsyncDataI,
+  type UseAsyncDataResT,
   newAsyncDataEnvelope,
   useAsyncData,
 } from './useAsyncData';
@@ -21,19 +26,24 @@ import useGlobalState, { type UseGlobalStateI } from './useGlobalState';
 
 export type { AsyncCollectionLoaderT } from './useAsyncCollection';
 
-export * from './useAsyncData';
-
 export type { SetterT, UseGlobalStateResT } from './useGlobalState';
 
 export type { ForceT, ValueOrInitializerT } from './utils';
 
 export {
+  type AsyncDataEnvelopeT,
+  type AsyncDataLoaderT,
+  type AsyncDataReloaderT,
+  type UseAsyncCollectionResT,
+  type UseAsyncDataResT,
   getGlobalState,
   getSsrContext,
   GlobalState,
   GlobalStateProvider,
+  newAsyncDataEnvelope,
   SsrContext,
   useAsyncCollection,
+  useAsyncData,
   useGlobalState,
 };
 

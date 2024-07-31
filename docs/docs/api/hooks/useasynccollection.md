@@ -2,11 +2,12 @@
 ```jsx
 import { useAsyncCollection } from '@dr.pogodin/react-global-state';
 ```
-Resolves and stores at the given `path` of global state elements of
-an asynchronous data collection. In other words, it is an auxiliar wrapper
-around [useAsyncData()] hook, which uses a loader which resolves to different
-data, based on an ID argument passed in, and stores data fetched for different
-IDs in the state.
+Resolves and stores at the given `path` of the global state elements of
+an asynchronous data collection. It is similar to [useAsyncData()] hook,
+but instead of a single _data_ object, it manages a collection of similar
+_data_ objects, distinguished by some ID key; with async collection loader
+providing the exact logic how a _data_ object for given ID should be
+retrieved or generated.
 
 :::info
 For a given pair of `id` and `path` arguments this hook will store at
@@ -19,12 +20,15 @@ with the related [useAsyncCollection()] hook logic in an undesireable way.
 
 The TypeScript signature of [useAsyncCollection()] implementation is
 ```ts
-function useAsyncCollection<DataT>(
-  id: string,
+function useAsyncCollection<
+  DataT,
+  IdT extends number | string,
+>(
+  idOrIds: IdT | IdT[],
   path: null | string | undefined,
-  loader: AsyncCollectionLoaderT<DataT>,
+  loader: AsyncCollectionLoaderT<DataT, IdT>,
   options: UseAsyncDataOptionsT = {},
-): UseAsyncDataResT<DataT>;
+): UseAsyncDataResT<DataT> | UseAsyncCollectionResT<DataT, IdT>
 ```
 This signature is shadowed in TypeScript by several narrowed overloads,
 explained below, which are necessary to make static TypeScript type analysis
@@ -32,31 +36,43 @@ work.
 
 ## TypeScript Overloads
 [StateT]: #state-type
-1.  The first TypeScript overload for this hook has the signature (simplified
-    by ommitting details behind the **DataT** definition):
+1.  The first TypeScript overload for this hook has the signature
     ```ts
     function useAsyncCollection<
       StateT,
       PathT extends null | string | undefined,
-      IdT extends string,
+      IdT extends number | string,
+
+      DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> =
+      DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
     >(
       id: IdT,
       path: PathT,
-      loader: AsyncCollectionLoaderT<DataT>
-      >,
+      loader: AsyncCollectionLoaderT<DataT, IdT>,
       options?: UseAsyncDataOptionsT,
     ): UseAsyncDataResT<DataT>;
     ```
-    with three generic parameters:
+    with three required generic parameters:
       - `StateT` <Link id="state-type" /> &mdash; The type of global state content.
       - `PathT` &mdash; **null** | **string** | **undefined** &mdash;
         The type of `path` argument.
-      - `IdT` &mdash; **string** &mdash; The type of `id` argument.
+      - `IdT` &mdash; **number** | **string** &mdash; The type of `id` argument.
 
-    The type **DataT** is auto-evaluated by TypeScript based on generic
-    parameters, if possible, and used for type-checking the loader and result.
-    If **DataT** cannot be auto-evaluated, it falls back to **void**, forbidding
+    The fourth generic parameter, **DataT**, is auto-resolved by TypeScript,
+    if possible, and used for type-checking the loader and result. If `DataT`
+    cannot be resolved automatically, it falls back to **void**, forbidding
     TypeScript to use this hook overload.
+
+    :::important
+    Note, this overload takes a single `id` value, and returns the result with
+    [UseAsyncDataResT] type. Thus, it manages a single _data_ object in
+    the collection, unlike other overloads below that take an array of IDs,
+    and return the result with different [UseAsyncCollectionResT] type,
+    thus managing multple _data_ objects.
+    
+    It is permitted to pass different number of IDs to the mounted hooks in
+    different renders.
+    :::
 
     :::tip
     As [StateT] parameter cannot be evaluated from hook arguments / result types,
@@ -81,19 +97,19 @@ work.
     ```
     :::
 
-2.  Another overload has the following signature (simplified by omitting
-    details behind the exact **DataT** definition), which allows to force any
+2.  The second overload has the following signature, which allows to force any
     **DataT** type under the caller's discretion:
     ```ts
     function useAsyncCollection<
-      Force extends ForceT | false = false,
+      Forced extends ForceT | LockT = LockT,
       DataT = unknown,
+      IdT extends number | string = number | string,
     >(
-      id: string,
+      id: IdT,
       path: null | string | undefined,
-      loader: AsyncCollectionLoaderT<DataT>,
+      loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>, IdT>,
       options?: UseAsyncDataOptionsT,
-    ): UseAsyncDataResT<DataT>;
+    ): UseAsyncDataResT<TypeLock<Forced, void, DataT>>;
     ```
     Generic parameters are:
     - `Forced` &mdash; [ForceT] | **false** &mdash; The default value, **false**,
@@ -101,6 +117,7 @@ work.
       to evaluate as **void** behind the scene). It must be set [ForceT] explicitly,
       to use this overload.
     - `DataT` &mdash; The type of collection item, defaults to **unknown**.
+    - `IdT` &mdash; **number** | **string** &mdash; The type of `id` argument.
 
     You can use this overload in either of these way:
     ```ts
@@ -121,8 +138,50 @@ work.
     useAsyncCollection<ForceT, DataT>(id, path, loader);
     ```
 
+3.  The next overload is this:
+    ```ts
+    function useAsyncCollection<
+      StateT,
+      PathT extends null | string | undefined,
+      IdT extends number | string,
+
+      DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> =
+      DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
+    >(
+      id: IdT[],
+      path: PathT,
+      loader: AsyncCollectionLoaderT<DataT, IdT>,
+      options?: UseAsyncDataOptionsT,
+    ): UseAsyncCollectionResT<DataT, IdT>;
+    ```
+    It is similar to the first one, but it takes an array of ID values,
+    and returns the result of [UseAsyncCollectionResT] type, that wraps
+    a set of requested collection items, and related meta-data.
+
+4.  Finally,
+    ```ts
+    function useAsyncCollection<
+      Forced extends ForceT | LockT = LockT,
+      DataT = unknown,
+      IdT extends number | string = number | string,
+    >(
+      id: IdT[],
+      path: null | string | undefined,
+      loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>, IdT>,
+      options?: UseAsyncDataOptionsT,
+    ): UseAsyncCollectionResT<DataT, IdT>;
+    ```
+    is a signature similar to both 2 & 3 &mdash; it allows to force **DataT**
+    at consumer's discretion, and request a set of collection items rather than
+    a single one.
+
 ## Arguments
-- `id` &mdash; **string** &mdash; ID of the collection item to load & use.
+- `id` &mdash; **number** | **string** | **Array&lt;number | string&gt;** &mdash;
+  ID(s) of collection item(s) to load & use. Depending on whether a single ID or
+  an array of IDs is provided, the hook will return either [UseAsyncDataResT] or
+  [UseAsyncCollectionResT] result. Note, if `id` is an array with one element,
+  it will still return the later ([UseAsyncCollectionResT]) result.
+
 - `path` &mdash; **null** | **string** | **undefined** &mdash; The global state path
   where entire collection should be stored.
 - `loader` &mdash; [AsyncCollectionLoaderT] &mdash; A loader function,
@@ -144,6 +203,7 @@ Returns an object of [UseAsyncDataResT]&lt;**DataT**&gt; type.
 [UseAsyncDataOptionsT]: /docs/api/types/use-async-data-options
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata
+[UseAsyncCollectionResT]: /docs/api/types/use-async-collection-res
 [UseAsyncDataResT]: /docs/api/types/use-async-data-res
 [useGlobalState()]: /docs/api/hooks/useglobalstate
 [withGlobalStateType()]: /docs/api/functions/with-global-state-type

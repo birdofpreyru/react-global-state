@@ -1,11 +1,13 @@
 /** @jest-environment jsdom */
 
-// A very generic test of basic useAsyncCollection() functionality.
+// This test is essentially the same basic test as for "generic-a",
+// but using an array of IDs rather than a single one.
 
 import mockdate from 'mockdate';
 import { useState } from 'react';
 
 import { timer } from '@dr.pogodin/js-utils';
+import { getByText } from '@testing-library/dom';
 
 import { act, mount } from 'jest/utils';
 
@@ -30,16 +32,16 @@ function newZeroState(): DataT {
   return { test: { path: [] } };
 }
 
-async function loader(id: string) {
+async function loader(id: number) {
   return `Value for ID ${id}`;
 }
 
 const Component: React.FunctionComponent = () => {
   const [id, setId] = useState(0);
-  const { data } = useAsyncCollection<ForceT, string>(id.toString(), 'test.path', loader);
+  const { items } = useAsyncCollection<ForceT, string, number>([id], 'test.path', loader);
   return (
     <div>
-      {data}
+      {items[id]?.data}
       <button
         onClick={() => setId(id + 1)}
         type="button"
@@ -65,10 +67,7 @@ it('works as expected', async () => {
   scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 
-  const button = document.getElementsByTagName('button')[0];
-  act(() => {
-    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-  });
+  act(() => getByText(scene, 'Bump the value').click());
   await act(() => timer(10));
   scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();

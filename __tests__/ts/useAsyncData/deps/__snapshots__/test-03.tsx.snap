@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Base scenario 1`] = `
+<div>
+  <div
+    role="presentation"
+  >
+    Next Step
+  </div>
+</div>
+`;
+
+exports[`Base scenario 2`] = `
+{
+  "pathA": {
+    "data": "A",
+    "numRefs": 0,
+    "operationId": "",
+    "timestamp": 1722297600000,
+  },
+  "pathB": {
+    "data": "A",
+    "numRefs": 1,
+    "operationId": "",
+    "timestamp": 1722297600000,
+  },
+}
+`;
+
+exports[`Base scenario 3`] = `
+{
+  "pathA": {
+    "data": "A",
+    "numRefs": 0,
+    "operationId": "",
+    "timestamp": 1722297600000,
+  },
+  "pathB": {
+    "data": "B",
+    "numRefs": 1,
+    "operationId": "",
+    "timestamp": 1722297600000,
+  },
+}
+`;
+
+exports[`Base scenario 4`] = `
+{
+  "pathA": {
+    "data": "B",
+    "numRefs": 1,
+    "operationId": "",
+    "timestamp": 1722297600000,
+  },
+  "pathB": {
+    "data": "B",
+    "numRefs": 0,
+    "operationId": "",
+    "timestamp": 1722297600000,
+  },
+}
+`;

@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+import { getByTestId } from '@testing-library/dom';
+
 import { type MountedSceneT, act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src/index';
 
@@ -14,6 +16,7 @@ const Component: React.FunctionComponent = () => {
   return (
     <div>
       <button
+        data-testid="button"
         onClick={() => setValue(!value)}
         type="button"
       >
@@ -41,14 +44,14 @@ afterEach(() => {
 test('The scene works as expected', () => {
   scene = mount(<Scene />);
   scene.snapshot();
-  const button = document.getElementsByTagName('button')[0];
+  const button = getByTestId(scene, 'button');
   act(() => {
-    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    button.click();
     jest.runAllTimers();
   });
   scene.snapshot();
   act(() => {
-    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    button.click();
     jest.runAllTimers();
   });
   scene.snapshot();

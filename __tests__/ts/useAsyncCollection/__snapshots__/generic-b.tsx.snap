@@ -16,14 +16,14 @@ exports[`works as expected 1`] = `
 exports[`works as expected 2`] = `
 {
   "test": {
-    "path": {
-      "0": {
+    "path": [
+      {
         "data": "Value for ID 0",
         "numRefs": 1,
         "operationId": "",
         "timestamp": 1620432000000,
       },
-    },
+    ],
   },
 }
 `;
@@ -44,20 +44,20 @@ exports[`works as expected 3`] = `
 exports[`works as expected 4`] = `
 {
   "test": {
-    "path": {
-      "0": {
+    "path": [
+      {
         "data": "Value for ID 0",
         "numRefs": 0,
         "operationId": "",
         "timestamp": 1620432000000,
       },
-      "1": {
+      {
         "data": "Value for ID 1",
         "numRefs": 1,
         "operationId": "",
         "timestamp": 1620432000000,
       },
-    },
+    ],
   },
 }
 `;
