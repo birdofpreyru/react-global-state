@@ -50,11 +50,11 @@ type CollectionItemT<DataT> = {
   timestamp: number;
 };
 
-type UseAsyncCollectionRestT<
+export type UseAsyncCollectionResT<
   DataT,
   IdT extends number | string = number | string,
 > = {
-  collection: {
+  items: {
     [id in IdT]: CollectionItemT<DataT>;
   }
   loading: boolean;
@@ -117,7 +117,7 @@ function useAsyncCollection<
   path: PathT,
   loader: AsyncCollectionLoaderT<DataT, IdT>,
   options?: UseAsyncDataOptionsT,
-): UseAsyncCollectionRestT<DataT, IdT>;
+): UseAsyncCollectionResT<DataT, IdT>;
 
 function useAsyncCollection<
   Forced extends ForceT | LockT = LockT,
@@ -128,7 +128,7 @@ function useAsyncCollection<
   path: null | string | undefined,
   loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>, IdT>,
   options?: UseAsyncDataOptionsT,
-): UseAsyncCollectionRestT<DataT, IdT>;
+): UseAsyncCollectionResT<DataT, IdT>;
 
 // TODO: This is largely similar to useAsyncData() logic, just more generic.
 // Perhaps, a bunch of logic blocks can be split into stand-alone functions,
@@ -141,7 +141,7 @@ function useAsyncCollection<
   path: null | string | undefined,
   loader: AsyncCollectionLoaderT<DataT, IdT>,
   options: UseAsyncDataOptionsT = {},
-): UseAsyncDataResT<DataT> | UseAsyncCollectionRestT<DataT, IdT> {
+): UseAsyncDataResT<DataT> | UseAsyncCollectionResT<DataT, IdT> {
   const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
 
   const maxage: number = options.maxage ?? DEFAULT_MAXAGE;
@@ -339,8 +339,8 @@ function useAsyncCollection<
     };
   }
 
-  const res: UseAsyncCollectionRestT<DataT, IdT> = {
-    collection: {} as Record<IdT, CollectionItemT<DataT>>,
+  const res: UseAsyncCollectionResT<DataT, IdT> = {
+    items: {} as Record<IdT, CollectionItemT<DataT>>,
     loading: false,
     reload: heap.reload,
     timestamp: Number.MAX_VALUE,
@@ -352,7 +352,7 @@ function useAsyncCollection<
     const loading = !!e?.operationId;
     const timestamp = e?.timestamp ?? 0;
 
-    res.collection[id] = {
+    res.items[id] = {
       data: maxage < Date.now() - timestamp ? null : (e?.data ?? null),
       loading,
       timestamp,
@@ -390,7 +390,7 @@ export interface UseAsyncCollectionI<StateT> {
     path: PathT,
     loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>,
     options?: UseAsyncDataOptionsT,
-  ): UseAsyncCollectionRestT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>;
+  ): UseAsyncCollectionResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>;
 
   <
     Forced extends ForceT | LockT = LockT,
@@ -401,5 +401,5 @@ export interface UseAsyncCollectionI<StateT> {
     path: null | string | undefined,
     loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>, IdT>,
     options?: UseAsyncDataOptionsT,
-  ): UseAsyncCollectionRestT<DataT, IdT>;
+  ): UseAsyncCollectionResT<DataT, IdT>;
 }

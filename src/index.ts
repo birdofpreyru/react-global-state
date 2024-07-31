@@ -9,6 +9,7 @@ import SsrContext from './SsrContext';
 
 import useAsyncCollection, {
   type UseAsyncCollectionI,
+  type UseAsyncCollectionResT,
 } from './useAsyncCollection';
 
 import {
@@ -33,6 +34,7 @@ export {
   type AsyncDataEnvelopeT,
   type AsyncDataLoaderT,
   type AsyncDataReloaderT,
+  type UseAsyncCollectionResT,
   type UseAsyncDataResT,
   getGlobalState,
   getSsrContext,

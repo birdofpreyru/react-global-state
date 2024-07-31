@@ -38,10 +38,10 @@ async function loader(id: number) {
 
 const Component: React.FunctionComponent = () => {
   const [id, setId] = useState(0);
-  const { collection } = useAsyncCollection<ForceT, string, number>([id], 'test.path', loader);
+  const { items } = useAsyncCollection<ForceT, string, number>([id], 'test.path', loader);
   return (
     <div>
-      {collection[id]?.data}
+      {items[id]?.data}
       <button
         onClick={() => setId(id + 1)}
         type="button"
