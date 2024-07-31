@@ -48,7 +48,7 @@ useGlobalState<Unlocked,ValueT>(
 ```
 &uArr; _See [useGlobalState()] for details._
 
-Will be returned by [withGlobalStateType()] as they were originally,
+are returned by [withGlobalStateType()] as they were originally,
 thus allowing to also use them, without importing separately stand-alone
 versions of the corresponding entities.
 

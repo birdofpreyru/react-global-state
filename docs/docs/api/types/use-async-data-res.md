@@ -3,7 +3,7 @@
 import { type UseAsyncDataResT } from '@dr.pogodin/react-global-state';
 ```
 [UseAsyncDataResT] is the type of result returned by [useAsyncData()]
-and [useAsyncCollection()] hooks.
+and, possibly (depends on hook's arguments), [useAsyncCollection()] hooks.
 
 It is defined as the generic type:
 ```ts

@@ -9,8 +9,10 @@
 - [SetterT] &mdash; The type of setter returned by the [useGlobalState()] hook.
 - [UseAsyncDataOptionsT] &mdash; The type of options object accepted by
   [useAsyncData()] and [useAsyncCollection()] hooks.
-- [UseAsyncDataResT] &mdash; The type of result returned by [useAsyncData()] and
-  [useAsyncCollection()] hooks.
+- [UseAsyncCollectionResT] &mdash; The type of result possibly returned by
+  [useAsyncCollection()] hooks (depends on hook arguments).
+- [UseAsyncDataResT] &mdash; The type of result returned by [useAsyncData()]
+  and, possibly, [useAsyncCollection()] hooks (depends on hook arguments).
 - [UseGlobalStateResT] &mdash; The type of result returned by
   the [useGlobalState()] hook.
 - [ValueOrInitializerT] &mdash; The type for arguments that accept either
@@ -24,6 +26,7 @@
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata
 [UseAsyncDataOptionsT]: /docs/api/types/use-async-data-options
+[UseAsyncCollectionResT]: /docs/api/types/use-async-collection-res
 [UseAsyncDataResT]: /docs/api/types/use-async-data-res
 [useGlobalState()]: /docs/api/hooks/useglobalstate
 [UseGlobalStateResT]: /docs/api/types/use-global-state-res
