@@ -1,5 +1,5 @@
 # AsyncCollectionT
-[AsyncCollectionT]: #collectiont
+[AsyncCollectionT]: #
 ```tsx
 import type { AsyncCollectionT } from '@dr.pogodin/react-global-state';
 ```
