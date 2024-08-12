@@ -25,7 +25,7 @@ import {
 
 import useGlobalState, { type UseGlobalStateI } from './useGlobalState';
 
-export type { AsyncCollectionLoaderT } from './useAsyncCollection';
+export type { AsyncCollectionLoaderT, AsyncCollectionT } from './useAsyncCollection';
 
 export type { SetterT, UseGlobalStateResT } from './useGlobalState';
 

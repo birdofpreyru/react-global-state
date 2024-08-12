@@ -30,6 +30,11 @@ import {
   isDebugMode,
 } from './utils';
 
+export type AsyncCollectionT<
+  DataT = unknown,
+  IdT extends number | string = number | string,
+> = { [id in IdT]?: AsyncDataEnvelopeT<DataT> };
+
 export type AsyncCollectionLoaderT<
   DataT,
   IdT extends number | string = number | string,
@@ -87,8 +92,7 @@ function gcOnWithhold<IdT extends number | string>(
   path: null | string | undefined,
   gs: GlobalState<unknown>,
 ) {
-  type CollectionT = Record<IdT, AsyncDataEnvelopeT<unknown> | undefined>;
-  const collection = { ...gs.get<ForceT, CollectionT>(path) };
+  const collection = { ...gs.get<ForceT, AsyncCollectionT>(path) };
 
   for (let i = 0; i < ids.length; ++i) {
     const id = ids[i]!;
@@ -98,7 +102,7 @@ function gcOnWithhold<IdT extends number | string>(
     collection[id] = envelope;
   }
 
-  gs.set<ForceT, CollectionT>(path, collection);
+  gs.set<ForceT, AsyncCollectionT>(path, collection);
 }
 
 function idsToStringSet<IdT extends number | string>(ids: IdT[]): Set<string> {
@@ -123,15 +127,14 @@ function gcOnRelease<IdT extends number | string>(
   gcAge: number,
 ) {
   type EnvelopeT = AsyncDataEnvelopeT<unknown>;
-  type CollectionT = { [id in IdT]?: EnvelopeT };
 
   const entries = Object.entries<EnvelopeT | undefined>(
-    gs.get<ForceT, CollectionT>(path),
+    gs.get<ForceT, AsyncCollectionT>(path),
   );
 
   const now = Date.now();
   const idSet = idsToStringSet(ids);
-  const collection: CollectionT = {};
+  const collection: AsyncCollectionT = {};
   for (let i = 0; i < entries.length; ++i) {
     const [id, envelope] = entries[i]!;
 
@@ -155,7 +158,7 @@ function gcOnRelease<IdT extends number | string>(
     }
   }
 
-  gs.set<ForceT, CollectionT>(path, collection);
+  gs.set<ForceT, AsyncCollectionT>(path, collection);
 }
 
 function normalizeIds<IdT extends number | string>(

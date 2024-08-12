@@ -1,5 +1,7 @@
 - [AsyncCollectionLoaderT] &mdash; The signature of a valid data loader function
   for [useAsyncCollection()] hook.
+- [AsyncCollectionT] &mdash; The type of a global state segment managed by
+  the [useAsyncCollection()] hook.
 - [AsyncDataEnvelopeT] &mdash; The type of a state segment storing data managed
   by [useAsyncData()] and [useAsyncCollection()] hooks, alongside related meta-data.
 - [AsyncDataLoaderT] &mdash; The signature of a valid data loader function for
@@ -19,6 +21,7 @@
   a value to use, or a function that returns the value to use.
 
 [AsyncCollectionLoaderT]: /docs/api/types/async-collection-loader
+[AsyncCollectionT]: /docs/api/types/async-collection
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
 [ForceT]: /docs/api/types/force

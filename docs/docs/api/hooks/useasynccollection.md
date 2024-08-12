@@ -2,20 +2,56 @@
 ```jsx
 import { useAsyncCollection } from '@dr.pogodin/react-global-state';
 ```
-Resolves and stores at the given `path` of the global state elements of
-an asynchronous data collection. It is similar to [useAsyncData()] hook,
-but instead of a single _data_ object, it manages a collection of similar
-_data_ objects, distinguished by some ID key; with async collection loader
-providing the exact logic how a _data_ object for given ID should be
-retrieved or generated.
+Manages an [asynchronous data collection][AsyncCollectionT] in the global state, 
+_i.e._ a map between string/number IDs and corresponding data, wrapped into
+auxiliary [envelopes][AsyncDataEnvelopeT].
+
+<details>
+<summary>Example</summary>
+```tsx
+import {
+  type AsyncCollectionT,
+  type AsyncDataEnvelopeT,
+  useAsyncCollection,
+} from '@dr.pogodin/react-global-state';
+
+type StateT = {
+  collection: AsyncCollectionT<string>;
+}
+
+async function loader(id: string): Promise<string> {
+  // Some asynchronous logic here.
+  return 'result';
+}
+
+const Component: React.FunctionComponent = () => {
+  const { items } = useAsyncCollection<StateT>(
+    ['a', 'b'],
+    'collection',
+    loader,
+  );
+  return (
+    <div>
+      <div>Result for "a": {items.a}</div>
+      <div>Result for "b": {items.b}</div>
+    </div>
+  );
+};
+```
+</details>
+
+It is similar to the simpler [useAsyncData()] hook, but instead of a single
+data object, it handles a set of such objects, distinguished by their IDs;
+and the collection [loader][AsyncCollectionLoaderT] provides the underlying
+logic for resolution of data for a given ID.
 
 :::info
-For a given pair of `id` and `path` arguments this hook will store at
-the `` `${path}.${id}` `` path of the global state an [AsyncDataEnvelopeT] object
-holding the loaded data alongside some related meta-information. That global
-state segment can be accessed, and even modified using other hooks,
-_e.g_ [useGlobalState()], but doing so you should be careful to not interfere
-with the related [useAsyncCollection()] hook logic in an undesireable way.
+- Starting with **v0.17.0** of the library, the hook assumes the value at
+  the given collection `path` is a proper [AsyncCollectionT] object, or
+  **undefined**; in particular it must not have any key/value pairs with
+  non-[AsyncDataEnvelopeT] values.
+- The hook does reference-counting and garbage-collection of orphaned loaded
+  data, as per the `garbageCollectAge` limit (see [UseAsyncDataOptionsT]).
 :::
 
 The TypeScript signature of [useAsyncCollection()] implementation is
@@ -195,9 +231,12 @@ work.
 - `options` &mdash; [UseAsyncDataOptionsT] &mdash; Optional object with additional settings.
 
 ## Result
-Returns an object of [UseAsyncDataResT]&lt;**DataT**&gt; type.
+Returns an object of [UseAsyncCollectionResT]\<**DataT**\> (when called with an
+array of IDs) or [UseAsyncDataResT]&lt;**DataT**&gt; (when called with a single
+ID) types.
 
 [AsyncCollectionLoaderT]: /docs/api/types/async-collection-loader
+[AsyncCollectionT]: /docs/api/types/async-collection
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
 [ForceT]: /docs/api/types/force
 [UseAsyncDataOptionsT]: /docs/api/types/use-async-data-options
