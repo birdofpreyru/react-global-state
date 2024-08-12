@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works as expected 1`] = `
+<div>
+  <div>
+    <button
+      type="button"
+    >
+      next
+    </button>
+  </div>
+  <button
+    type="button"
+  >
+    unmount
+  </button>
+</div>
+`;
+
+exports[`works as expected 2`] = `
+{
+  "collection": {},
+}
+`;
+
+exports[`works as expected 3`] = `
+{
+  "collection": {
+    "a": {
+      "data": "a-value",
+      "numRefs": 1,
+      "operationId": "",
+      "timestamp": 1723334400000,
+    },
+  },
+}
+`;
+
+exports[`works as expected 4`] = `
+{
+  "collection": {
+    "a": {
+      "data": "a-value",
+      "numRefs": 1,
+      "operationId": "",
+      "timestamp": 1723334400000,
+    },
+    "b": {
+      "data": "b-value",
+      "numRefs": 1,
+      "operationId": "",
+      "timestamp": 1723334401000,
+    },
+  },
+}
+`;
+
+exports[`works as expected 5`] = `
+{
+  "collection": {
+    "a": {
+      "data": "a-value",
+      "numRefs": 0,
+      "operationId": "",
+      "timestamp": 1723334400000,
+    },
+    "b": {
+      "data": "b-value",
+      "numRefs": 1,
+      "operationId": "",
+      "timestamp": 1723334401000,
+    },
+  },
+}
+`;
+
+exports[`works as expected 6`] = `
+{
+  "collection": {},
+}
+`;

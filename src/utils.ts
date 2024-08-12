@@ -76,6 +76,7 @@ const cloneDeepBailKeys = new Set<string>();
  */
 export function cloneDeepForLog<T>(value: T, key: string = ''): T {
   if (cloneDeepBailKeys.has(key)) {
+    // eslint-disable-next-line no-console
     console.warn(`The logged value won't be clonned (key "${key}").`);
     return value;
   }
@@ -84,9 +85,32 @@ export function cloneDeepForLog<T>(value: T, key: string = ''): T {
   const res = cloneDeep(value);
   const time = Date.now() - start;
   if (time > 300) {
+    // eslint-disable-next-line no-console
     console.warn(`${time}ms spent to clone the logged value (key "${key}").`);
     cloneDeepBailKeys.add(key);
   }
 
   return res;
+}
+
+/**
+ * Converts given value to an escaped string. For now, we are good with the most
+ * trivial escape logic:
+ *  - '%' characters are replaced by '%0' code pair;
+ *  - '/' characters are replaced by '%1' code pair.
+ */
+export function escape(x: number | string): string {
+  return typeof x === 'string'
+    ? x.replace(/%/g, '%0').replace(/\//g, '%1')
+    : x.toString();
+}
+
+/**
+ * Hashes given string array. For our current needs we are fine to go with
+ * the most trivial implementation, which probably should not be called "hash"
+ * in the strict sense: we just escape each given string to not include '/'
+ * characters, and then we join all those strings using '/' as the separator.
+ */
+export function hash(items: Array<number | string>): string {
+  return items.map(escape).join('/');
 }

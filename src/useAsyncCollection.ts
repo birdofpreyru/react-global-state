@@ -26,6 +26,7 @@ import {
   type ForceT,
   type LockT,
   type TypeLock,
+  hash,
   isDebugMode,
 } from './utils';
 
@@ -67,13 +68,168 @@ type HeapT<
   IdT extends number | string,
 > = {
   // Note: these heap fields are necessary to make reload() a stable function.
-  globalState?: GlobalState<unknown>;
-  ids?: IdT[];
-  path?: null | string;
-  loader?: AsyncCollectionLoaderT<DataT, IdT>;
-  reload?: AsyncCollectionReloaderT<DataT, IdT>;
-  reloadD?: AsyncDataReloaderT<DataT>;
+  globalState: GlobalState<unknown>;
+  ids: IdT[];
+  path: null | string | undefined;
+  loader: AsyncCollectionLoaderT<DataT, IdT>;
+  reload: AsyncCollectionReloaderT<DataT, IdT>;
+  reloadSingle: AsyncDataReloaderT<DataT>;
 };
+
+/**
+ * GarbageCollector: the piece of logic executed on mounting of
+ * an useAsyncCollection() hook, and on update of hook params, to update
+ * the state according to the new param values. It increments by 1 `numRefs`
+ * counters for the requested collection items.
+ */
+function gcOnWithhold<IdT extends number | string>(
+  ids: IdT[],
+  path: null | string | undefined,
+  gs: GlobalState<unknown>,
+) {
+  type CollectionT = Record<IdT, AsyncDataEnvelopeT<unknown> | undefined>;
+  const collection = { ...gs.get<ForceT, CollectionT>(path) };
+
+  for (let i = 0; i < ids.length; ++i) {
+    const id = ids[i]!;
+    let envelope = collection[id];
+    if (envelope) envelope = { ...envelope, numRefs: 1 + envelope.numRefs };
+    else envelope = newAsyncDataEnvelope<unknown>(null, { numRefs: 1 });
+    collection[id] = envelope;
+  }
+
+  gs.set<ForceT, CollectionT>(path, collection);
+}
+
+function idsToStringSet<IdT extends number | string>(ids: IdT[]): Set<string> {
+  const res = new Set<string>();
+  for (let i = 0; i < ids.length; ++i) {
+    res.add(ids[i]!.toString());
+  }
+  return res;
+}
+
+/**
+ * GarbageCollector: the piece of logic executed on un-mounting of
+ * an useAsyncCollection() hook, and on update of hook params, to clean-up
+ * after the previous param values. It decrements by 1 `numRefs` counters
+ * for previously requested collection items, and also drops from the state
+ * stale records.
+ */
+function gcOnRelease<IdT extends number | string>(
+  ids: IdT[],
+  path: null | string | undefined,
+  gs: GlobalState<unknown>,
+  gcAge: number,
+) {
+  type EnvelopeT = AsyncDataEnvelopeT<unknown>;
+  type CollectionT = { [id in IdT]?: EnvelopeT };
+
+  const entries = Object.entries<EnvelopeT | undefined>(
+    gs.get<ForceT, CollectionT>(path),
+  );
+
+  const now = Date.now();
+  const idSet = idsToStringSet(ids);
+  const collection: CollectionT = {};
+  for (let i = 0; i < entries.length; ++i) {
+    const [id, envelope] = entries[i]!;
+
+    if (envelope) {
+      const toBeReleased = idSet.has(id);
+
+      let { numRefs } = envelope;
+      if (toBeReleased) --numRefs;
+
+      if (gcAge > now - envelope.timestamp || numRefs > 0) {
+        collection[id as IdT] = toBeReleased
+          ? { ...envelope, numRefs }
+          : envelope;
+      } else if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+        // eslint-disable-next-line no-console
+        console.log(
+          `useAsyncCollection(): Garbage collected at the path "${
+            path}", ID = ${id}`,
+        );
+      }
+    }
+  }
+
+  gs.set<ForceT, CollectionT>(path, collection);
+}
+
+function normalizeIds<IdT extends number | string>(
+  idOrIds: IdT | IdT[],
+): IdT[] {
+  if (Array.isArray(idOrIds)) {
+    const res = [...idOrIds];
+    res.sort();
+    return res;
+  }
+  return [idOrIds];
+}
+
+/**
+ * Inits/updates, and returns the heap.
+ */
+function useHeap<
+  DataT,
+  IdT extends number | string,
+>(
+  ids: IdT[],
+  path: null | string | undefined,
+  loader: AsyncCollectionLoaderT<DataT, IdT>,
+  gs: GlobalState<unknown>,
+): HeapT<DataT, IdT> {
+  const ref = useRef<HeapT<DataT, IdT>>();
+
+  let heap = ref.current;
+
+  if (heap) {
+    // Update.
+    heap.ids = ids;
+    heap.path = path;
+    heap.loader = loader;
+    heap.globalState = gs;
+  } else {
+    // Initialization.
+    const reload = async (
+      customLoader?: AsyncCollectionLoaderT<DataT, IdT>,
+    ) => {
+      const heap2 = ref.current!;
+
+      const localLoader = customLoader || heap2.loader;
+      if (!localLoader || !heap2.globalState || !heap2.ids) {
+        throw Error('Internal error');
+      }
+
+      for (let i = 0; i < heap2.ids.length; ++i) {
+        const id = heap2.ids[i]!;
+        const itemPath = heap2.path ? `${heap2.path}.${id}` : `${id}`;
+
+        // eslint-disable-next-line no-await-in-loop
+        await load(
+          itemPath,
+          (oldData: DataT | null, meta) => localLoader(id, oldData, meta),
+          heap2.globalState,
+        );
+      }
+    };
+    heap = {
+      globalState: gs,
+      ids,
+      path,
+      loader,
+      reload,
+      reloadSingle: (customLoader) => ref.current!.reload(
+        customLoader && ((id, ...args) => customLoader(...args)),
+      ),
+    };
+    ref.current = heap;
+  }
+
+  return heap;
+}
 
 /**
  * Resolves and stores at the given `path` of the global state elements of
@@ -142,53 +298,14 @@ function useAsyncCollection<
   loader: AsyncCollectionLoaderT<DataT, IdT>,
   options: UseAsyncDataOptionsT = {},
 ): UseAsyncDataResT<DataT> | UseAsyncCollectionResT<DataT, IdT> {
-  const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
-
+  const ids = normalizeIds(idOrIds);
   const maxage: number = options.maxage ?? DEFAULT_MAXAGE;
   const refreshAge: number = options.refreshAge ?? maxage;
   const garbageCollectAge: number = options.garbageCollectAge ?? maxage;
 
-  // To avoid unnecessary work if consumer passes down the same IDs
-  // in an unstable order.
-  // TODO: Should we also filter out any duplicates? Or just assume consumer
-  // knows what he is doing, and won't place duplicates into IDs array?e
-  ids.sort();
-
   const globalState = getGlobalState();
 
-  const { current: heap } = useRef<HeapT<DataT, IdT>>({});
-
-  heap.globalState = globalState;
-  heap.ids = ids;
-  heap.path = path;
-  heap.loader = loader;
-
-  if (!heap.reload) {
-    heap.reload = async (customLoader?: AsyncCollectionLoaderT<DataT, IdT>) => {
-      const localLoader = customLoader || heap.loader;
-      if (!localLoader || !heap.globalState || !heap.ids) {
-        throw Error('Internal error');
-      }
-
-      for (let i = 0; i < heap.ids.length; ++i) {
-        const id = heap.ids[i]!;
-        const itemPath = heap.path ? `${heap.path}.${id}` : `${id}`;
-
-        // eslint-disable-next-line no-await-in-loop
-        await load(
-          itemPath,
-          (oldData: DataT | null, meta) => localLoader(id, oldData, meta),
-          heap.globalState,
-        );
-      }
-    };
-  }
-
-  if (!Array.isArray(idOrIds)) {
-    heap.reloadD = (customLoader) => heap.reload!(
-      customLoader && ((id, ...args) => customLoader(...args)),
-    );
-  }
+  const heap = useHeap(ids, path, loader, globalState);
 
   // Server-side logic.
   if (globalState.ssrContext && !options.noSSR) {
@@ -213,56 +330,23 @@ function useAsyncCollection<
   } else {
     // Reference-counting & garbage collection.
 
+    const idsHash = hash(ids);
+
     // TODO: Violation of rules of hooks is fine here,
     // but perhaps it can be refactored to avoid the need for it.
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      for (let i = 0; i < ids.length; ++i) {
-        const id = ids[i];
-        const itemPath = path ? `${path}.${id}` : `${id}`;
-        const state = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(
-          itemPath,
-          { initialValue: newAsyncDataEnvelope() },
-        );
+      gcOnWithhold(ids, path, globalState);
+      return () => gcOnRelease(ids, path, globalState, garbageCollectAge);
 
-        const numRefsPath = itemPath ? `${itemPath}.numRefs` : 'numRefs';
-        globalState.set<ForceT, number>(numRefsPath, state.numRefs + 1);
-      }
-
-      return () => {
-        for (let i = 0; i < ids.length; ++i) {
-          const id = ids[i];
-          const itemPath = path ? `${path}.${id}` : `${id}`;
-          const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
-          ForceT, AsyncDataEnvelopeT<DataT>
-          >(itemPath);
-          if (
-            state2.numRefs === 1
-            && garbageCollectAge < Date.now() - state2.timestamp
-          ) {
-            if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-              /* eslint-disable no-console */
-              console.log(
-                `ReactGlobalState - useAsyncCollection garbage collected at path ${
-                  itemPath || ''
-                }`,
-              );
-              /* eslint-enable no-console */
-            }
-            globalState.dropDependencies(itemPath || '');
-            globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(itemPath, {
-              ...state2,
-              data: null,
-              numRefs: 0,
-              timestamp: 0,
-            });
-          } else {
-            const numRefsPath = itemPath ? `${itemPath}.numRefs` : 'numRefs';
-            globalState.set<ForceT, number>(numRefsPath, state2.numRefs - 1);
-          }
-        }
-      };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [garbageCollectAge, globalState, path, ...ids]);
+      // `ids` are represented in the dependencies array by `idsHash` value,
+      // as useEffect() hook requires a constant size of dependencies array.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+      garbageCollectAge,
+      globalState,
+      idsHash,
+      path,
+    ]);
 
     // NOTE: a bunch of Rules of Hooks ignored belows because in our very
     // special case the otherwise wrong behavior is actually what we need.
@@ -334,7 +418,7 @@ function useAsyncCollection<
     return {
       data: maxage < Date.now() - timestamp ? null : (e?.data ?? null),
       loading: !!e?.operationId,
-      reload: heap.reloadD!,
+      reload: heap.reloadSingle!,
       timestamp,
     };
   }

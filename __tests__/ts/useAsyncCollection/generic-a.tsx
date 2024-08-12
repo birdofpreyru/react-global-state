@@ -37,7 +37,11 @@ async function loader(id: number) {
 
 const Component: React.FunctionComponent = () => {
   const [id, setId] = useState(0);
-  const { data } = useAsyncCollection<ForceT, string, number>(id, 'test.path', loader);
+  const { data } = useAsyncCollection<ForceT, string, number>(
+    id,
+    'test.path',
+    loader,
+  );
   return (
     <div>
       {data}
