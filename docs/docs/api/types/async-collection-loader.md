@@ -41,8 +41,20 @@ The data loader function receives two arguments:
     as far as the library is concerned the result of that call will be
     silently discarted anyway.
 
+    :::info
+    Technically `isAborted()` (if memoized and used in the outer context of
+    the loader) also returns _true_ after the loading operation has completed
+    without an abort; _i.e._ it actually checks whether the current loading
+    operation, if any, is the same for which this callback has been created.
+    :::
+
   - `oldDataTimestamp` &mdash; **number** &mdash; Unix timestamp (milliseconds)
     of the given `oldData`, if any, or 0.
+
+  - `setAbortCallback` &mdash; **(cb: () => void) => void** &mdash;
+    Allows to register an abort callback, which will be triggered when, and if
+    the current loading operation is aborted. If called repeatedly, the new
+    callback will replace the previous one for that operation.
 
 ## Result
 The data loader function, for the given ID, must return either [DataT] value,
