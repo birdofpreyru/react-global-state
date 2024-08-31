@@ -33,6 +33,8 @@ export default class GlobalState<
 > {
   readonly ssrContext?: SsrContextT;
 
+  #asyncDataAbortCallbacks: Record<string, () => void> = {};
+
   #dependencies: { [key: string]: Readonly<any[]> } = {};
 
   #initialState: StateT;
@@ -81,6 +83,24 @@ export default class GlobalState<
   }
 
   /**
+   * Returns the number of currently registered async data abort callbacks,
+   * just for the sake of testing the library.
+   */
+  get numAsyncDataAbortCallbacks(): number {
+    return Object.keys(this.#asyncDataAbortCallbacks).length;
+  }
+
+  /**
+   * If `aborted` is "true" and there is an abort callback registered for
+   * the specified operation, it triggers the callback. Then, in any case,
+   * it drops the callback.
+   */
+  asyncDataLoadDone(opid: string, aborted: boolean) {
+    if (aborted) this.#asyncDataAbortCallbacks[opid]?.();
+    delete this.#asyncDataAbortCallbacks[opid];
+  }
+
+  /**
    * Drops the record of dependencies, if any, for the given path.
    */
   dropDependencies(path: string) {
@@ -92,6 +112,11 @@ export default class GlobalState<
    * the given `path`. If they are, `deps` are recorded as the new deps for
    * the `path`, and also the array is frozen, to prevent it from being
    * modified.
+   *
+   * TODO: This may not work as expected if path string is not normalized,
+   * and the for the same path different alternative ways to spell it down
+   * are used. We should normalize given path here, I guess, or on a higher
+   * level in the logic?
    */
   hasChangedDependencies(path: string, deps: any[]): boolean {
     const prevDeps = this.#dependencies[path];
@@ -145,6 +170,14 @@ export default class GlobalState<
         }
       });
     }
+  }
+
+  /**
+   * Registers an abort callback for an async data retrieval operation with
+   * the given operation ID. Throws if already registered.
+   */
+  setAsyncDataAbortCallback(opid: string, cb: () => void) {
+    this.#asyncDataAbortCallbacks[opid] = cb;
   }
 
   /**

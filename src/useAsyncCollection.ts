@@ -42,6 +42,7 @@ export type AsyncCollectionLoaderT<
   (id: IdT, oldData: null | DataT, meta: {
     isAborted: () => boolean;
     oldDataTimestamp: number;
+    setAbortCallback: (cb: () => void) => void;
   }) => DataT | Promise<DataT | null> | null;
 
 export type AsyncCollectionReloaderT<

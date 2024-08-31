@@ -28,6 +28,7 @@ export type AsyncDataLoaderT<DataT>
 = (oldData: null | DataT, meta: {
   isAborted: () => boolean;
   oldDataTimestamp: number;
+  setAbortCallback: (cb: () => void) => void;
 }) => DataT | Promise<DataT | null> | null;
 
 export type AsyncDataReloaderT<DataT>
@@ -88,6 +89,11 @@ export async function load<DataT>(
   loader: AsyncDataLoaderT<DataT>,
   globalState: GlobalState<unknown, SsrContext<unknown>>,
   old?: { data: DataT | null, timestamp: number },
+
+  // TODO: Should this parameter be just a binary flag (client or server),
+  // and UUID always generated inside this function? Or do we need it in
+  // the caller methods as well, in some cases (see useAsyncCollection()
+  // use case as well).
   operationId: OperationIdT = `C${uuid()}`,
 ): Promise<void> {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
@@ -99,6 +105,10 @@ export async function load<DataT>(
   }
 
   const operationIdPath = path ? `${path}.operationId` : 'operationId';
+  {
+    const prevOperationId = globalState.get<ForceT, string>(operationIdPath);
+    if (prevOperationId) globalState.asyncDataLoadDone(prevOperationId, true);
+  }
   globalState.set<ForceT, string>(operationIdPath, operationId);
 
   let definedOld = old;
@@ -115,10 +125,26 @@ export async function load<DataT>(
       return opid !== operationId;
     },
     oldDataTimestamp: definedOld.timestamp,
+    setAbortCallback(cb: () => void) {
+      const opid = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path).operationId;
+      if (opid !== operationId) {
+        throw Error(`Operation #${operationId} has completed already`);
+      }
+      globalState.setAsyncDataAbortCallback(operationId, cb);
+    },
   });
 
-  const data: DataT | null = dataOrPromise instanceof Promise
-    ? await dataOrPromise : dataOrPromise;
+  let data: DataT | null;
+
+  try {
+    data = dataOrPromise instanceof Promise
+      ? await dataOrPromise : dataOrPromise;
+  } finally {
+    // NOTE: We don't really mean that it hasn't been aborted,
+    // the "false" flag rather says we don't need to trigger "on aborted"
+    // callback for this operation, if any is registered - just drop it.
+    globalState.asyncDataLoadDone(operationId, false);
+  }
 
   const state: AsyncDataEnvelopeT<DataT> = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path);
   if (operationId === state.operationId) {
