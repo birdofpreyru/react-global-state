@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base scenario 1`] = `
+<div>
+  <div
+    data-testid="component"
+    role="presentation"
+  >
+    id
+  </div>
+</div>
+`;
+
+exports[`base scenario 2`] = `
+<div>
+  <div
+    data-testid="component"
+    role="presentation"
+  >
+    id
+    0
+  </div>
+</div>
+`;

@@ -355,7 +355,6 @@ function useAsyncCollection<
     // special case the otherwise wrong behavior is actually what we need.
 
     // Data loading and refreshing.
-    const loadTriggeredForIds = new Set<IdT>();
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       (async () => {
         for (let i = 0; i < ids.length; ++i) {
@@ -373,7 +372,6 @@ function useAsyncCollection<
             )
           ) {
             if (!deps) globalState.dropDependencies(itemPath);
-            loadTriggeredForIds.add(id);
             // eslint-disable-next-line no-await-in-loop
             await load(itemPath, (...args) => loader(id, ...args), globalState, {
               data: state2.data,
@@ -383,32 +381,6 @@ function useAsyncCollection<
         }
       })();
     });
-
-    useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      (async () => {
-        const { deps } = options;
-        for (let i = 0; i < ids.length; ++i) {
-          const id = ids[i]!;
-          const itemPath = path ? `${path}.${id}` : `${id}`;
-          if (
-            deps
-            && globalState.hasChangedDependencies(itemPath || '', deps)
-            && !loadTriggeredForIds.has(id)
-          ) {
-            // eslint-disable-next-line no-await-in-loop
-            await load(
-              itemPath,
-              (oldData: null | DataT, meta) => loader(id, oldData, meta),
-              globalState,
-            );
-          }
-        }
-      })();
-
-    // Here we need to default to empty array, so that this hook is re-evaluated
-    // only when dependencies specified in options change, and it should not be
-    // re-evaluated at all if no `deps` option is used.
-    }, options.deps || []); // eslint-disable-line react-hooks/exhaustive-deps
   }
 
   const [localState] = useGlobalState<

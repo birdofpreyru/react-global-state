@@ -270,7 +270,6 @@ function useAsyncData<DataT>(
     // special case the otherwise wrong behavior is actually what we need.
 
     // Data loading and refreshing.
-    let loadTriggered = false;
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
       ForceT, AsyncDataEnvelopeT<DataT>>(path);
@@ -287,7 +286,6 @@ function useAsyncData<DataT>(
           && (!state2.operationId || state2.operationId.charAt(0) === 'S')
         )
       ) {
-        loadTriggered = true; // eslint-disable-line react-hooks/exhaustive-deps
         if (!deps) globalState.dropDependencies(path || '');
         load(path, loader, globalState, {
           data: state2.data,
@@ -295,21 +293,6 @@ function useAsyncData<DataT>(
         });
       }
     });
-
-    useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      const { deps } = options;
-      if (
-        deps
-        && globalState.hasChangedDependencies(path || '', deps)
-        && !loadTriggered
-      ) {
-        load(path, loader, globalState);
-      }
-
-    // Here we need to default to empty array, so that this hook is re-evaluated
-    // only when dependencies specified in options change, and it should not be
-    // re-evaluated at all if no `deps` option is used.
-    }, options.deps || []); // eslint-disable-line react-hooks/exhaustive-deps
   }
 
   const [localState] = useGlobalState<ForceT, AsyncDataEnvelopeT<DataT>>(
