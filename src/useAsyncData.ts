@@ -146,8 +146,10 @@ export async function load<DataT>(
     globalState.asyncDataLoadDone(operationId, false);
   }
 
-  const state: AsyncDataEnvelopeT<DataT> = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path);
-  if (operationId === state.operationId) {
+  type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
+  const state: EnvT = globalState.get<ForceT, EnvT>(path);
+
+  if (operationId === state?.operationId) {
     if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
       /* eslint-disable no-console */
       console.groupCollapsed(

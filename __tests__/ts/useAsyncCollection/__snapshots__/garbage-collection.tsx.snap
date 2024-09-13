@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base 1`] = `
+{
+  "collection": {
+    "a": {
+      "data": null,
+      "numRefs": 1,
+      "operationId": "C00000000-0000-0000-0000-000000000001",
+      "timestamp": 0,
+    },
+  },
+}
+`;
+
+exports[`base 2`] = `
+{
+  "collection": {},
+}
+`;
