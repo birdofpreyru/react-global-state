@@ -42,7 +42,7 @@ const Scene: React.FunctionComponent<{
   );
 };
 
-test('base', async () => {
+test('#1', async () => {
   const gs = new GlobalState({ collection: {} });
   const scene = mount(<Scene gs={gs} />);
   expect(gs.get()).toMatchSnapshot();
@@ -50,5 +50,7 @@ test('base', async () => {
   act(() => getByText(scene, 'unmount-button').click());
   expect(gs.get()).toMatchSnapshot();
 
-  act(() => jest.advanceTimersByTime(1500));
+  await act(() => jest.advanceTimersByTimeAsync(1500));
+  expect(gs.get()).toMatchSnapshot();
+  scene.destroy();
 });

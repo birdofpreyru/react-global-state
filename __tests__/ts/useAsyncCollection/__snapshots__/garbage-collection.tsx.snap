@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`base 1`] = `
+exports[`#1 1`] = `
 {
   "collection": {
     "a": {
@@ -13,7 +13,13 @@ exports[`base 1`] = `
 }
 `;
 
-exports[`base 2`] = `
+exports[`#1 2`] = `
+{
+  "collection": {},
+}
+`;
+
+exports[`#1 3`] = `
 {
   "collection": {},
 }
