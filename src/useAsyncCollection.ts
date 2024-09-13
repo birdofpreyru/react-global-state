@@ -361,23 +361,29 @@ function useAsyncCollection<
         for (let i = 0; i < ids.length; ++i) {
           const id = ids[i]!;
           const itemPath = path ? `${path}.${id}` : `${id}`;
-          const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
-          ForceT, AsyncDataEnvelopeT<DataT>>(itemPath);
+
+          type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
+          const state2: EnvT = globalState.get<ForceT, EnvT>(itemPath);
 
           const { deps } = options;
           if (
             (deps && globalState.hasChangedDependencies(itemPath, deps))
             || (
-              refreshAge < Date.now() - state2.timestamp
-              && (!state2.operationId || state2.operationId.charAt(0) === 'S')
+              refreshAge < Date.now() - (state2?.timestamp ?? 0)
+              && (!state2?.operationId || state2.operationId.charAt(0) === 'S')
             )
           ) {
             if (!deps) globalState.dropDependencies(itemPath);
             // eslint-disable-next-line no-await-in-loop
-            await load(itemPath, (...args) => loader(id, ...args), globalState, {
-              data: state2.data,
-              timestamp: state2.timestamp,
-            });
+            await load(
+              itemPath,
+              (old, ...args) => loader(id, old as DataT, ...args),
+              globalState,
+              {
+                data: state2?.data,
+                timestamp: state2?.timestamp ?? 0,
+              },
+            );
           }
         }
       })();
