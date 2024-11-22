@@ -244,7 +244,7 @@ function useAsyncData<DataT>(
   }
 
   if (globalState.ssrContext) {
-    if (!options.noSSR && !state.timestamp && !state.operationId) {
+    if (!options.disabled && !options.noSSR && !state.operationId && !state.timestamp) {
       globalState.ssrContext.pending.push(
         load(path, loader, globalState, {
           data: state.data,
