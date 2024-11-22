@@ -6,12 +6,29 @@ import { type UseAsyncDataOptionsT } from '@dr.pogodin/react-global-state';
 [useAsyncData()] and [useAsyncCollection()] hooks.
 
 ## Fields
-All fields are optional.
+**All fields are optional.**
 
 - `deps` &mdash; **any[]** &mdash; An array of dependencies to watch. If provided,
   the hook will reload async data when any of these dependencies changes.
   Given dependencies are watched shallowly, and since library **v0.11.0**
   they are tracked per the global state path, rather than per a hook instance.
+
+- `disabled` &mdash; **boolean** &mdash; With this flag set _true_ the hook will
+  not trigger (re-)loads of requested data, nor will it change the reference
+  count for the data path, nor will it attempt garbage collection on the path.
+
+  However, it will still watch the global state segment &laquo;lazily&raquo;,
+  its result will reflect the current state of that segment, and updates to that
+  segment will trigger re-renders of the component that mounted this hook.
+
+  :::note
+  This option was introduced in the library **v0.17.5** as a way to signal that
+  the component using this hook does not need requested data at the moment, thus
+  the hook should not attempt to (re-)load them. The current behavior explained
+  above seems to cover that need in the best way, however it might be adjusted
+  in the future versions according to the in-field experience of using this
+  option.
+  :::
 
 - `noSSR` &mdash; **boolean** &mdash; Set _true_ to opt-out of loading async data
   during the server-side rendering.

@@ -57,6 +57,7 @@ export function newAsyncDataEnvelope<DataT>(
 
 export type UseAsyncDataOptionsT = {
   deps?: unknown[];
+  disabled?: boolean;
   garbageCollectAge?: number;
   maxage?: number;
   noSSR?: boolean;
@@ -242,8 +243,8 @@ function useAsyncData<DataT>(
     };
   }
 
-  if (globalState.ssrContext && !options.noSSR) {
-    if (!state.timestamp && !state.operationId) {
+  if (globalState.ssrContext) {
+    if (!options.noSSR && !state.timestamp && !state.operationId) {
       globalState.ssrContext.pending.push(
         load(path, loader, globalState, {
           data: state.data,
@@ -252,6 +253,8 @@ function useAsyncData<DataT>(
       );
     }
   } else {
+    const { disabled } = options;
+
     // This takes care about the client-side reference counting, and garbage
     // collection.
     //
@@ -263,62 +266,68 @@ function useAsyncData<DataT>(
     // The same applies to other useEffect() hooks below.
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       const numRefsPath = path ? `${path}.numRefs` : 'numRefs';
-      const numRefs = globalState.get<ForceT, number>(numRefsPath);
-      globalState.set<ForceT, number>(numRefsPath, numRefs + 1);
+      if (!disabled) {
+        const numRefs = globalState.get<ForceT, number>(numRefsPath);
+        globalState.set<ForceT, number>(numRefsPath, numRefs + 1);
+      }
       return () => {
-        const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
-        ForceT, AsyncDataEnvelopeT<DataT>>(
-          path,
-        );
-        if (
-          state2.numRefs === 1
-          && garbageCollectAge < Date.now() - state2.timestamp
-        ) {
-          if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-            /* eslint-disable no-console */
-            console.log(
-              `ReactGlobalState - useAsyncData garbage collected at path ${
-                path || ''
-              }`,
-            );
-            /* eslint-enable no-console */
-          }
-          globalState.dropDependencies(path || '');
-          globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
-            ...state2,
-            data: null,
-            numRefs: 0,
-            timestamp: 0,
-          });
-        } else globalState.set<ForceT, number>(numRefsPath, state2.numRefs - 1);
+        if (!disabled) {
+          const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
+          ForceT, AsyncDataEnvelopeT<DataT>>(
+            path,
+          );
+          if (
+            state2.numRefs === 1
+            && garbageCollectAge < Date.now() - state2.timestamp
+          ) {
+            if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+              /* eslint-disable no-console */
+              console.log(
+                `ReactGlobalState - useAsyncData garbage collected at path ${
+                  path || ''
+                }`,
+              );
+              /* eslint-enable no-console */
+            }
+            globalState.dropDependencies(path || '');
+            globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
+              ...state2,
+              data: null,
+              numRefs: 0,
+              timestamp: 0,
+            });
+          } else globalState.set<ForceT, number>(numRefsPath, state2.numRefs - 1);
+        }
       };
-    }, [garbageCollectAge, globalState, path]);
+    }, [disabled, garbageCollectAge, globalState, path]);
 
     // Note: a bunch of Rules of Hooks ignored belows because in our very
     // special case the otherwise wrong behavior is actually what we need.
 
     // Data loading and refreshing.
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
-      ForceT, AsyncDataEnvelopeT<DataT>>(path);
+      if (!disabled) {
+        const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
+        ForceT, AsyncDataEnvelopeT<DataT>>(path);
 
-      const { deps } = options;
-      if (
-        // The hook is called with a list of dependencies, that mismatch
-        // dependencies last used to retrieve the data at given path.
-        (deps && globalState.hasChangedDependencies(path || '', deps))
+        const { deps } = options;
+        if (
+          // The hook is called with a list of dependencies, that mismatch
+          // dependencies last used to retrieve the data at given path.
+          (deps && globalState.hasChangedDependencies(path || '', deps))
 
-        // Data at the path are stale, and are not being loaded.
-        || (
-          refreshAge < Date.now() - state2.timestamp
-          && (!state2.operationId || state2.operationId.charAt(0) === 'S')
-        )
-      ) {
-        if (!deps) globalState.dropDependencies(path || '');
-        load(path, loader, globalState, {
-          data: state2.data,
-          timestamp: state2.timestamp,
-        });
+          // Data at the path are stale, and are not being loaded.
+          || (
+            refreshAge < Date.now() - state2.timestamp
+            && (!state2.operationId || state2.operationId.charAt(0) === 'S')
+          )
+        ) {
+          if (!deps) globalState.dropDependencies(path || '');
+          load(path, loader, globalState, {
+            data: state2.data,
+            timestamp: state2.timestamp,
+          });
+        }
       }
     });
   }
