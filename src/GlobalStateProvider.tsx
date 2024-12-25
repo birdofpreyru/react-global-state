@@ -3,7 +3,7 @@ import { isFunction } from 'lodash';
 import {
   type ReactNode,
   createContext,
-  useContext,
+  use,
   useRef,
 } from 'react';
 
@@ -12,7 +12,7 @@ import SsrContext from './SsrContext';
 
 import { type ValueOrInitializerT } from './utils';
 
-const context = createContext<GlobalState<unknown> | null>(null);
+const Context = createContext<GlobalState<unknown> | null>(null);
 
 /**
  * Gets {@link GlobalState} instance from the context. In most cases
@@ -30,7 +30,7 @@ export function getGlobalState<
   // while the normal interaction with the global state should happen via
   // another hook, useGlobalState().
   /* eslint-disable react-hooks/rules-of-hooks */
-  const globalState = useContext(context);
+  const globalState = use(Context);
   /* eslint-enable react-hooks/rules-of-hooks */
   if (!globalState) throw new Error('Missing GlobalStateProvider');
   return globalState as GlobalState<StateT, SsrContextT>;
@@ -93,7 +93,7 @@ const GlobalStateProvider = <
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
 >({ children, ...rest }: GlobalStateProviderProps<StateT, SsrContextT>) => {
-  const state = useRef<GlobalState<StateT, SsrContextT>>();
+  const state = useRef<GlobalState<StateT, SsrContextT>>(undefined);
   if (!state.current) {
     // NOTE: The last part of condition, "&& rest.stateProxy", is needed for
     // graceful compatibility with JavaScript - if "undefined" stateProxy value
@@ -111,11 +111,7 @@ const GlobalStateProvider = <
       );
     }
   }
-  return (
-    <context.Provider value={state.current}>
-      {children}
-    </context.Provider>
-  );
+  return <Context value={state.current}>{children}</Context>;
 };
 
 export default GlobalStateProvider;

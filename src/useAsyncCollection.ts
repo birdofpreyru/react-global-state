@@ -185,7 +185,7 @@ function useHeap<
   loader: AsyncCollectionLoaderT<DataT, IdT>,
   gs: GlobalState<unknown>,
 ): HeapT<DataT, IdT> {
-  const ref = useRef<HeapT<DataT, IdT>>();
+  const ref = useRef<HeapT<DataT, IdT>>(undefined);
 
   let heap = ref.current;
 

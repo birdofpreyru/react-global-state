@@ -1,4 +1,5 @@
 import mockdate from 'mockdate';
+import type { ComponentType } from 'react';
 import ReactDOM from 'react-dom/server';
 
 import {
@@ -17,7 +18,7 @@ mockdate.set('2019-11-07Z');
 
 let loaderA;
 let loaderB;
-let Scene: JSX.ElementType;
+let Scene: ComponentType;
 let scene: MountedSceneT | undefined;
 let ssrRound: number;
 

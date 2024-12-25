@@ -1,7 +1,14 @@
 // Hook for updates of global state.
 
 import { isFunction } from 'lodash';
-import { useEffect, useRef, useSyncExternalStore } from 'react';
+
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from 'react';
 
 import { Emitter } from '@dr.pogodin/js-utils';
 
@@ -19,7 +26,7 @@ import {
   isDebugMode,
 } from './utils';
 
-export type SetterT<T> = React.Dispatch<React.SetStateAction<T>>;
+export type SetterT<T> = Dispatch<SetStateAction<T>>;
 
 type ListenerT = () => void;
 
@@ -121,7 +128,7 @@ function useGlobalState(
 ): UseGlobalStateResT<any> {
   const globalState = getGlobalState();
 
-  const ref = useRef<GlobalStateRef>();
+  const ref = useRef<GlobalStateRef>(undefined);
 
   let rc: GlobalStateRef;
   if (!ref.current) {

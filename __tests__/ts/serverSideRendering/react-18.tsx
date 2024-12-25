@@ -106,6 +106,7 @@ test('Smart server-sider rendering', async () => {
   mockConsoleLog();
   const render = serverSideRender();
   await jest.runAllTimers();
+  await jest.runAllTimers();
   const renderString = await render;
   expect(ssrRound).toBe(1);
   expect(renderString).toMatchSnapshot();
