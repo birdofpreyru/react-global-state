@@ -14,7 +14,7 @@
 :::
 
 <!-- Links -->
-[Functions]: #functions
+[Functions]: /docs/api#functions
 [getGlobalState()]: /docs/api/functions/getglobalstate
 [getSsrContext()]: /docs/api/functions/getssrcontext
 [GlobalState]: /docs/api/classes/globalstate
