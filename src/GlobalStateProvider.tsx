@@ -24,14 +24,7 @@ export function getGlobalState<
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
 >(): GlobalState<StateT, SsrContextT> {
-  // Here Rules of Hooks are violated because "getGlobalState()" does not follow
-  // convention that hook names should start with use... This is intentional in
-  // our case, as getGlobalState() hook is intended for advance scenarious,
-  // while the normal interaction with the global state should happen via
-  // another hook, useGlobalState().
-  /* eslint-disable react-hooks/rules-of-hooks */
   const globalState = use(Context);
-  /* eslint-enable react-hooks/rules-of-hooks */
   if (!globalState) throw new Error('Missing GlobalStateProvider');
   return globalState as GlobalState<StateT, SsrContextT>;
 }
@@ -93,25 +86,23 @@ const GlobalStateProvider = <
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
 >({ children, ...rest }: GlobalStateProviderProps<StateT, SsrContextT>) => {
-  const state = useRef<GlobalState<StateT, SsrContextT>>(undefined);
-  if (!state.current) {
-    // NOTE: The last part of condition, "&& rest.stateProxy", is needed for
-    // graceful compatibility with JavaScript - if "undefined" stateProxy value
-    // is given, we want to follow the second branch, which creates a new
-    // GlobalState with whatever intiialState given.
-    if ('stateProxy' in rest && rest.stateProxy) {
-      if (rest.stateProxy === true) state.current = getGlobalState();
-      else state.current = rest.stateProxy;
-    } else {
+  type GST = GlobalState<StateT, SsrContextT>;
+  const localStateRef = useRef<GST>(undefined);
+  let state: GST;
+  if ('stateProxy' in rest && rest.stateProxy) {
+    localStateRef.current = undefined;
+    state = rest.stateProxy === true ? getGlobalState() : rest.stateProxy;
+  } else {
+    if (!localStateRef.current) {
       const { initialState, ssrContext } = rest as NewStateProps<StateT, SsrContextT>;
-
-      state.current = new GlobalState<StateT, SsrContextT>(
+      localStateRef.current = new GlobalState(
         isFunction(initialState) ? initialState() : initialState,
         ssrContext,
       );
     }
+    state = localStateRef.current;
   }
-  return <Context value={state.current}>{children}</Context>;
+  return <Context value={state}>{children}</Context>;
 };
 
 export default GlobalStateProvider;
