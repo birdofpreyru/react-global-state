@@ -290,6 +290,20 @@ function useAsyncCollection<
   options?: UseAsyncDataOptionsT,
 ): UseAsyncCollectionResT<DataT, IdT>;
 
+function useAsyncCollection<
+  StateT,
+  PathT extends null | string | undefined,
+  IdT extends number | string,
+
+  DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> =
+  DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
+>(
+  id: IdT | IdT[],
+  path: PathT,
+  loader: AsyncCollectionLoaderT<DataT, IdT>,
+  options?: UseAsyncDataOptionsT,
+): UseAsyncDataResT<DataT> | UseAsyncCollectionResT<DataT, IdT>;
+
 // TODO: This is largely similar to useAsyncData() logic, just more generic.
 // Perhaps, a bunch of logic blocks can be split into stand-alone functions,
 // and reused in both hooks.
@@ -468,4 +482,12 @@ export interface UseAsyncCollectionI<StateT> {
     loader: AsyncCollectionLoaderT<TypeLock<Forced, void, DataT>, IdT>,
     options?: UseAsyncDataOptionsT,
   ): UseAsyncCollectionResT<DataT, IdT>;
+
+  <PathT extends null | string | undefined, IdT extends number | string>(
+    id: IdT | IdT[],
+    path: PathT,
+    loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>,
+    options?: UseAsyncDataOptionsT,
+  ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>
+  | UseAsyncCollectionResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>;
 }
