@@ -148,26 +148,22 @@ To handle SSR better, and to have `<SampleAsyncComponent>` rendered as
 complex, setup.
 
 ## Advanced SSR Setup
-:::caution
-This section still contains only the original description of SSR setup
-with JavaScript flavour of the library. The TypeScript flavour of SSR setup
-is to be documented...
-:::
-
-Advanced setup with the server-side rendering (SSR) support is demonstrated
-below. It requires slightly different code depending on whether you use
-the new [renderToPipeableStream()] function, introduced in React&nbsp;18 as
-the recommended API for SSR, or you still prefer the older [renderToString()].
-Sure, it is also possible to implement similar setup with other SSR APIs
-offered by React.
-
 :::info
-The [renderToPipeableStream()] has advantage of full [Suspense] support and
-HTML streaming. However, as React's implementation of [Suspense] still does
-not cover data fetching multiple rendering passes are still required for full
-SSR integration of this library, because in each pass effectively collect
-global state updates which are applied to follow-up separate renders, something
-which is not natively supported by React SSR APIs yet.
+The advanced server-side rendering (SSR) setup demonstrated below
+uses [prerenderToNodeStream()] method of the new React 19's
+[Static React DOM APIs](https://react.dev/reference/react-dom/static),
+rather than a streaming server method, like [renderToPipeableStream()],
+because a multi-round SSR with the Static API allows for a more accurate,
+and fine-tuned control over the async data retreival and use. Without going
+deep into details, consider that with the streaming server API a single
+timed out async data retrieval discards entire segment of an app within
+the closest `<Suspence>` boundary, while with our preferred approach
+a single timed-out async operation is generally independent of any other
+async operations, allowing SSR to render as much HTML markup as possible
+for all retrieved async data, and only falling back for specific data
+that failed to retrieve in time. In broader terms, the way this library
+manages async data is a way more elegant and fine than what React itself
+proposes with `<Suspence>` mechanics, at least as of React v19.
 :::
 
 Assume that `<SampleComponent>`, `sampleDataLoader(..)`,
@@ -175,27 +171,24 @@ and `<SampleAsyncComponent>` are defined the same way as in the [Base Setup]
 section, and `<SampleApp>` component itself does not include the [GlobalStateProvider],
 _i.e._
 
-```jsx
-export default function SampleApp() {
-  return (
-    <React.Fragment>
-      <SampleComponent />
-      <SampleAsyncComponent />
-    </React.Fragment>
-  );
-}
+```tsx
+const SampleApp: FunctionComponent = () => (
+  <>
+    <SampleComponent />
+    <SampleAsyncComponent />
+  </>
+);
+
+export default SampleApp;
 ```
 
-The server-side rendering code becomes:
+You want to setup SSR like this:
 
-<Tabs groupId="SSR-API">
-<TabItem value="renderToPipeableStream" label="renderToPipeableStream()" default>
-
-```jsx
-/* Server-sider rendering. */
+```tsx
+// Server-sider rendering.
 
 import React from 'react';
-import ReactDOM from 'react-dom/server';
+import { prerenderToNodeStream } from 'react-dom/static';
 
 import { GlobalStateProvider } from '@dr.pogodin/react-global-state';
 
@@ -208,40 +201,22 @@ import SampleApp from 'path/to/app';
 const MAX_SSR_ROUNDS = 3;
 const SSR_TIMEOUT = 1000; // 1 second (in milliseconds).
 
-/**
- * Executes a single rendering pass.
- * @param {object} ssrContext SSR context object is used to pass information
- *  between separate rendering passes.
- * @return {Promise<{
- *  abort: function;
- *  pipe: function;
- * }>} Once all page content is ready it resolves to the stream with pipe(res)
- *  and abort() methods, returned by internal renderToPipeableStream() call.
- */
-async function renderPass(ssrContext) {
-  return new Promise((resolve, reject) => {
-    const stream = ReactDOM.renderToPipeableStream(
+async function renderServerSide() {
+  let prelude: NodeJS.ReadableStream;
+  const start = Date.now();
+  const ssrContext = { state: {} };
+  for (let round = 0; round < MAX_SSR_ROUNDS; round += 1) {
+    // SSR round.
+    ({ prelude } = await prerenderToNodeStream(
       <GlobalStateProvider
         initialState={ssrContext.state}
         ssrContext={ssrContext}
       >
         <SampleApp />
       </GlobalStateProvider>,
-      {
-        onAllReady: () => resolve(stream),
-        onError: reject,
-      },
-    );
-  });
-}
-
-async function renderServerSide() {
-  let stream;
-  const start = Date.now();
-  const ssrContext = { state: {} };
-  for (let round = 0; round < MAX_SSR_ROUNDS; round += 1) {
-    // SSR round.
-    stream = await renderPass(ssrContext);
+      // TODO: Here you should use the `onError` option to correctly wire up
+      // the error handling during the render... to be better documented later.
+    ));
 
     // SSR round did not altered the global state: we are done.
     if (!ssrContext.dirty) break;
@@ -258,62 +233,9 @@ async function renderServerSide() {
   // At this point the "stream" should be used to pipe generated HTML markup
   // into the server response, and "state" should be injected into the client
   // side and used as the "initialState" of <GlobalStateProvider> there.
-  return { stream, state: ssrContext.state };
+  return { stream: prelude, state: ssrContext.state };
 }
 ```
-
-</TabItem>
-<TabItem value="renderToString" label="renderToString()">
-
-```jsx
-/* Server-sider rendering. */
-
-import React from 'react';
-import ReactDOM from 'react-dom/server';
-
-import { GlobalStateProvider } from '@dr.pogodin/react-global-state';
-
-import SampleApp from 'path/to/app';
-
-// As you want to keep server latency within a reason, it is a good idea
-// to limit the maximum number of SSR rounds, or the maximum SSR time, or
-// both, and perform any async operations which took too long at the client
-// side.
-const MAX_SSR_ROUNDS = 3;
-const SSR_TIMEOUT = 1000; // 1 second (in milliseconds).
-
-async function renderServerSide() {
-  let render;
-  const start = Date.now();
-  const ssrContext = { state: {} };
-  for (let round = 0; round < MAX_SSR_ROUNDS; round += 1) {
-    // SSR round.
-    render = ReactDOM.renderToString((
-      <GlobalStateProvider
-        initialState={ssrContext.state}
-        ssrContext={ssrContext}
-      >
-        <SampleApp />
-      </GlobalStateProvider>
-    ));
-
-    // SSR round did not altered the global state: we are done.
-    if (!ssrContext.dirty) break;
-
-    // Waiting for pending async operations to complete.
-    const timeout = SSR_TIMEOUT + start - Date.now();
-    const ok = timeout > 0 && await Promise.race([
-      Promise.allSettled(ssrContext.pending),
-      new Promise((x) => setTimeout(() => x(false), timeout)),
-    ]);
-    if (!ok) break; // SSR timeout.
-  }
-  return { render, state: ssrContext.state };
-}
-```
-
-</TabItem>
-</Tabs>
 
 &uArr; When `ssrContext` property is passed into the [GlobalStateProvider],
 the corresponding global state object switches into the SSR mode. In this mode,
@@ -379,6 +301,8 @@ function renderClientSide(stateFromServerSide) {
 
 [Base Setup]: #base-setup
 [GlobalStateProvider]: /docs/api/components/globalstateprovider
+[prerenderToNodeStream()]: https://react.dev/reference/react-dom/static/prerenderToNodeStream
 [renderToPipeableStream()]: https://reactjs.org/docs/react-dom-server.html#rendertopipeablestream
 [renderToString()]: https://reactjs.org/docs/react-dom-server.html#rendertostring
+[renderToPipeableStream()]: https://react.dev/reference/react-dom/server/renderToPipeableStream
 [Suspense]: https://reactjs.org/docs/react-api.html#suspense
