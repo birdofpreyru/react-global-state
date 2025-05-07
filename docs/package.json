@@ -16,7 +16,6 @@
   "dependencies": {
     "@docusaurus/core": "^3.7.0",
     "@docusaurus/preset-classic": "^3.7.0",
-    "@dr.pogodin/react-global-state": "file:../dr.pogodin-react-global-state-0.19.0.tgz",
     "@mdx-js/react": "^3.1.0",
     "@svgr/webpack": "^8.1.0",
     "docusaurus-plugin-sass": "^0.2.6",
