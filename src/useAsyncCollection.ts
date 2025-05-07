@@ -210,7 +210,13 @@ function useHeap<
 
         await load(
           itemPath,
-          async (oldData: DataT | null, meta) => localLoader(id, oldData, meta),
+          // TODO: Revise! Most probably we don't have fully correct loader
+          // typing, as it may return either promise or value, and those two
+          // cases call for different runtime behavior, which in turns only
+          // happens if the outer function on the next line matches the same
+          // async / sync signature.
+          // eslint-disable-next-line @typescript-eslint/promise-function-async
+          (oldData: DataT | null, meta) => localLoader(id, oldData, meta),
           heap2.globalState,
         );
       }
@@ -221,8 +227,20 @@ function useHeap<
       loader,
       path,
       reload,
-      reloadSingle: async (customLoader) => ref.current!.reload(
-        customLoader && (async (id, ...args) => customLoader(...args)),
+      // TODO: Revise! Most probably we don't have fully correct loader
+      // typing, as it may return either promise or value, and those two
+      // cases call for different runtime behavior, which in turns only
+      // happens if the outer function on the next line matches the same
+      // async / sync signature.
+      // eslint-disable-next-line @typescript-eslint/promise-function-async
+      reloadSingle: (customLoader) => ref.current!.reload(
+        // TODO: Revise! Most probably we don't have fully correct loader
+        // typing, as it may return either promise or value, and those two
+        // cases call for different runtime behavior, which in turns only
+        // happens if the outer function on the next line matches the same
+        // async / sync signature.
+        // eslint-disable-next-line @typescript-eslint/promise-function-async
+        customLoader && ((id, ...args) => customLoader(...args)),
       ),
     };
     ref.current = heap;
@@ -332,7 +350,13 @@ function useAsyncCollection<
       );
       if (!state.timestamp && !state.operationId) {
         globalState.ssrContext.pending.push(
-          load(itemPath, async (...args) => loader(id, ...args), globalState, {
+          // TODO: Revise! Most probably we don't have fully correct loader
+          // typing, as it may return either promise or value, and those two
+          // cases call for different runtime behavior, which in turns only
+          // happens if the outer function on the next line matches the same
+          // async / sync signature.
+          // eslint-disable-next-line @typescript-eslint/promise-function-async
+          load(itemPath, (...args) => loader(id, ...args), globalState, {
             data: state.data,
             timestamp: state.timestamp,
           }, operationId),
@@ -387,7 +411,11 @@ function useAsyncCollection<
             if (!deps) globalState.dropDependencies(itemPath);
             await load(
               itemPath,
-              async (old, ...args) => loader(id, old as DataT, ...args),
+              // TODO: I guess, the loader is not correctly typed here -
+              // it can be synchronous, and in that case the following method
+              // should be kept synchronous to not alter the sync logic.
+              // eslint-disable-next-line @typescript-eslint/promise-function-async
+              (old, ...args) => loader(id, old as DataT, ...args),
               globalState,
               {
                 data: state2?.data,
