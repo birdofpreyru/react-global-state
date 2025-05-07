@@ -1,4 +1,4 @@
-module.exports = function preset(api, options) {
+export default function preset(api, options) {
   let envPreset = '@babel/env';
   if (options) envPreset = [envPreset, options];
   return {
@@ -20,4 +20,4 @@ module.exports = function preset(api, options) {
       '@babel/plugin-transform-runtime',
     ],
   };
-};
+}
