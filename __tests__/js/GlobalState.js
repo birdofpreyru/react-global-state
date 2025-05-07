@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+/* global process, require */
+
 /**
  * Most of the functionality is already covered by other test cases, thus
  * in this module we only test for several corner-cases.
@@ -60,7 +62,7 @@ describe('ssrContext', () => {
     const ssrContext = { name: 'SSR Context' };
     const state = new GlobalState({ key: 'value' }, ssrContext);
     expect(state.ssrContext).toBe(ssrContext);
-    expect(ssrContext).toEqual({
+    expect(ssrContext).toStrictEqual({
       dirty: false,
       name: 'SSR Context',
       pending: [],
@@ -70,14 +72,14 @@ describe('ssrContext', () => {
 
   it('correctly resets upon GlobalState construction', () => {
     const ssrContext = {
-      name: 'SSR Context',
       dirty: true,
+      name: 'SSR Context',
       pending: ['A', 'B', 'C'],
       state: { oldKey: 'oldValue' },
     };
     const state = new GlobalState(['newValue'], ssrContext);
     expect(state.ssrContext).toBe(ssrContext);
-    expect(ssrContext).toEqual({
+    expect(ssrContext).toStrictEqual({
       dirty: false,
       name: 'SSR Context',
       pending: [],
@@ -125,41 +127,49 @@ describe('.watch() and .unWatch() logic', () => {
 
   it('subscribes watcher1', () => {
     state.watch(watcher1);
+
     test(1, 0, 0);
   });
 
   it('does not subscribe watcher1 multiple times', () => {
     state.watch(watcher1);
+
     test(1, 0, 0);
   });
 
   it('subscribes watcher2', () => {
     state.watch(watcher2);
+
     test(1, 1, 0);
   });
 
   it('does nothing on attempt to unsubscribe unknown watcher', () => {
     state.unWatch(watcher3);
+
     test(1, 1, 0);
   });
 
   it('subscribes watcher3', () => {
     state.watch(watcher3);
+
     test(1, 1, 1);
   });
 
   it('unsubscribes watcher1', () => {
     state.unWatch(watcher1);
+
     test(0, 1, 1);
   });
 
   it('re-subscribes watcher1', () => {
     state.watch(watcher1);
+
     test(1, 1, 1);
   });
 
   it('unsubscribes watcher1 again', () => {
     state.unWatch(watcher1);
+
     test(0, 1, 1);
   });
 });

@@ -41,7 +41,9 @@ const Scene: FunctionComponent = () => {
       </button>
       <button
         data-testid="toggle-read"
-        onClick={() => setRead(!read)}
+        onClick={() => {
+          setRead(!read);
+        }}
         type="button"
       >
         READ
@@ -53,15 +55,21 @@ const Scene: FunctionComponent = () => {
 test('base scenario', () => {
   const scene = mount(<Scene />);
   expect(sceneGS.get()).toBe(0);
-  expect(componentGS).toBe(undefined);
+  expect(componentGS).toBeUndefined();
 
-  act(() => getByTestId(scene, 'toggle-read').click());
+  act(() => {
+    getByTestId(scene, 'toggle-read').click();
+  });
   expect(componentGS).toBe(sceneGS);
   expect(componentGS?.get()).toBe(0);
 
   const oldGS = sceneGS;
-  act(() => getByTestId(scene, 'toggle-gs').click());
-  act(() => jest.runAllTimers());
+  act(() => {
+    getByTestId(scene, 'toggle-gs').click();
+  });
+  act(() => {
+    jest.runAllTimers();
+  });
   expect(sceneGS).not.toBe(oldGS);
   expect(sceneGS.get()).toBe(1);
   expect(componentGS).toBe(sceneGS);

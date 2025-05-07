@@ -30,6 +30,8 @@ const Component: React.FunctionComponent = () => {
     'path',
     async (old, { isAborted, setAbortCallback }) => {
       isAbortedMap[x] = isAborted;
+      // TODO: Revise.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       setAbortCallback(() => onAbort(x));
       await timer(SEC_MS);
       return x;
@@ -39,7 +41,9 @@ const Component: React.FunctionComponent = () => {
   return (
     <div
       data-testid="component"
-      onClick={() => setX(x + 1)}
+      onClick={() => {
+        setX(x + 1);
+      }}
       role="presentation"
     >
       {data}
@@ -68,8 +72,8 @@ test('base scenario', async () => {
   expect(onAbort).not.toHaveBeenCalled();
   scene.snapshot();
 
-  await act(() => jest.advanceTimersByTimeAsync(2 * SEC_MS));
-  await act(() => jest.advanceTimersByTimeAsync(0.01 * SEC_MS));
+  await act(async () => jest.advanceTimersByTimeAsync(2 * SEC_MS));
+  await act(async () => jest.advanceTimersByTimeAsync(0.01 * SEC_MS));
 
   // The value in the global state is 1 now. isAborted() returns "true"
   // just because the operation has completed.
@@ -80,11 +84,11 @@ test('base scenario', async () => {
 
   const component = getByTestId(scene, 'component');
 
-  await act(() => {
+  await act(async () => {
     component.click();
     return jest.advanceTimersByTimeAsync(0.5 * SEC_MS);
   });
-  await act(() => jest.advanceTimersByTimeAsync(0.01 * SEC_MS));
+  await act(async () => jest.advanceTimersByTimeAsync(0.01 * SEC_MS));
 
   // By this point the data has not been reloaded yet - the value is still 0.
   expect(gs.numAsyncDataAbortCallbacks).toBe(1);
@@ -94,11 +98,11 @@ test('base scenario', async () => {
 
   // This bumps the `x` value, causing the next data reload, to the value 2,
   // aborting the pending operation for the value 1.
-  await act(() => {
+  await act(async () => {
     component.click();
     return jest.advanceTimersByTimeAsync(0.1 * SEC_MS);
   });
-  await act(() => jest.advanceTimersByTimeAsync(0.01 * SEC_MS));
+  await act(async () => jest.advanceTimersByTimeAsync(0.01 * SEC_MS));
 
   // At this point the operation for value 1 has been aborted, but the operation
   // for value #2 is still pending.
@@ -109,8 +113,8 @@ test('base scenario', async () => {
   expect(onAbort).toHaveBeenLastCalledWith(1);
   scene.snapshot();
 
-  await act(() => jest.advanceTimersByTimeAsync(SEC_MS));
-  await act(() => jest.advanceTimersByTimeAsync(0.01 * SEC_MS));
+  await act(async () => jest.advanceTimersByTimeAsync(SEC_MS));
+  await act(async () => jest.advanceTimersByTimeAsync(0.01 * SEC_MS));
 
   // Now the pending operation has completed, the final value in the global
   // state is 2.

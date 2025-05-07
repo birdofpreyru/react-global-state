@@ -49,28 +49,32 @@ export {
   useGlobalState,
 };
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface API<
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
 > {
   getGlobalState: typeof getGlobalState<StateT, SsrContextT>;
-  getSsrContext: typeof getSsrContext<SsrContextT>,
-  GlobalState: typeof GlobalState<StateT, SsrContextT>,
-  GlobalStateProvider: typeof GlobalStateProvider<StateT, SsrContextT>,
-  newAsyncDataEnvelope: typeof newAsyncDataEnvelope,
-  SsrContext: typeof SsrContext<StateT>,
-  useAsyncCollection: UseAsyncCollectionI<StateT>,
-  useAsyncData: UseAsyncDataI<StateT>,
-  useGlobalState: UseGlobalStateI<StateT>,
+  getSsrContext: typeof getSsrContext<SsrContextT>;
+  GlobalState: typeof GlobalState<StateT, SsrContextT>;
+  GlobalStateProvider: typeof GlobalStateProvider<StateT, SsrContextT>;
+  newAsyncDataEnvelope: typeof newAsyncDataEnvelope;
+  SsrContext: typeof SsrContext<StateT>;
+  useAsyncCollection: UseAsyncCollectionI<StateT>;
+  useAsyncData: UseAsyncDataI<StateT>;
+  useGlobalState: UseGlobalStateI<StateT>;
 }
 
 const api = {
-  getGlobalState,
-  getSsrContext,
+  // TODO: I am puzzled, why ESLint eforces this sorting order as alphabetical?
+  // Perhaps, we should tune something in its config settings, as it seems to mix
+  // some extra sorting logic, which I am not sure I like.
   GlobalState,
   GlobalStateProvider,
-  newAsyncDataEnvelope,
   SsrContext,
+  getGlobalState,
+  getSsrContext,
+  newAsyncDataEnvelope,
   useAsyncCollection,
   useAsyncData,
   useGlobalState,
@@ -79,6 +83,6 @@ const api = {
 export function withGlobalStateType<
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
->() {
+>(): API<StateT, SsrContextT> {
   return api as API<StateT, SsrContextT>;
 }

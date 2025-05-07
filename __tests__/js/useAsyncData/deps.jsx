@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+/* global document, MouseEvent */
+
 /**
  * Tests that data reloading happens as expected when `deps` option is used.
  */
@@ -58,8 +60,8 @@ let button = null;
 
 async function wait(time) {
   await act(async () => {
-    await mockTimer(time);
     mockdate.set(Date.now() + time);
+    await mockTimer(time);
   });
 }
 

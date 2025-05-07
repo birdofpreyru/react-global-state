@@ -8,9 +8,9 @@ import {
 } from 'react';
 
 import GlobalState from './GlobalState';
-import SsrContext from './SsrContext';
+import type SsrContext from './SsrContext';
 
-import { type ValueOrInitializerT } from './utils';
+import type { ValueOrInitializerT } from './utils';
 
 const Context = createContext<GlobalState<unknown> | null>(null);
 
@@ -24,6 +24,12 @@ export function getGlobalState<
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
 >(): GlobalState<StateT, SsrContextT> {
+  // TODO: Think about it: on one hand we on purpose called this function
+  // as getGlobalState(), so that ppl looking for the state hook prefer using
+  // useGlobalState(), while this getGlobalState() is reserved for nieche cases;
+  // on the other hand, perhaps we can rename it into useSomething, to both
+  // follow conventions, and to keep stuff clearly named at the same time.
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const globalState = use(Context);
   if (!globalState) throw new Error('Missing GlobalStateProvider');
   return globalState as GlobalState<StateT, SsrContextT>;
@@ -56,7 +62,7 @@ export function getSsrContext<
 }
 
 type NewStateProps<StateT, SsrContextT extends SsrContext<StateT>> = {
-  initialState: ValueOrInitializerT<StateT>,
+  initialState: ValueOrInitializerT<StateT>;
   ssrContext?: SsrContextT;
 };
 
@@ -85,16 +91,23 @@ type GlobalStateProviderProps<
 const GlobalStateProvider = <
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
->({ children, ...rest }: GlobalStateProviderProps<StateT, SsrContextT>) => {
+>(
+  { children, ...rest }: GlobalStateProviderProps<StateT, SsrContextT>,
+): ReactNode => {
   type GST = GlobalState<StateT, SsrContextT>;
   const localStateRef = useRef<GST>(undefined);
   let state: GST;
+  // TODO: Revise.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if ('stateProxy' in rest && rest.stateProxy) {
     localStateRef.current = undefined;
     state = rest.stateProxy === true ? getGlobalState() : rest.stateProxy;
   } else {
     if (!localStateRef.current) {
-      const { initialState, ssrContext } = rest as NewStateProps<StateT, SsrContextT>;
+      const {
+        initialState,
+        ssrContext,
+      } = rest as NewStateProps<StateT, SsrContextT>;
       localStateRef.current = new GlobalState(
         isFunction(initialState) ? initialState() : initialState,
         ssrContext,

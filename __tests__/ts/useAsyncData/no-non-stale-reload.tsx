@@ -47,7 +47,7 @@ let scene: MountedSceneT | undefined;
 beforeEach(async () => {
   loader.mockClear();
   scene = mount(<Scene />);
-  await act(() => timer(10));
+  await act(async () => timer(10));
 });
 
 it('does not reload data', () => {

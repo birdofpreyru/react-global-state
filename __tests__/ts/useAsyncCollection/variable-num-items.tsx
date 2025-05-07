@@ -33,9 +33,14 @@ const Component: React.FunctionComponent = () => {
       <button
         onClick={() => {
           switch (ids.length) {
-            case 0: return setIds(['a']);
-            case 1: return setIds(['b', 'a']);
-            default: return setIds(['b']);
+            case 0:
+              setIds(['a']);
+              break;
+            case 1:
+              setIds(['b', 'a']);
+              break;
+            default:
+              setIds(['b']);
           }
         }}
         type="button"
@@ -54,7 +59,9 @@ const Scene: React.FunctionComponent<{
     <GlobalStateProvider stateProxy={gs}>
       {mounted ? <Component /> : null}
       <button
-        onClick={() => setMounted(false)}
+        onClick={() => {
+          setMounted(false);
+        }}
         type="button"
       >
         unmount
@@ -66,33 +73,33 @@ const Scene: React.FunctionComponent<{
 it('works as expected', async () => {
   const gs = new GlobalState({ collection: {} });
   const scene = mount(<Scene gs={gs} />);
-  await act(() => jest.runAllTimersAsync());
+  await act(async () => jest.runAllTimersAsync());
   scene.snapshot();
   expect(gs.get()).toMatchSnapshot();
 
   const nextButton = getByText(scene, 'next');
 
-  await act(() => {
+  await act(async () => {
     nextButton.click();
     return jest.runAllTimersAsync();
   });
   expect(gs.get()).toMatchSnapshot();
 
-  await act(() => {
+  await act(async () => {
     mockdate.set(Date.now() + 1000);
     nextButton.click();
     return jest.runAllTimersAsync();
   });
   expect(gs.get()).toMatchSnapshot();
 
-  await act(() => {
+  await act(async () => {
     mockdate.set(Date.now() + 1000);
     nextButton.click();
     return jest.runAllTimersAsync();
   });
   expect(gs.get()).toMatchSnapshot();
 
-  await act(() => {
+  await act(async () => {
     mockdate.set(Date.now() + 10 * 60 * 1000);
     getByText(scene, 'unmount').click();
     return jest.runAllTimersAsync();

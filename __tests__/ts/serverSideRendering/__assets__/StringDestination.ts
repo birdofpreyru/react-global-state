@@ -10,18 +10,20 @@ export default class StringDestination extends Writable {
 
   #string = '';
 
-  async waitResult() {
+  async waitResult(): Promise<string> {
     await this.#barrier;
     return this.#string;
   }
 
-  // eslint-disable-next-line no-underscore-dangle
-  _final() {
-    this.#barrier.resolve();
+  _final(): void {
+    void this.#barrier.resolve();
   }
 
-  // eslint-disable-next-line no-underscore-dangle
-  _write(chunk: Buffer | string | any, encoding: string, ready: () => void) {
+  _write(
+    chunk: Buffer | string,
+    encoding: string,
+    ready: () => void,
+  ): void {
     this.#string += chunk.toString();
     ready();
   }

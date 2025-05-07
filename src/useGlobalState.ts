@@ -12,7 +12,7 @@ import {
 
 import { Emitter } from '@dr.pogodin/js-utils';
 
-import GlobalState from './GlobalState';
+import type GlobalState from './GlobalState';
 import { getGlobalState } from './GlobalStateProvider';
 
 import {
@@ -111,7 +111,8 @@ function useGlobalState<
   PathT extends null | string | undefined,
 >(
   path: PathT,
-  initialValue: ValueOrInitializerT<Exclude<ValueAtPathT<StateT, PathT, never>, undefined>>
+  initialValue: ValueOrInitializerT<
+    Exclude<ValueAtPathT<StateT, PathT, never>, undefined>>
 ): UseGlobalStateResT<Exclude<ValueAtPathT<StateT, PathT, void>, undefined>>;
 
 function useGlobalState<
@@ -124,13 +125,20 @@ function useGlobalState<
 
 function useGlobalState(
   path?: null | string,
-  initialValue?: ValueOrInitializerT<unknown>,
+  // TODO: Revise it later!
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  initialValue?: ValueOrInitializerT<any>,
+
+  // TODO: Revise it later!
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): UseGlobalStateResT<any> {
   const globalState = getGlobalState();
 
   const ref = useRef<GlobalStateRef>(undefined);
 
-  let rc: GlobalStateRef;
+  // TODO: Revise how this `rc` variable is used, perhaps we can simplify stuff
+  // here.
+  let rc: GlobalStateRef | undefined = ref.current;
   if (!ref.current) {
     const emitter = new Emitter();
     ref.current = {
@@ -139,17 +147,17 @@ function useGlobalState(
       path,
       setter: (value) => {
         const newState = isFunction(value)
-          ? value(rc!.globalState.get(rc!.path))
+          ? value(rc!.globalState.get(rc!.path)) as unknown
           : value;
 
         if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
           /* eslint-disable no-console */
           console.groupCollapsed(
             `ReactGlobalState - useGlobalState setter triggered for path ${
-              rc!.path || ''
+              rc!.path ?? ''
             }`,
           );
-          console.log('New value:', cloneDeepForLog(newState, rc.path ?? ''));
+          console.log('New value:', cloneDeepForLog(newState, rc!.path ?? ''));
           console.groupEnd();
           /* eslint-enable no-console */
         }
@@ -169,7 +177,9 @@ function useGlobalState(
       state: isFunction(initialValue) ? initialValue() : initialValue,
       subscribe: emitter.addListener.bind(emitter),
       watcher: () => {
-        const state = rc!.globalState.get(rc!.path);
+        // TODO: Revise it later.
+        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+        const state = rc!.globalState.get(rc!.path) as unknown;
         if (state !== rc!.state) rc!.emitter.emit();
       },
     };
@@ -181,11 +191,11 @@ function useGlobalState(
 
   rc.state = useSyncExternalStore(
     rc.subscribe,
-    () => rc!.globalState.get<ForceT, unknown>(rc!.path, { initialValue }),
+    () => rc.globalState.get<ForceT, unknown>(rc.path, { initialValue }),
 
-    () => rc!.globalState.get<ForceT, unknown>(
-      rc!.path,
-      { initialValue, initialState: true },
+    () => rc.globalState.get<ForceT, unknown>(
+      rc.path,
+      { initialState: true, initialValue },
     ),
   );
 
@@ -193,7 +203,9 @@ function useGlobalState(
     const { watcher } = ref.current!;
     globalState.watch(watcher);
     watcher();
-    return () => globalState.unWatch(watcher);
+    return () => {
+      globalState.unWatch(watcher);
+    };
   }, [globalState]);
 
   useEffect(() => {
@@ -205,12 +217,15 @@ function useGlobalState(
 
 export default useGlobalState;
 
+// TODO: Revise.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface UseGlobalStateI<StateT> {
   (): UseGlobalStateResT<StateT>;
 
   <PathT extends null | string | undefined>(
     path: PathT,
-    initialValue: ValueOrInitializerT<Exclude<ValueAtPathT<StateT, PathT, never>, undefined>>
+    initialValue: ValueOrInitializerT<
+      Exclude<ValueAtPathT<StateT, PathT, never>, undefined>>
   ): UseGlobalStateResT<Exclude<ValueAtPathT<StateT, PathT, void>, undefined>>;
 
   <PathT extends null | string | undefined>(

@@ -27,14 +27,18 @@ const Component: React.FunctionComponent = () => {
       {path}: {value}
       <button
         id="changePath"
-        onClick={() => setPath('pathB')}
+        onClick={() => {
+          setPath('pathB');
+        }}
         type="button"
       >
         Change Path
       </button>
       <button
         id="changeValue"
-        onClick={() => setValue(`New value at ${path}`)}
+        onClick={() => {
+          setValue(`New value at ${path}`);
+        }}
         type="button"
       >
         Change Value
@@ -58,7 +62,7 @@ it('works as expected', async () => {
   expect(globalState.get()).toMatchSnapshot();
 
   let button = document.querySelector('#changePath');
-  await act(() => {
+  await act(async () => {
     button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     return timer(10);
   });
@@ -66,7 +70,7 @@ it('works as expected', async () => {
   expect(globalState.get()).toMatchSnapshot();
 
   button = document.querySelector('#changeValue');
-  await act(() => {
+  await act(async () => {
     button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     return timer(10);
   });

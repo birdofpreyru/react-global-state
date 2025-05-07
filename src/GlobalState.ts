@@ -7,7 +7,7 @@ import {
   toPath,
 } from 'lodash';
 
-import SsrContext from './SsrContext';
+import type SsrContext from './SsrContext';
 
 import {
   type CallbackT,
@@ -35,7 +35,7 @@ export default class GlobalState<
 
   #asyncDataAbortCallbacks: Record<string, () => void> = {};
 
-  #dependencies: { [key: string]: Readonly<any[]> } = {};
+  #dependencies: Record<string, readonly unknown[]> = {};
 
   #initialState: StateT;
 
@@ -95,7 +95,7 @@ export default class GlobalState<
    * the specified operation, it triggers the callback. Then, in any case,
    * it drops the callback.
    */
-  asyncDataLoadDone(opid: string, aborted: boolean) {
+  asyncDataLoadDone(opid: string, aborted: boolean): void {
     if (aborted) this.#asyncDataAbortCallbacks[opid]?.();
     delete this.#asyncDataAbortCallbacks[opid];
   }
@@ -103,7 +103,7 @@ export default class GlobalState<
   /**
    * Drops the record of dependencies, if any, for the given path.
    */
-  dropDependencies(path: string) {
+  dropDependencies(path: string): void {
     delete this.#dependencies[path];
   }
 
@@ -118,7 +118,7 @@ export default class GlobalState<
    * are used. We should normalize given path here, I guess, or on a higher
    * level in the logic?
    */
-  hasChangedDependencies(path: string, deps: any[]): boolean {
+  hasChangedDependencies(path: string, deps: unknown[]): boolean {
     const prevDeps = this.#dependencies[path];
     let changed = !prevDeps || prevDeps.length !== deps.length;
     for (let i = 0; !changed && i < deps.length; ++i) {
@@ -165,9 +165,7 @@ export default class GlobalState<
       this.#nextNotifierId = setTimeout(() => {
         this.#nextNotifierId = undefined;
         const watchers = [...this.#watchers];
-        for (let i = 0; i < watchers.length; ++i) {
-          watchers[i]!();
-        }
+        for (const watcher of watchers) watcher();
       });
     }
   }
@@ -176,7 +174,7 @@ export default class GlobalState<
    * Registers an abort callback for an async data retrieval operation with
    * the given operation ID. Throws if already registered.
    */
-  setAsyncDataAbortCallback(opid: string, cb: () => void) {
+  setAsyncDataAbortCallback(opid: string, cb: () => void): void {
     this.#asyncDataAbortCallbacks[opid] = cb;
   }
 
@@ -234,13 +232,15 @@ export default class GlobalState<
 
     const state = opts?.initialState ? this.#initialState : this.#currentState;
 
-    let res = get(state, path);
+    let res = get(state, path) as ValueT;
     if (res !== undefined || opts?.initialValue === undefined) return res;
 
     const iv = opts.initialValue;
     res = isFunction(iv) ? iv() : iv;
 
-    if (!opts?.initialState || this.get(path) === undefined) {
+    // TODO: Revise.
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+    if (!opts.initialState || (this.get(path) as unknown) === undefined) {
       this.set<ForceT, unknown>(path, res);
     }
 
@@ -272,15 +272,23 @@ export default class GlobalState<
   set(path: null | string | undefined, value: unknown): unknown {
     if (isNil(path)) return this.setEntireState(value as StateT);
 
+    // TODO: Revise.
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
     if (value !== this.get(path)) {
       const root = { state: this.#currentState };
       let segIdx = 0;
-      let pos: any = root;
+
+      // TODO: It is not 100% correct, as `pos` can be an array, or any other
+      // value as we travel through the state tree. To simplify the typing for
+      // now, I guess, we can go with this record type, though.
+      let pos: Record<string, unknown> = root;
       const pathSegments = toPath(`state.${path}`);
       for (; segIdx < pathSegments.length - 1; segIdx += 1) {
         const seg = pathSegments[segIdx]!;
+
+        // TODO: Revise: Typing is not quite correct here, but it works fine in the runtime.
         const next = pos[seg];
-        if (Array.isArray(next)) pos[seg] = [...next];
+        if (Array.isArray(next)) pos[seg] = [...(next as unknown[])];
         else if (isObject(next)) pos[seg] = { ...next };
         else {
           // We arrived to a state sub-segment, where the remaining part of
@@ -289,7 +297,7 @@ export default class GlobalState<
           set(pos, pathSegments.slice(segIdx), value);
           break;
         }
-        pos = pos[seg];
+        pos = pos[seg] as Record<string, unknown>;
       }
 
       if (segIdx === pathSegments.length - 1) {
@@ -310,7 +318,7 @@ export default class GlobalState<
    * @throws if {@link SsrContext} is attached to the state instance: the state
    * watching functionality is intended for client-side (non-SSR) only.
    */
-  unWatch(callback: CallbackT) {
+  unWatch(callback: CallbackT): void {
     if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
 
     const watchers = this.#watchers;
@@ -331,11 +339,11 @@ export default class GlobalState<
    * @throws if {@link SsrContext} is attached to the state instance: the state
    * watching functionality is intended for client-side (non-SSR) only.
    */
-  watch(callback: CallbackT) {
+  watch(callback: CallbackT): void {
     if (this.ssrContext) throw new Error(ERR_NO_SSR_WATCH);
 
     const watchers = this.#watchers;
-    if (watchers.indexOf(callback) < 0) {
+    if (!watchers.includes(callback)) {
       watchers.push(callback);
     }
   }

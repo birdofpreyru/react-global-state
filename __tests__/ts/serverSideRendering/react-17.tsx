@@ -11,6 +11,8 @@ import {
 
 import { GlobalStateProvider, SsrContext } from 'src/index';
 
+import type * as TestSceneNS from './__assets__/TestScene';
+
 jest.mock('uuid');
 
 jest.useFakeTimers();
@@ -26,7 +28,8 @@ beforeEach(() => {
   ssrRound = 0;
   delete process.env.REACT_GLOBAL_STATE_DEBUG;
   unMockConsoleLog();
-  ({ default: Scene, loaderA, loaderB } = require('./__assets__/TestScene'));
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  ({ default: Scene, loaderA, loaderB } = require('./__assets__/TestScene') as typeof TestSceneNS);
   loaderA.mockClear();
   loaderB.mockClear();
 });
@@ -63,7 +66,6 @@ async function serverSideRender(): Promise<string> {
   const ssrContext = new SsrContext({});
 
   for (; ssrRound < 10; ssrRound += 1) {
-    /* eslint-disable no-await-in-loop */
     render = ReactDOM.renderToString((
       <GlobalStateProvider
         initialState={ssrContext.state}
@@ -75,7 +77,6 @@ async function serverSideRender(): Promise<string> {
     if (ssrContext.dirty) {
       await Promise.allSettled(ssrContext.pending);
     } else break;
-    /* eslint-disable no-await-in-loop */
   }
   return render;
 }
@@ -84,7 +85,7 @@ test('Smart server-sider rendering', async () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = '1';
   mockConsoleLog();
   const render = serverSideRender();
-  await jest.runAllTimers();
+  jest.runAllTimers();
   const renderString = await render;
   expect(ssrRound).toBe(1);
   expect(renderString).toMatchSnapshot();

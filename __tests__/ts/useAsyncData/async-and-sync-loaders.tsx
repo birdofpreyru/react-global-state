@@ -49,7 +49,7 @@ test('useAsyncData() behavior with async and sync loaders', async () => {
     sync: newAsyncDataEnvelope(),
   });
 
-  expect(gs.getEntireState()).toEqual({
+  expect(gs.getEntireState()).toStrictEqual({
     async: {
       data: null,
       numRefs: 0,
@@ -73,7 +73,7 @@ test('useAsyncData() behavior with async and sync loaders', async () => {
 
   {
     const x = gs.getEntireState();
-    expect(x.async.data).toBe(null);
+    expect(x.async.data).toBeNull();
     expect(x.async.numRefs).toBe(1);
     expect(x.async.operationId).toBeTruthy();
     expect(x.async.timestamp).toBe(0);
@@ -83,7 +83,7 @@ test('useAsyncData() behavior with async and sync loaders', async () => {
     expect(Number.isInteger(x.sync.timestamp)).toBe(true);
   }
 
-  await act(() => timer(200));
+  await act(async () => timer(200));
 
   {
     const x = gs.getEntireState();

@@ -5,14 +5,17 @@ export type CallbackT = () => void;
 // TODO: This (ForceT, LockT, and TypeLock) probably should be moved to JS Utils
 // lib.
 
-declare const force: unique symbol;
-declare const lock: unique symbol;
+export declare const force: unique symbol;
+export declare const lock: unique symbol;
 
 export type ForceT = typeof force;
 export type LockT = typeof lock;
 
 export type TypeLock<
   Unlocked extends ForceT | LockT,
+
+  // TODO: Revise later.
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   LockedT extends never | void,
   UnlockedT,
 > = Unlocked extends ForceT ? UnlockedT : LockedT;
@@ -33,6 +36,9 @@ export type TypeLock<
 export type ValueAtPathT<
   StateT,
   PathT extends null | string | undefined,
+
+  // TODO: Revise later.
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-invalid-void-type
   UnknownT extends never | undefined | void,
 > = unknown extends StateT
   ? UnknownT
@@ -61,7 +67,7 @@ export function isDebugMode(): boolean {
   try {
     return process.env.NODE_ENV !== 'production'
       && !!process.env.REACT_GLOBAL_STATE_DEBUG;
-  } catch (error) {
+  } catch {
     return false;
   }
 }

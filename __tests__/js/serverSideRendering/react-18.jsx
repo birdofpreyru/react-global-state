@@ -1,10 +1,12 @@
+/* global process, require */
+
 import mockdate from 'mockdate';
 
 import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils';
 
 import StringDestination from './__assets__/StringDestination';
 
-let LIB;
+let Lib;
 let ReactDOM;
 
 jest.mock('uuid');
@@ -39,17 +41,19 @@ afterEach(() => {
   jest.clearAllTimers();
 });
 
+// TODO: Revise
+// eslint-disable-next-line jest/no-done-callback
 test('Naive server-side rendering', (done) => {
-  LIB = require('src');
+  Lib = require('src');
   const stream = ReactDOM.renderToPipeableStream(
-    <LIB.GlobalStateProvider>
+    <Lib.GlobalStateProvider>
       <Scene />
-    </LIB.GlobalStateProvider>,
+    </Lib.GlobalStateProvider>,
     {
       async onAllReady() {
         const dest = new StringDestination();
         stream.pipe(dest);
-        expect(await dest.waitResult()).toMatchSnapshot();
+        await expect(dest.waitResult()).resolves.toMatchSnapshot();
         done();
       },
     },
@@ -57,15 +61,15 @@ test('Naive server-side rendering', (done) => {
   jest.runAllTimers();
 });
 
-async function renderPass(ssrContext) {
+function renderPass(ssrContext) {
   return new Promise((resolve) => {
     const stream = ReactDOM.renderToPipeableStream(
-      <LIB.GlobalStateProvider
+      <Lib.GlobalStateProvider
         initialState={ssrContext.state}
         ssrContext={ssrContext}
       >
         <Scene />
-      </LIB.GlobalStateProvider>,
+      </Lib.GlobalStateProvider>,
       { onAllReady: () => resolve(stream) },
     );
     jest.runAllTimers();
@@ -76,17 +80,15 @@ async function renderPass(ssrContext) {
  * This is the sample SSR code assembly.
  */
 async function serverSideRender() {
-  LIB = require('src');
+  Lib = require('src');
   let stream;
   serverSideRender.round = 0;
   const ssrContext = { state: {} };
   for (; serverSideRender.round < 10; serverSideRender.round += 1) {
-    /* eslint-disable no-await-in-loop */
     stream = await renderPass(ssrContext);
     if (ssrContext.dirty) {
       await Promise.allSettled(ssrContext.pending);
     } else break;
-    /* eslint-disable no-await-in-loop */
   }
   const dest = new StringDestination();
   stream.pipe(dest);
@@ -95,7 +97,7 @@ async function serverSideRender() {
 
 test('Smart server-sider rendering', async () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
-  LIB = require('src');
+  Lib = require('src');
   mockConsoleLog();
   let render = serverSideRender();
   await jest.runAllTimers();

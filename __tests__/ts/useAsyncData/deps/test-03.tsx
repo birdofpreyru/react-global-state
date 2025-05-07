@@ -78,7 +78,7 @@ const Scene: React.FunctionComponent<ScenePropsT> = ({ gs }) => (
   </GlobalStateProvider>
 );
 
-test('Base scenario', async () => {
+test('Base scenario', () => {
   const gs = new GlobalState({
     pathA: newAsyncDataEnvelope(),
     pathB: newAsyncDataEnvelope(),
@@ -87,12 +87,18 @@ test('Base scenario', async () => {
   scene.snapshot();
 
   const button = getByText(scene, 'Next Step');
-  act(() => button.click());
+  act(() => {
+    button.click();
+  });
   expect(gs.get()).toMatchSnapshot();
 
-  act(() => button.click());
+  act(() => {
+    button.click();
+  });
   expect(gs.get()).toMatchSnapshot();
 
-  act(() => button.click());
+  act(() => {
+    button.click();
+  });
   expect(gs.get()).toMatchSnapshot();
 });

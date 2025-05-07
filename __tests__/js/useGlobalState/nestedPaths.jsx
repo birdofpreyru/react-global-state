@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+/* global MouseEvent */
+
 /**
  * Updates of nested state paths should notify watchers of the wrapping paths.
  */
@@ -44,6 +46,7 @@ function Scene1() {
 }
 
 let scene;
+
 afterEach(() => {
   if (scene) {
     scene.destroy();
@@ -51,7 +54,7 @@ afterEach(() => {
   }
 });
 
-test('Test with objects', async () => {
+it('Test with objects', async () => {
   scene = mount(<Scene1 />);
   await act(() => timer(1));
   scene.snapshot();
@@ -107,7 +110,7 @@ function Scene2() {
   );
 }
 
-test('Test with arrays', async () => {
+it('Test with arrays', async () => {
   scene = mount(<Scene2 />);
   await act(() => timer(1));
   scene.snapshot();
@@ -159,7 +162,7 @@ function Scene3() {
   );
 }
 
-test('Test with strings', async () => {
+it('Test with strings', async () => {
   scene = mount(<Scene3 />);
   await act(() => timer(1));
   scene.snapshot();

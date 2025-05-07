@@ -14,7 +14,10 @@ type StateT = {
   path: AsyncCollectionT<string[]>;
 };
 
-const { GlobalStateProvider, useAsyncCollection } = withGlobalStateType<StateT>();
+const {
+  GlobalStateProvider,
+  useAsyncCollection,
+} = withGlobalStateType<StateT>();
 
 const Component: React.FunctionComponent = () => {
   const [deps, setDeps] = useState<string[]>([]);
@@ -29,7 +32,9 @@ const Component: React.FunctionComponent = () => {
   return (
     <div
       data-testid="component"
-      onClick={() => setDeps([...deps, deps.length.toString()])}
+      onClick={() => {
+        setDeps([...deps, deps.length.toString()]);
+      }}
       role="presentation"
     >
       {items.id.data}
@@ -50,10 +55,12 @@ test('base scenario', () => {
   // As of React 18.3.2, although a warning about variadic useEffect()
   // dependencies is printed into the console, the actual logic is the one
   // we expect... so we have to test there is no warnings.
-  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
   const component = getByTestId(scene, 'component');
-  act(() => component.click());
+  act(() => {
+    component.click();
+  });
   scene.snapshot();
 
   expect(console.error).not.toHaveBeenCalled();

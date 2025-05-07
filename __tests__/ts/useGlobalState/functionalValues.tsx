@@ -62,7 +62,7 @@ const TestComponent03: React.FunctionComponent = () => {
     PATH,
     () => func03,
   );
-  expect(value === func03).toBe(true);
+  expect(value).toBe(func03);
   return null;
 };
 
@@ -77,10 +77,16 @@ let pass04 = 0;
 const TestComponent04: React.FunctionComponent = () => {
   pass04 += 1;
   const [value, set] = useGlobalState<StateT, typeof PATH>(PATH, 'value-04');
-  setTimeout(() => set('value-04-2'));
+  setTimeout(() => {
+    set('value-04-2');
+  });
   switch (pass04) {
-    case 1: expect(value).toBe('value-04'); break;
-    case 2: expect(value).toBe('value-04-2'); break;
+    case 1:
+      expect(value).toBe('value-04');
+      break;
+    case 2:
+      expect(value).toBe('value-04-2');
+      break;
     default: throw Error('Unexpected render pass');
   }
   return null;
@@ -99,11 +105,15 @@ const TestComponent05: React.FunctionComponent = () => {
     () => 'value-05',
   );
   if (typeof value === 'string' && value.endsWith('05')) {
-    set((v: ValueT) => `${v}-2`);
+    set((v: ValueT) => `${v?.toString()}-2`);
   }
   switch (pass05) {
-    case 1: expect(value).toBe('value-05'); break;
-    case 2: expect(value).toBe('value-05-2'); break;
+    case 1:
+      expect(value).toBe('value-05');
+      break;
+    case 2:
+      expect(value).toBe('value-05-2');
+      break;
     default: throw Error('Unexpected render pass');
   }
   return null;
@@ -141,10 +151,16 @@ const TestComponent06: React.FunctionComponent = () => {
     'path',
     () => func06a,
   );
-  setTimeout(() => set(() => func06b));
+  setTimeout(() => {
+    set(() => func06b);
+  });
   switch (pass06) {
-    case 1: expect(value === func06a).toBe(true); break;
-    case 2: expect(value === func06b).toBe(true); break;
+    case 1:
+      expect(value).toBe(func06a);
+      break;
+    case 2:
+      expect(value).toBe(func06b);
+      break;
     default: throw Error('Unexpected render pass');
   }
   return null;
@@ -166,22 +182,30 @@ const TestComponent07: React.FunctionComponent = () => {
     PATH,
     () => 'value-07',
   );
-  if (!t07Set) t07Set = set;
-  else expect(set === t07Set).toBe(true);
+  // TODO: Revise. Wrong typing?
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (t07Set) expect(set).toBe(t07Set);
+  else t07Set = set;
 
   // NOTE: Without useEffect(), doing these state updates directly inside
   // the render, we gonna end up with an infinite update loop, and error
   // warnings from React.
   useEffect(() => {
     if (typeof value === 'string' && value.endsWith('07')) {
-      set((v: ValueT) => `${v}-2`);
+      set((v: ValueT) => `${v?.toString()}-2`);
     } else if (typeof value === 'string' && value.endsWith('-2')) {
-      set((v: ValueT) => `${v}-3`);
+      set((v: ValueT) => `${v?.toString()}-3`);
     }
     switch (pass07) {
-      case 1: expect(value).toBe('value-07'); break;
-      case 2: expect(value).toBe('value-07-2'); break;
-      case 3: expect(value).toBe('value-07-2-3'); break;
+      case 1:
+        expect(value).toBe('value-07');
+        break;
+      case 2:
+        expect(value).toBe('value-07-2');
+        break;
+      case 3:
+        expect(value).toBe('value-07-2-3');
+        break;
       default: throw Error('Unexpected render pass');
     }
   });

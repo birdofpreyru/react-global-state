@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+/* global document, MouseEvent */
+
 // These tests cover useGlobalState behavior when its "path" argument value
 // changes.
 

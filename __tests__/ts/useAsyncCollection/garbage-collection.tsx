@@ -33,7 +33,9 @@ const Scene: React.FunctionComponent<{
     <GlobalStateProvider stateProxy={gs}>
       {mounted ? <Component /> : null}
       <button
-        onClick={() => setMounted(false)}
+        onClick={() => {
+          setMounted(false);
+        }}
         type="button"
       >
         unmount-button
@@ -47,10 +49,12 @@ test('#1', async () => {
   const scene = mount(<Scene gs={gs} />);
   expect(gs.get()).toMatchSnapshot();
 
-  act(() => getByText(scene, 'unmount-button').click());
+  act(() => {
+    getByText(scene, 'unmount-button').click();
+  });
   expect(gs.get()).toMatchSnapshot();
 
-  await act(() => jest.advanceTimersByTimeAsync(1500));
+  await act(async () => jest.advanceTimersByTimeAsync(1500));
   expect(gs.get()).toMatchSnapshot();
   scene.destroy();
 });

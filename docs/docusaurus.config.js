@@ -1,3 +1,5 @@
+/* global module, require */
+
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
@@ -10,58 +12,84 @@ const NPM_URL = 'https://www.npmjs.com/package/@dr.pogodin/react-global-state';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'React Global State',
-  tagline: 'React global state designed right',
-  url: 'https://dr.pogodin.studio',
   baseUrl: '/docs/react-global-state/',
+  favicon: 'img/favicon.ico',
   onBrokenAnchors: 'throw',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'throw',
-  favicon: 'img/favicon.ico',
   plugins: ['docusaurus-plugin-sass'],
+  tagline: 'React global state designed right',
+  title: 'React Global State',
+  url: 'https://dr.pogodin.studio',
 
   presets: [
     [
       '@docusaurus/preset-classic',
+
       /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
+      {
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
           editUrl: EDIT_BASE,
+          sidebarPath: require.resolve('./sidebars.js'),
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
-      }),
+      },
     ],
   ],
 
   themeConfig:
+
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    ({
+    {
+      footer: {
+        copyright: `Copyright © ${new Date().getFullYear()} Dr. Sergey Pogodin`,
+        links: [
+          {
+            items: [
+              { label: 'API', to: '/docs/api' },
+              {
+                label: 'Getting Started',
+                to: '/docs/tutorials/getting-started',
+              },
+            ],
+            title: 'Docs',
+          },
+          {
+            items: [
+              {
+                href: CODE_REPO,
+                label: 'GitHub',
+              },
+              {
+                href: NPM_URL,
+                label: 'NPM',
+              },
+            ],
+            title: 'More',
+          },
+        ],
+        style: 'dark',
+      },
       navbar: {
-        logo: {
-          alt: 'Dr. Pogodin Studio',
-          src: 'img/logo-verbose.svg',
-          href: 'https://dr.pogodin.studio',
-        },
         items: [
           {
-            to: '/',
-            label: 'React Global State',
             activeBaseRegex: '^/docs/react-global-state/$',
+            label: 'React Global State',
+            to: '/',
           },
           {
-            type: 'doc',
             docId: 'tutorials/getting-started',
-            position: 'left',
             label: 'Getting Started',
+            position: 'left',
+            type: 'doc',
           },
           {
-            type: 'doc',
             docId: 'api/index',
-            position: 'left',
             label: 'API',
+            position: 'left',
+            type: 'doc',
           },
           {
             href: CODE_REPO,
@@ -74,41 +102,17 @@ const config = {
             position: 'right',
           },
         ],
-      },
-      footer: {
-        style: 'dark',
-        links: [
-          {
-            title: 'Docs',
-            items: [
-              { label: 'API', to: '/docs/api' },
-              {
-                label: 'Getting Started',
-                to: '/docs/tutorials/getting-started',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'GitHub',
-                href: CODE_REPO,
-              },
-              {
-                label: 'NPM',
-                href: NPM_URL,
-              },
-            ],
-          },
-        ],
-        copyright: `Copyright © ${new Date().getFullYear()} Dr. Sergey Pogodin`,
+        logo: {
+          alt: 'Dr. Pogodin Studio',
+          href: 'https://dr.pogodin.studio',
+          src: 'img/logo-verbose.svg',
+        },
       },
       prism: {
-        theme: themes.github,
         darkTheme: themes.dracula,
+        theme: themes.github,
       },
-    }),
+    },
 };
 
 module.exports = config;

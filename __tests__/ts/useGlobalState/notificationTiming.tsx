@@ -16,7 +16,11 @@ type StateT = string;
 const ComponentA: React.FunctionComponent = () => {
   const P = null;
   const [value, setValue] = useGlobalState<StateT, typeof P>(P, '');
-  if (value === 'B') setTimeout(() => setValue('A'));
+  if (value === 'B') {
+    setTimeout(() => {
+      setValue('A');
+    });
+  }
   return <div>{value}</div>;
 };
 
@@ -50,6 +54,8 @@ afterAll(() => {
 
 test('Scene works as expected', () => {
   scene = mount(<Scene />);
-  act(() => jest.runAllTimers());
+  act(() => {
+    jest.runAllTimers();
+  });
   scene.snapshot();
 });

@@ -15,9 +15,7 @@ expect<AsyncCollectionLoaderT<'OK'>>().type.toBeAssignableWith(loader2);
 
 type StateT = {
   some: {
-    path: {
-      [id: string]: AsyncDataEnvelopeT<'OK'>;
-    };
+    path: Record<string, AsyncDataEnvelopeT<'OK'>>;
   };
 };
 
@@ -25,6 +23,7 @@ const SOME_ID = 'someId';
 const SOME_PATH = 'some.path';
 
 expect(
+  // eslint-disable-next-line
   useAsyncCollection<StateT, typeof SOME_PATH, typeof SOME_ID>(
     SOME_ID,
     SOME_PATH,

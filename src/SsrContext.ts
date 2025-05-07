@@ -1,11 +1,7 @@
 export default class SsrContext<StateT> {
   dirty: boolean = false;
 
-  pending: Promise<void>[] = [];
+  pending: Array<Promise<void>> = [];
 
-  state?: StateT;
-
-  constructor(state?: StateT) {
-    this.state = state;
-  }
+  constructor(public state?: StateT) { }
 }

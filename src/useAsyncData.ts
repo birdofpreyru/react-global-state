@@ -19,8 +19,8 @@ import {
   isDebugMode,
 } from './utils';
 
-import GlobalState from './GlobalState';
-import SsrContext from './SsrContext';
+import type GlobalState from './GlobalState';
+import type SsrContext from './SsrContext';
 
 export const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
@@ -89,7 +89,7 @@ export async function load<DataT>(
   path: null | string | undefined,
   loader: AsyncDataLoaderT<DataT>,
   globalState: GlobalState<unknown, SsrContext<unknown>>,
-  old?: { data: DataT | null, timestamp: number },
+  old?: { data: DataT | null; timestamp: number },
 
   // TODO: Should this parameter be just a binary flag (client or server),
   // and UUID always generated inside this function? Or do we need it in
@@ -100,7 +100,7 @@ export async function load<DataT>(
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
     console.log(
-      `ReactGlobalState: async data (re-)loading. Path: "${path || ''}"`,
+      `ReactGlobalState: async data (re-)loading. Path: "${path ?? ''}"`,
     );
     /* eslint-enable no-console */
   }
@@ -122,12 +122,14 @@ export async function load<DataT>(
   const dataOrPromise = loader(definedOld.data, {
     isAborted: () => {
       // TODO: Can we improve the typing, to avoid ForceT?
-      const opid = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path).operationId;
+      const opid = globalState.get<
+        ForceT, AsyncDataEnvelopeT<DataT>>(path).operationId;
       return opid !== operationId;
     },
     oldDataTimestamp: definedOld.timestamp,
     setAbortCallback(cb: () => void) {
-      const opid = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path).operationId;
+      const opid = globalState.get<
+        ForceT, AsyncDataEnvelopeT<DataT>>(path).operationId;
       if (opid !== operationId) {
         throw Error(`Operation #${operationId} has completed already`);
       }
@@ -155,7 +157,7 @@ export async function load<DataT>(
       /* eslint-disable no-console */
       console.groupCollapsed(
         `ReactGlobalState: async data (re-)loaded. Path: "${
-          path || ''
+          path ?? ''
         }"`,
       );
       console.log('Data:', cloneDeepForLog(data, path ?? ''));
@@ -197,8 +199,8 @@ function useAsyncData<
   StateT,
   PathT extends null | string | undefined,
 
-  DataT extends DataInEnvelopeAtPathT<StateT, PathT> =
-  DataInEnvelopeAtPathT<StateT, PathT>,
+  DataT extends DataInEnvelopeAtPathT<
+    StateT, PathT> = DataInEnvelopeAtPathT<StateT, PathT>,
 >(
   path: PathT,
   loader: AsyncDataLoaderT<DataT>,
@@ -235,16 +237,17 @@ function useAsyncData<DataT>(
   heap.path = path;
   heap.loader = loader;
 
-  if (!heap.reload) {
-    heap.reload = (customLoader?: AsyncDataLoaderT<DataT>) => {
-      const localLoader = customLoader || heap.loader;
-      if (!localLoader || !heap.globalState) throw Error('Internal error');
-      return load(heap.path, localLoader, heap.globalState);
-    };
-  }
+  heap.reload ??= async (customLoader?: AsyncDataLoaderT<DataT>) => {
+    const localLoader = customLoader ?? heap.loader;
+    if (!localLoader || !heap.globalState) throw Error('Internal error');
+    return load(heap.path, localLoader, heap.globalState);
+  };
 
   if (globalState.ssrContext) {
-    if (!options.disabled && !options.noSSR && !state.operationId && !state.timestamp) {
+    if (
+      !options.disabled && !options.noSSR
+      && !state.operationId && !state.timestamp
+    ) {
       globalState.ssrContext.pending.push(
         load(path, loader, globalState, {
           data: state.data,
@@ -273,7 +276,7 @@ function useAsyncData<DataT>(
       return () => {
         if (!disabled) {
           const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
-          ForceT, AsyncDataEnvelopeT<DataT>>(
+            ForceT, AsyncDataEnvelopeT<DataT>>(
             path,
           );
           if (
@@ -284,19 +287,21 @@ function useAsyncData<DataT>(
               /* eslint-disable no-console */
               console.log(
                 `ReactGlobalState - useAsyncData garbage collected at path ${
-                  path || ''
+                  path ?? ''
                 }`,
               );
               /* eslint-enable no-console */
             }
-            globalState.dropDependencies(path || '');
+            globalState.dropDependencies(path ?? '');
             globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
               ...state2,
               data: null,
               numRefs: 0,
               timestamp: 0,
             });
-          } else globalState.set<ForceT, number>(numRefsPath, state2.numRefs - 1);
+          } else {
+            globalState.set<ForceT, number>(numRefsPath, state2.numRefs - 1);
+          }
         }
       };
     }, [disabled, garbageCollectAge, globalState, path]);
@@ -308,22 +313,22 @@ function useAsyncData<DataT>(
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       if (!disabled) {
         const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
-        ForceT, AsyncDataEnvelopeT<DataT>>(path);
+          ForceT, AsyncDataEnvelopeT<DataT>>(path);
 
         const { deps } = options;
         if (
           // The hook is called with a list of dependencies, that mismatch
           // dependencies last used to retrieve the data at given path.
-          (deps && globalState.hasChangedDependencies(path || '', deps))
+          (deps && globalState.hasChangedDependencies(path ?? '', deps))
 
           // Data at the path are stale, and are not being loaded.
           || (
             refreshAge < Date.now() - state2.timestamp
-            && (!state2.operationId || state2.operationId.charAt(0) === 'S')
+            && (!state2.operationId || state2.operationId.startsWith('S'))
           )
         ) {
-          if (!deps) globalState.dropDependencies(path || '');
-          load(path, loader, globalState, {
+          if (!deps) globalState.dropDependencies(path ?? '');
+          void load(path, loader, globalState, {
             data: state2.data,
             timestamp: state2.timestamp,
           });
@@ -347,6 +352,7 @@ function useAsyncData<DataT>(
 
 export { useAsyncData };
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface UseAsyncDataI<StateT> {
   <PathT extends null | string | undefined>(
     path: PathT,

@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+/* global setTimeout */
+
 /**
  * Tests that state notifications are delivered to dependent components
  * in an async manner.
@@ -37,6 +39,7 @@ function Scene() {
 }
 
 let scene = null;
+
 afterAll(() => {
   if (scene) {
     scene.destroy();

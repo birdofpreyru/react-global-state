@@ -5,7 +5,7 @@
 import { useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import GlobalState from './GlobalState';
+import type GlobalState from './GlobalState';
 import { getGlobalState } from './GlobalStateProvider';
 
 import {
@@ -33,7 +33,7 @@ import {
 export type AsyncCollectionT<
   DataT = unknown,
   IdT extends number | string = number | string,
-> = { [id in IdT]?: AsyncDataEnvelopeT<DataT> };
+> = Record<IdT, AsyncDataEnvelopeT<DataT>>;
 
 export type AsyncCollectionLoaderT<
   DataT,
@@ -61,9 +61,7 @@ export type UseAsyncCollectionResT<
   DataT,
   IdT extends number | string = number | string,
 > = {
-  items: {
-    [id in IdT]: CollectionItemT<DataT>;
-  }
+  items: Record<IdT, CollectionItemT<DataT>>;
   loading: boolean;
   reload: AsyncCollectionReloaderT<DataT, IdT>;
   timestamp: number;
@@ -95,8 +93,7 @@ function gcOnWithhold<IdT extends number | string>(
 ) {
   const collection = { ...gs.get<ForceT, AsyncCollectionT>(path) };
 
-  for (let i = 0; i < ids.length; ++i) {
-    const id = ids[i]!;
+  for (const id of ids) {
     let envelope = collection[id];
     if (envelope) envelope = { ...envelope, numRefs: 1 + envelope.numRefs };
     else envelope = newAsyncDataEnvelope<unknown>(null, { numRefs: 1 });
@@ -108,8 +105,8 @@ function gcOnWithhold<IdT extends number | string>(
 
 function idsToStringSet<IdT extends number | string>(ids: IdT[]): Set<string> {
   const res = new Set<string>();
-  for (let i = 0; i < ids.length; ++i) {
-    res.add(ids[i]!.toString());
+  for (const id of ids) {
+    res.add(id.toString());
   }
   return res;
 }
@@ -136,9 +133,7 @@ function gcOnRelease<IdT extends number | string>(
   const now = Date.now();
   const idSet = idsToStringSet(ids);
   const collection: AsyncCollectionT = {};
-  for (let i = 0; i < entries.length; ++i) {
-    const [id, envelope] = entries[i]!;
-
+  for (const [id, envelope] of entries) {
     if (envelope) {
       const toBeReleased = idSet.has(id);
 
@@ -167,7 +162,7 @@ function normalizeIds<IdT extends number | string>(
 ): IdT[] {
   if (Array.isArray(idOrIds)) {
     const res = [...idOrIds];
-    res.sort();
+    res.sort((a, b) => a.toString().localeCompare(b.toString()));
     return res;
   }
   return [idOrIds];
@@ -202,19 +197,20 @@ function useHeap<
     ) => {
       const heap2 = ref.current!;
 
-      const localLoader = customLoader || heap2.loader;
+      const localLoader = customLoader ?? heap2.loader;
+      // TODO: Revise - not sure all related typing is 100% correct,
+      // thus let's keep this runtime assertion.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!localLoader || !heap2.globalState || !heap2.ids) {
         throw Error('Internal error');
       }
 
-      for (let i = 0; i < heap2.ids.length; ++i) {
-        const id = heap2.ids[i]!;
+      for (const id of heap2.ids) {
         const itemPath = heap2.path ? `${heap2.path}.${id}` : `${id}`;
 
-        // eslint-disable-next-line no-await-in-loop
         await load(
           itemPath,
-          (oldData: DataT | null, meta) => localLoader(id, oldData, meta),
+          async (oldData: DataT | null, meta) => localLoader(id, oldData, meta),
           heap2.globalState,
         );
       }
@@ -222,11 +218,11 @@ function useHeap<
     heap = {
       globalState: gs,
       ids,
-      path,
       loader,
+      path,
       reload,
-      reloadSingle: (customLoader) => ref.current!.reload(
-        customLoader && ((id, ...args) => customLoader(...args)),
+      reloadSingle: async (customLoader) => ref.current!.reload(
+        customLoader && (async (id, ...args) => customLoader(...args)),
       ),
     };
     ref.current = heap;
@@ -245,8 +241,7 @@ function useAsyncCollection<
   PathT extends null | string | undefined,
   IdT extends number | string,
 
-  DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> =
-  DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
+  DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> = DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
 >(
   id: IdT,
   path: PathT,
@@ -270,8 +265,7 @@ function useAsyncCollection<
   PathT extends null | string | undefined,
   IdT extends number | string,
 
-  DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> =
-  DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
+  DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> = DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
 >(
   id: IdT[],
   path: PathT,
@@ -295,8 +289,7 @@ function useAsyncCollection<
   PathT extends null | string | undefined,
   IdT extends number | string,
 
-  DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> =
-  DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
+  DataT extends DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`> = DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>,
 >(
   id: IdT | IdT[],
   path: PathT,
@@ -307,6 +300,7 @@ function useAsyncCollection<
 // TODO: This is largely similar to useAsyncData() logic, just more generic.
 // Perhaps, a bunch of logic blocks can be split into stand-alone functions,
 // and reused in both hooks.
+// eslint-disable-next-line complexity
 function useAsyncCollection<
   DataT,
   IdT extends number | string,
@@ -328,15 +322,17 @@ function useAsyncCollection<
   // Server-side logic.
   if (globalState.ssrContext && !options.noSSR) {
     const operationId: OperationIdT = `S${uuid()}`;
-    for (let i = 0; i < ids.length; ++i) {
-      const id = ids[i]!;
+    for (const id of ids) {
       const itemPath = path ? `${path}.${id}` : `${id}`;
-      const state = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(itemPath, {
-        initialValue: newAsyncDataEnvelope<DataT>(),
-      });
+      const state = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(
+        itemPath,
+        {
+          initialValue: newAsyncDataEnvelope<DataT>(),
+        },
+      );
       if (!state.timestamp && !state.operationId) {
         globalState.ssrContext.pending.push(
-          load(itemPath, (...args) => loader(id, ...args), globalState, {
+          load(itemPath, async (...args) => loader(id, ...args), globalState, {
             data: state.data,
             timestamp: state.timestamp,
           }, operationId),
@@ -354,7 +350,9 @@ function useAsyncCollection<
     // but perhaps it can be refactored to avoid the need for it.
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
       gcOnWithhold(ids, path, globalState);
-      return () => gcOnRelease(ids, path, globalState, garbageCollectAge);
+      return () => {
+        gcOnRelease(ids, path, globalState, garbageCollectAge);
+      };
 
       // `ids` are represented in the dependencies array by `idsHash` value,
       // as useEffect() hook requires a constant size of dependencies array.
@@ -371,9 +369,8 @@ function useAsyncCollection<
 
     // Data loading and refreshing.
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      (async () => {
-        for (let i = 0; i < ids.length; ++i) {
-          const id = ids[i]!;
+      void (async () => {
+        for (const id of ids) {
           const itemPath = path ? `${path}.${id}` : `${id}`;
 
           type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
@@ -384,14 +381,13 @@ function useAsyncCollection<
             (deps && globalState.hasChangedDependencies(itemPath, deps))
             || (
               refreshAge < Date.now() - (state2?.timestamp ?? 0)
-              && (!state2?.operationId || state2.operationId.charAt(0) === 'S')
+              && (!state2?.operationId || state2.operationId.startsWith('S'))
             )
           ) {
             if (!deps) globalState.dropDependencies(itemPath);
-            // eslint-disable-next-line no-await-in-loop
             await load(
               itemPath,
-              (old, ...args) => loader(id, old as DataT, ...args),
+              async (old, ...args) => loader(id, old as DataT, ...args),
               globalState,
               {
                 data: state2?.data,
@@ -405,16 +401,17 @@ function useAsyncCollection<
   }
 
   const [localState] = useGlobalState<
-  ForceT, { [id: string]: AsyncDataEnvelopeT<DataT> }
+    ForceT, Record<string, AsyncDataEnvelopeT<DataT>>
   >(path, {});
 
   if (!Array.isArray(idOrIds)) {
-    const e = localState[idOrIds];
+    // TODO: Revise related typings!
+    const e = localState[idOrIds as string];
     const timestamp = e?.timestamp ?? 0;
     return {
-      data: maxage < Date.now() - timestamp ? null : (e?.data ?? null),
+      data: maxage < Date.now() - timestamp ? null : e?.data ?? null,
       loading: !!e?.operationId,
-      reload: heap.reloadSingle!,
+      reload: heap.reloadSingle,
       timestamp,
     };
   }
@@ -426,14 +423,14 @@ function useAsyncCollection<
     timestamp: Number.MAX_VALUE,
   };
 
-  for (let i = 0; i < ids.length; ++i) {
-    const id = ids[i]!;
-    const e = localState[id];
+  for (const id of ids) {
+    // TODO: Revise related typing. Should `localState` have a more specific type?
+    const e = localState[id as string];
     const loading = !!e?.operationId;
     const timestamp = e?.timestamp ?? 0;
 
     res.items[id] = {
-      data: maxage < Date.now() - timestamp ? null : (e?.data ?? null),
+      data: maxage < Date.now() - timestamp ? null : e?.data ?? null,
       loading,
       timestamp,
     };
@@ -446,6 +443,7 @@ function useAsyncCollection<
 
 export default useAsyncCollection;
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface UseAsyncCollectionI<StateT> {
   <PathT extends null | string | undefined, IdT extends number | string>(
     id: IdT,
@@ -489,5 +487,5 @@ export interface UseAsyncCollectionI<StateT> {
     loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>,
     options?: UseAsyncDataOptionsT,
   ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>
-  | UseAsyncCollectionResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>;
+    | UseAsyncCollectionResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>;
 }

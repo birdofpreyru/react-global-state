@@ -1,7 +1,7 @@
 import { expect } from 'tstyche';
 
 import GlobalState from '../../../src/GlobalState';
-import { type ForceT } from '../../../src/utils';
+import type { ForceT } from '../../../src/utils';
 
 type ValueT = 'value-a' | 'value-b';
 type StateT = { some: { path: ValueT } };

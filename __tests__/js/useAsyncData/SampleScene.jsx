@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+/* global document, MouseEvent, process */
+
 /**
  * Tests `useAsyncData(..)` on a sample scene: two components depend on loading
  * the same data into the same state segment.
@@ -70,7 +72,7 @@ let button = null;
  * Emulates button click in the currently mounted test scene.
  * @return {Promise}
  */
-async function clickButton() {
+function clickButton() {
   const event = new MouseEvent('click', { bubbles: true });
   act(() => {
     button.dispatchEvent(event);
@@ -131,12 +133,10 @@ test('Scenario I', async () => {
    * it causes no data re-loads, and the final state is the same as
    * before: ComponentA mounted. */
   for (let i = 0; i < 4; i += 1) {
-    /* eslint-disable no-await-in-loop, no-loop-func */
     await clickButton();
     scene.snapshot();
     expect(loaderA).toHaveBeenCalledTimes(1);
     expect(loaderB).toHaveBeenCalledTimes(0);
-    /* eslint-enable no-await-in-loop */
   }
 
   /**

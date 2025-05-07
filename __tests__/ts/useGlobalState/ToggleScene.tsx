@@ -17,7 +17,9 @@ const Component: React.FunctionComponent = () => {
     <div>
       <button
         data-testid="button"
-        onClick={() => setValue(!value)}
+        onClick={() => {
+          setValue(!value);
+        }}
         type="button"
       >
         {value.toString()}

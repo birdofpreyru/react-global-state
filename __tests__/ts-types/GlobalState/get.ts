@@ -1,3 +1,5 @@
+// TODO: Revise all ESLint rule overrides in this module.
+
 import { expect } from 'tstyche';
 
 import GlobalState from '../../../src/GlobalState';
@@ -20,29 +22,36 @@ expect(gs.get(null)).type.toBe<StateT1>();
 expect(gs.get(undefined)).type.toBe<StateT1>();
 
 declare const p1: null | string;
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 expect(gs.get(p1)).type.toBeVoid();
 
 declare const p2: string;
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 expect(gs.get(p2)).type.toBeVoid();
 
 expect(() => {
+  // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-unused-vars
   const x: string = gs.get(p2);
 }).type.toRaiseError(2322);
 
 expect(gs.get('some.path')).type.toBe<ValueT>();
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 expect(gs.get('invalid.path')).type.toBeVoid();
 
 expect(() => gs.get('some.path', {
   initialValue: 'invalid',
 })).type.toRaiseError(2769);
 
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 expect(() => gs.get('invalid.path', {
   initialValue: 'invalid',
 })).type.toRaiseError(2769);
 
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-unnecessary-type-arguments, @typescript-eslint/no-invalid-void-type
 expect(gs.get<ForceT, void>()).type.toBeVoid();
 expect(gs.get<ForceT, 'OK'>()).type.toBe<'OK'>();
 
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 expect(() => gs.get<ForceT, void>('some.path', {
   initialValue: 'invalid',
 })).type.toRaiseError(2322);

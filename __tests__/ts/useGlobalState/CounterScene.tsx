@@ -34,7 +34,9 @@ const CounterButton: React.FunctionComponent<{
     <div>
       <button
         data-testid={testButtonId}
-        onClick={() => setCount(1 + count)}
+        onClick={() => {
+          setCount(1 + count);
+        }}
         type="button"
       >
         Bump!
@@ -111,7 +113,7 @@ test('The scene works as expected', () => {
   scene.snapshot();
 });
 
-test('Test of `stateProxy` prop of the state provider', () => {
+it('Test of `stateProxy` prop of the state provider', () => {
   scene = mount(<TestScene stateProxy />);
   scene.snapshot();
   let button = document.querySelector('[data-testid=button-1]');
@@ -128,7 +130,7 @@ test('Test of `stateProxy` prop of the state provider', () => {
   scene.snapshot();
 });
 
-test('Test of `stateProxy` prop of the state provider II', () => {
+it('Test of `stateProxy` prop of the state provider II', () => {
   const innerGlobalState = new GlobalState<StateT>({ counter: 0 });
   scene = mount(<TestScene stateProxy={innerGlobalState} />);
   expect(innerGlobalState.get()).toMatchSnapshot();

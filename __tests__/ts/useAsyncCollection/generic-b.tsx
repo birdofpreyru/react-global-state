@@ -24,7 +24,7 @@ mockdate.set('2021-05-08Z');
 
 type DataT = {
   test: {
-    path: AsyncDataEnvelopeT<string>[];
+    path: Array<AsyncDataEnvelopeT<string>>;
   };
 };
 
@@ -32,6 +32,8 @@ function newZeroState(): DataT {
   return { test: { path: [] } };
 }
 
+// TODO: Double-check if removing async won't change the essense of the test case.
+// eslint-disable-next-line @typescript-eslint/require-await
 async function loader(id: number) {
   return `Value for ID ${id}`;
 }
@@ -43,7 +45,9 @@ const Component: React.FunctionComponent = () => {
     <div>
       {items[id]?.data}
       <button
-        onClick={() => setId(id + 1)}
+        onClick={() => {
+          setId(id + 1);
+        }}
         type="button"
       >
         Bump the value
@@ -63,12 +67,14 @@ const Scene: React.FunctionComponent<{
 it('works as expected', async () => {
   const globalState = new GlobalState(newZeroState());
   const scene = mount(<Scene globalState={globalState} />);
-  await act(() => timer(10));
+  await act(async () => timer(10));
   scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 
-  act(() => getByText(scene, 'Bump the value').click());
-  await act(() => timer(10));
+  act(() => {
+    getByText(scene, 'Bump the value').click();
+  });
+  await act(async () => timer(10));
   scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 });

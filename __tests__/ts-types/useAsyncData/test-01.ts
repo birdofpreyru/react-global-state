@@ -7,7 +7,6 @@ import { expect } from 'tstyche';
 
 import {
   type AsyncDataEnvelopeT,
-  type ForceT,
   withGlobalStateType,
 } from '../../../src';
 
@@ -31,7 +30,7 @@ const { useAsyncData: badUseAsyncData } = withGlobalStateType<BadStateT>();
 expect(() => {
   badUseAsyncData(
     'examples.asyncGlobalData',
-    async () => 0,
+    () => 0,
   );
 }).type.toRaiseError(2769);
 
@@ -41,5 +40,5 @@ const { useAsyncData: goodUseAsyncData } = withGlobalStateType<GoodStateT>();
 
 goodUseAsyncData(
   'examples.asyncGlobalData',
-  async () => 0,
+  () => 0,
 );

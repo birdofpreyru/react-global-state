@@ -32,9 +32,7 @@ type StateT1 = string | {
   key: string;
 };
 
-type StateT2 = {
-  [key: string]: string;
-};
+type StateT2 = Record<string, string>;
 
 describe('State set & get', () => {
   it('passes basic test', () => {
@@ -79,6 +77,8 @@ describe('ssrContext', () => {
     const ssrContext = new NamedSsrContext<StateType>('SSR Context');
     const state = new GlobalState({ key: 'value' }, ssrContext);
     expect(state.ssrContext).toBe(ssrContext);
+    // TODO: Revise.
+    // eslint-disable-next-line jest/prefer-strict-equal
     expect(ssrContext).toEqual({
       dirty: false,
       name: 'SSR Context',
@@ -88,7 +88,7 @@ describe('ssrContext', () => {
   });
 
   it('correctly resets upon GlobalState construction', () => {
-    type StateType = { [key: string]: unknown } | string[];
+    type StateType = Record<string, unknown> | string[];
 
     const ssrContext = new NamedSsrContext<StateType>('SSR Context');
     ssrContext.dirty = true;
@@ -101,6 +101,8 @@ describe('ssrContext', () => {
 
     const state = new GlobalState<StateType, NamedSsrContext<StateType>>(['newValue'], ssrContext);
     expect(state.ssrContext).toBe(ssrContext);
+    // TODO: Revise.
+    // eslint-disable-next-line jest/prefer-strict-equal
     expect(ssrContext).toEqual({
       dirty: false,
       name: 'SSR Context',
@@ -145,41 +147,49 @@ describe('.watch() and .unWatch() logic', () => {
 
   it('subscribes watcher1', () => {
     state.watch(watcher1);
+
     test(1, 0, 0);
   });
 
   it('does not subscribe watcher1 multiple times', () => {
     state.watch(watcher1);
+
     test(1, 0, 0);
   });
 
   it('subscribes watcher2', () => {
     state.watch(watcher2);
+
     test(1, 1, 0);
   });
 
   it('does nothing on attempt to unsubscribe unknown watcher', () => {
     state.unWatch(watcher3);
+
     test(1, 1, 0);
   });
 
   it('subscribes watcher3', () => {
     state.watch(watcher3);
+
     test(1, 1, 1);
   });
 
   it('unsubscribes watcher1', () => {
     state.unWatch(watcher1);
+
     test(0, 1, 1);
   });
 
   it('re-subscribes watcher1', () => {
     state.watch(watcher1);
+
     test(1, 1, 1);
   });
 
   it('unsubscribes watcher1 again', () => {
     state.unWatch(watcher1);
+
     test(0, 1, 1);
   });
 });

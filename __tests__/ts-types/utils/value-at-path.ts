@@ -1,10 +1,10 @@
 import { expect } from 'tstyche';
 
-import { type ValueAtPathT } from '../../../src/utils';
+import type { ValueAtPathT } from '../../../src/utils';
 
 type StateT1 = {
   some: {
-    array: { key: string }[];
+    array: Array<{ key: string }>;
     path: 'value-a' | 'value-b';
   };
 };
@@ -28,6 +28,7 @@ declare const x6: ValueAtPathT<StateT1, 'invalid.path', void>;
 expect(x6).type.toBeVoid();
 
 expect(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const x: ValueAtPathT<StateT1, 'some.path', 'XXX'> = 'value-a';
 }).type.toRaiseError(2344);
 
@@ -41,10 +42,12 @@ declare const x9: ValueAtPathT<StateT1, null | undefined, void>;
 expect(x9).type.toBe<StateT1>();
 
 expect(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const x: ValueAtPathT<StateT1, null | string, never> = 'XXX';
 }).type.toRaiseError(2322);
 
 expect(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const x: ValueAtPathT<StateT1, null | string, never> = {
     some: {
       array: [],

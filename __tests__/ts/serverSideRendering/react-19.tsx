@@ -1,5 +1,5 @@
 import mockdate from 'mockdate';
-import { type JSXElementConstructor } from 'react';
+import type { FunctionComponent } from 'react';
 import { prerenderToNodeStream } from 'react-dom/static';
 
 import {
@@ -11,6 +11,8 @@ import {
 
 import { GlobalStateProvider, SsrContext } from 'src/index';
 
+import type * as TestSceneNS from './__assets__/TestScene';
+
 import StringDestination from './__assets__/StringDestination';
 
 jest.mock('uuid');
@@ -19,14 +21,15 @@ mockdate.set('2024-12-31Z');
 
 let loaderA;
 let loaderB;
-let Scene: JSXElementConstructor<unknown>;
+let Scene: FunctionComponent;
 let scene: MountedSceneT | undefined;
 let ssrRound: number;
 
 beforeEach(() => {
   delete process.env.REACT_GLOBAL_STATE_DEBUG;
   unMockConsoleLog();
-  ({ default: Scene, loaderA, loaderB } = require('./__assets__/TestScene'));
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  ({ default: Scene, loaderA, loaderB } = require('./__assets__/TestScene') as typeof TestSceneNS);
   loaderA.mockClear();
   loaderB.mockClear();
   ssrRound = 0;
@@ -53,7 +56,7 @@ test('Naive server-side rendering', async () => {
   );
   const dest = new StringDestination();
   prelude.pipe(dest);
-  expect(await dest.waitResult()).toMatchSnapshot();
+  await expect(dest.waitResult()).resolves.toMatchSnapshot();
 });
 
 /**
@@ -66,7 +69,6 @@ async function serverSideRender(): Promise<string> {
   const ssrContext = new SsrContext({});
 
   for (; ssrRound < 10; ssrRound += 1) {
-    /* eslint-disable no-await-in-loop */
     ({ prelude } = await prerenderToNodeStream(
       <GlobalStateProvider
         initialState={ssrContext.state}
@@ -78,7 +80,6 @@ async function serverSideRender(): Promise<string> {
     if (ssrContext.dirty) {
       await Promise.allSettled(ssrContext.pending);
     } else break;
-    /* eslint-disable no-await-in-loop */
   }
   const dest = new StringDestination();
   prelude!.pipe(dest);
@@ -89,8 +90,8 @@ test('Smart server-sider rendering', async () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = '1';
   mockConsoleLog();
   const render = serverSideRender();
-  await jest.runAllTimers();
-  await jest.runAllTimers();
+  jest.runAllTimers();
+  jest.runAllTimers();
   const renderString = await render;
   expect(ssrRound).toBe(1);
   expect(renderString).toMatchSnapshot();

@@ -22,12 +22,10 @@ export default class StringDestination extends Writable {
     return this.#string;
   }
 
-  // eslint-disable-next-line no-underscore-dangle
   _final() {
     this.#barrier.ready();
   }
 
-  // eslint-disable-next-line no-underscore-dangle
   _write(chunk, encoding, ready) {
     this.#string += chunk.toString();
     ready();

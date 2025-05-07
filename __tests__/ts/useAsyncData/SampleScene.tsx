@@ -54,7 +54,9 @@ const Scene: React.FunctionComponent = () => {
       <div>
         <button
           data-testid="button"
-          onClick={() => setValue(1 + value)}
+          onClick={() => {
+            setValue(1 + value);
+          }}
           type="button"
         >
           Move
@@ -76,7 +78,9 @@ async function clickButton() {
   act(() => {
     button!.dispatchEvent(event);
   });
-  return act(() => mockTimer(10));
+  await act(async () => {
+    await mockTimer(10);
+  });
 }
 
 function initTestScene() {
@@ -112,7 +116,9 @@ test('Scenario I', async () => {
   act(() => {
     button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
-  await act(() => mockTimer(1));
+  await act(async () => {
+    await mockTimer(1);
+  });
   scene?.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).toHaveBeenCalledTimes(0);
@@ -132,12 +138,10 @@ test('Scenario I', async () => {
    * it causes no data re-loads, and the final state is the same as
    * before: ComponentA mounted. */
   for (let i = 0; i < 4; i += 1) {
-    /* eslint-disable no-await-in-loop, no-loop-func */
     await clickButton();
     scene?.snapshot();
     expect(loaderA).toHaveBeenCalledTimes(1);
     expect(loaderB).toHaveBeenCalledTimes(0);
-    /* eslint-enable no-await-in-loop */
   }
 
   /**

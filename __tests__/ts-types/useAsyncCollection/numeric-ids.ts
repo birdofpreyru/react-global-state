@@ -14,11 +14,12 @@ import type { ValueAtPathT } from '../../../src/utils';
 type IdT = 1 | 2 | 3 | 4 | 5;
 
 type StateT = {
-  collection: { [id in IdT]?: AsyncDataEnvelopeT<'OK'> };
+  collection: Record<IdT, AsyncDataEnvelopeT<'OK'> | undefined>;
 };
 
 describe('useAsyncCollection() supports numeric IDs', () => {
   test('pre-conditions', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type T = DataInEnvelopeAtPathT<StateT, 'collection.1'>;
 
     expect<ValueAtPathT<StateT, 'collection.1.data', void>>()
@@ -32,24 +33,30 @@ describe('useAsyncCollection() supports numeric IDs', () => {
   });
 
   test('base hook', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const resA = useAsyncCollection<StateT, 'collection', 1>(
       1,
       'collection',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (id: IdT) => 'OK',
     );
     expect<typeof resA>().type.toBe<UseAsyncDataResT<'OK'>>();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const resB = useAsyncCollection<StateT, 'collection', 1>(
       [1],
       'collection',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (id: IdT) => 'OK',
     );
     expect<typeof resB>().type.toBe<UseAsyncCollectionResT<'OK', 1>>();
 
     const idOrIds = 1 as IdT | IdT[];
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const resC = useAsyncCollection<StateT, 'collection', IdT>(
       idOrIds,
       'collection',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (id: IdT) => 'OK',
     );
     type ResC = UseAsyncDataResT<'OK'> | UseAsyncCollectionResT<'OK', IdT>;
@@ -58,17 +65,21 @@ describe('useAsyncCollection() supports numeric IDs', () => {
 
   test('hook with the state locked by withGlobalStateType', () => {
     const X = withGlobalStateType<StateT>();
-    const resA = X.useAsyncCollection(1, 'collection', (id: IdT) => 'OK' as 'OK');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const resA = X.useAsyncCollection(1, 'collection', (id: IdT) => 'OK' as const);
     expect<typeof resA>().type.toBe<UseAsyncDataResT<'OK'>>();
 
-    const resB = X.useAsyncCollection([1], 'collection', (id: IdT) => 'OK' as 'OK');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const resB = X.useAsyncCollection([1], 'collection', (id: IdT) => 'OK' as const);
     expect<typeof resB>().type.toBe<UseAsyncCollectionResT<'OK', 1>>();
 
     const idOrIds = 1 as IdT | IdT[];
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const resC = X.useAsyncCollection(
       idOrIds,
       'collection',
-      (id: IdT) => 'OK' as 'OK',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      (id: IdT) => 'OK' as const,
     );
     type ResC = UseAsyncDataResT<'OK'> | UseAsyncCollectionResT<'OK', IdT>;
     expect<typeof resC>().type.toBe<ResC>();

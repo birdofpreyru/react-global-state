@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+/* global document, MouseEvent */
+
 // A very generic test of basic useAsyncCollection() functionality.
 
 import mockdate from 'mockdate';
@@ -49,7 +51,7 @@ it('works as expected', async () => {
   scene.snapshot();
   expect(globalState.get()).toMatchSnapshot();
 
-  const button = document.getElementsByTagName('button')[0];
+  const [button] = document.getElementsByTagName('button');
   act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });

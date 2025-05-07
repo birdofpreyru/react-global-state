@@ -27,12 +27,14 @@ const ComponentB1: React.FunctionComponent = () => {
     'path.nested',
     0,
   );
-  if (state === undefined) throw Error('Invariant violated');
+
   return (
     <div>
       <button
         id="button"
-        onClick={() => setState(1 + state)}
+        onClick={() => {
+          setState(1 + state);
+        }}
         type="button"
       >
         {state}
@@ -63,9 +65,11 @@ afterEach(() => {
   }
 });
 
+// TODO: Correct name later.
+// eslint-disable-next-line jest/valid-title
 test('Test with objects', async () => {
   scene = mount(<Scene1 />);
-  await act(() => timer(1));
+  await act(async () => timer(1));
   scene.snapshot();
   const button = getButton(scene);
   await act(async () => {
@@ -78,9 +82,7 @@ test('Test with objects', async () => {
 /* Test with the state containing an array. */
 
 type StateT2 = {
-  path?: {
-    [key: string]: string;
-  }[];
+  path?: Array<Record<string, string>>;
 };
 
 const ComponentA2: React.FunctionComponent = () => {
@@ -109,7 +111,9 @@ const ComponentB2: React.FunctionComponent = () => {
     <div>
       <button
         id="button"
-        onClick={() => setState('value1-new')}
+        onClick={() => {
+          setState('value1-new');
+        }}
         type="button"
       >
         {state}
@@ -125,9 +129,11 @@ const Scene2: React.FunctionComponent = () => (
   </GlobalStateProvider>
 );
 
+// TODO: Correct name later.
+// eslint-disable-next-line jest/valid-title
 test('Test with arrays', async () => {
   scene = mount(<Scene2 />);
-  await act(() => timer(1));
+  await act(async () => timer(1));
   scene.snapshot();
   const button = getButton(scene);
   await act(async () => {
@@ -160,7 +166,9 @@ const ComponentB3: React.FunctionComponent = () => {
     <div>
       <button
         id="button"
-        onClick={() => setState('test')}
+        onClick={() => {
+          setState('test');
+        }}
         type="button"
       >
         {state}
@@ -176,9 +184,11 @@ const Scene3: React.FunctionComponent = () => (
   </GlobalStateProvider>
 );
 
+// TODO: Correct name later.
+// eslint-disable-next-line jest/valid-title
 test('Test with strings', async () => {
   scene = mount(<Scene3 />);
-  await act(() => timer(1));
+  await act(async () => timer(1));
   scene.snapshot();
   const button = getButton(scene);
   await act(async () => {

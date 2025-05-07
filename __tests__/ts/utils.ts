@@ -33,7 +33,9 @@ describe('isDebugMode()', () => {
 
   test('non-node environment', () => {
     Object.defineProperty(process.env, 'NODE_ENV', {
-      get: () => { throw Error('Test error'); },
+      get: () => {
+        throw Error('Test error');
+      },
     });
     process.env.REACT_GLOBAL_STATE_DEBUG = '1';
     expect(isDebugMode()).toBe(false);

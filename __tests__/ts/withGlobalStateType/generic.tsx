@@ -7,21 +7,17 @@ import { withGlobalStateType } from 'src/index';
 type ValueT = 'value-a' | 'value-b';
 type StateT = { some: { path: ValueT } };
 
-const GS = withGlobalStateType<StateT>();
-
-it('withGlobalStateType() result matches snapshot', () => {
-  expect(GS).toMatchSnapshot();
-});
+const Gs = withGlobalStateType<StateT>();
 
 const TestComponent: React.FunctionComponent = () => {
-  const [x] = GS.useGlobalState('some.path');
+  const [x] = Gs.useGlobalState('some.path');
   return <div>{x}</div>;
 };
 
 const TestScene: React.FunctionComponent = () => (
-  <GS.GlobalStateProvider initialState={{ some: { path: 'value-b' } }}>
+  <Gs.GlobalStateProvider initialState={{ some: { path: 'value-b' } }}>
     <TestComponent />
-  </GS.GlobalStateProvider>
+  </Gs.GlobalStateProvider>
 );
 
 let scene: MountedSceneT | undefined;
@@ -31,6 +27,10 @@ afterEach(() => {
     scene.destroy();
     scene = undefined;
   }
+});
+
+it('withGlobalStateType() result matches snapshot', () => {
+  expect(Gs).toMatchSnapshot();
 });
 
 describe('withGlobalStateType().useGlobalState()', () => {

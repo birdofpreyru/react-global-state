@@ -1,12 +1,14 @@
 /** @jest-environment jsdom */
 
+/* global console, document, MouseEvent */
+
 /**
  * Tests `useGlobalState(..)` functionality in the "CounterScene":
  * one component shows a value from the global state, another component
  * implements a button, which updates that state when clicked.
  */
 
-import GlobalState from 'GlobalState';
+import GlobalState from '../../../src/GlobalState';
 import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
@@ -49,6 +51,7 @@ function TestScene({ stateProxy }) {
 }
 
 let scene = null;
+
 afterEach(() => {
   if (scene) {
     scene.destroy();
@@ -86,7 +89,7 @@ test('The scene works as expected', () => {
   scene.snapshot();
 });
 
-test('Test of `stateProxy` prop of the state provider', () => {
+it('Test of `stateProxy` prop of the state provider', () => {
   scene = mount(<TestScene stateProxy />);
   scene.snapshot();
   let button = document.querySelector('[data-testid=button-1]');
@@ -103,7 +106,7 @@ test('Test of `stateProxy` prop of the state provider', () => {
   scene.snapshot();
 });
 
-test('Test of `stateProxy` prop of the state provider II', () => {
+it('Test of `stateProxy` prop of the state provider II', () => {
   const innerGlobalState = new GlobalState();
   scene = mount(<TestScene stateProxy={innerGlobalState} />);
   expect(innerGlobalState.get()).toMatchSnapshot();

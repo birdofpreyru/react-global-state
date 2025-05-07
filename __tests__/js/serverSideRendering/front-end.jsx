@@ -3,6 +3,8 @@
 // ^^^ although it is strange to do SSR test in JSDom environment,
 // some of the tests should be done at the client side.
 
+/* global console, process, require */
+
 /**
  * Base test of the server-side rendering features.
  */
@@ -10,7 +12,7 @@
 import mockdate from 'mockdate';
 
 let JU;
-let LIB;
+let Lib;
 
 jest.mock('uuid');
 
@@ -46,11 +48,11 @@ afterEach(() => {
 });
 
 test('Scene test in the front-end mode', async () => {
-  LIB = require('src');
+  Lib = require('src');
   scene = JU.mount((
-    <LIB.GlobalStateProvider>
+    <Lib.GlobalStateProvider>
       <Scene />
-    </LIB.GlobalStateProvider>
+    </Lib.GlobalStateProvider>
   ));
   scene.snapshot();
   await JU.act(async () => {
@@ -72,7 +74,7 @@ test('Scene test in the front-end mode', async () => {
 
 describe('Test `getSsrContext()` function', () => {
   function SceneUsingSsrContext({ throwWithoutSsrContext }) {
-    const ssrContext = LIB.getSsrContext(throwWithoutSsrContext);
+    const ssrContext = Lib.getSsrContext(throwWithoutSsrContext);
     return (
       <div>
         {JSON.stringify(ssrContext, null, 2)}
@@ -81,6 +83,7 @@ describe('Test `getSsrContext()` function', () => {
   }
 
   let consoleError;
+
   beforeAll(() => {
     consoleError = console.error;
   });
@@ -94,7 +97,7 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Missing GlobalStateProvider', () => {
-    LIB = require('src');
+    Lib = require('src');
     console.error = () => null;
     let message;
     try {
@@ -106,24 +109,24 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when exists', () => {
-    LIB = require('src');
+    Lib = require('src');
     scene = JU.mount((
-      <LIB.GlobalStateProvider ssrContext={{ key: 'Dummy SSR Context' }}>
+      <Lib.GlobalStateProvider ssrContext={{ key: 'Dummy SSR Context' }}>
         <SceneUsingSsrContext />
-      </LIB.GlobalStateProvider>
+      </Lib.GlobalStateProvider>
     ));
     scene.snapshot();
   });
 
   test('Get SSR context when does not exist', () => {
-    LIB = require('src');
+    Lib = require('src');
     console.error = () => null;
     let message;
     try {
       JU.mount((
-        <LIB.GlobalStateProvider>
+        <Lib.GlobalStateProvider>
           <SceneUsingSsrContext />
-        </LIB.GlobalStateProvider>
+        </Lib.GlobalStateProvider>
       ));
     } catch (error) {
       ({ message } = error);
@@ -132,11 +135,11 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when does not exist, but no throw is opted in', () => {
-    LIB = require('src');
+    Lib = require('src');
     scene = JU.mount((
-      <LIB.GlobalStateProvider>
+      <Lib.GlobalStateProvider>
         <SceneUsingSsrContext throwWithoutSsrContext={false} />
-      </LIB.GlobalStateProvider>
+      </Lib.GlobalStateProvider>
     ));
     scene.snapshot();
   });

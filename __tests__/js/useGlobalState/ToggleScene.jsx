@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+/* global document, MouseEvent */
+
 import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
@@ -28,6 +30,7 @@ function Scene() {
 }
 
 let scene = null;
+
 afterEach(() => {
   if (scene) {
     scene.destroy();
@@ -38,7 +41,7 @@ afterEach(() => {
 test('The scene works as expected', () => {
   scene = mount(<Scene />);
   scene.snapshot();
-  const button = document.getElementsByTagName('button')[0];
+  const [button] = document.getElementsByTagName('button');
   act(() => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();

@@ -1,4 +1,7 @@
+import type * as SrcNS from '../../src';
+
 test('Library exports match expectations', () => {
-  const lib = require('../../src');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const lib = require('../../src') as typeof SrcNS;
   expect(lib).toMatchSnapshot();
 });

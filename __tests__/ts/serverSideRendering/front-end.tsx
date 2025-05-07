@@ -87,6 +87,7 @@ describe('Test `getSsrContext()` function', () => {
   };
 
   let consoleError: typeof console.error;
+
   beforeAll(() => {
     consoleError = console.error;
   });
@@ -111,6 +112,8 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when exists', () => {
+    // TODO: Revise.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     class SceneSsrContext extends SsrContext<any> {
       key: string;
 

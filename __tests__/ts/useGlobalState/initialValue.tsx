@@ -22,7 +22,9 @@ const Component: React.FunctionComponent = () => {
     <div>
       {value}
       <button
-        onClick={() => setValue('value')}
+        onClick={() => {
+          setValue('value');
+        }}
         type="button"
       >
         Set Value
@@ -31,8 +33,10 @@ const Component: React.FunctionComponent = () => {
         // NOTE: TS forbids setting `undefined` value, because at the runtime
         // "initial" value will override it at the next render. We want to test
         // that runtime behavior, thus expecting that error here.
-        // @ts-expect-error
-        onClick={() => setValue(undefined)}
+        onClick={() => {
+          // @ts-expect-error "for test purposes"
+          setValue(undefined);
+        }}
         type="button"
       >
         Reset
@@ -52,14 +56,18 @@ const Scene: React.FunctionComponent<{
 test('base behavior', () => {
   const gs = new GlobalState({});
   const scene = mount(<Scene gs={gs} />);
-  expect(gs.get()).toEqual({ key: 'initial' });
+  expect(gs.get()).toStrictEqual({ key: 'initial' });
   scene.snapshot();
 
-  act(() => getByText(scene, 'Set Value').click());
-  expect(gs.get()).toEqual({ key: 'value' });
+  act(() => {
+    getByText(scene, 'Set Value').click();
+  });
+  expect(gs.get()).toStrictEqual({ key: 'value' });
   scene.snapshot();
 
-  act(() => getByText(scene, 'Reset').click());
-  expect(gs.get()).toEqual({ key: 'initial' });
+  act(() => {
+    getByText(scene, 'Reset').click();
+  });
+  expect(gs.get()).toStrictEqual({ key: 'initial' });
   scene.snapshot();
 });

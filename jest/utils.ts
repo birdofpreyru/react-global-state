@@ -1,3 +1,5 @@
+/* eslint-disable no-console, import/no-extraneous-dependencies */
+
 /**
  * Jest test utils.
  */
@@ -9,14 +11,13 @@ import { type Root, createRoot } from 'react-dom/client';
 
 export { act };
 
-(global as { [key: string]: unknown }).IS_REACT_ACT_ENVIRONMENT = true;
+(global as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = true;
 
 /**
  * Generates a mock UUID.
  * @param seed
- * @return
  */
-export function getMockUuid(seed = 0) {
+export function getMockUuid(seed = 0): string {
   const x = seed.toString(16).padStart(32, '0');
   return `${x.slice(0, 8)}-${x.slice(8, 12)}-${x.slice(12, 16)}-${x.slice(16, 20)}-${x.slice(20)}`;
 }
@@ -25,13 +26,13 @@ export const consoleLogs: unknown[] = [];
 
 const originalConsole = console.log;
 
-export async function mockConsoleLog() {
+export function mockConsoleLog(): void {
   console.log = (...args) => consoleLogs.push(cloneDeep(args));
   console.groupCollapsed = console.log;
   consoleLogs.splice(0);
 }
 
-export async function unMockConsoleLog() {
+export function unMockConsoleLog(): void {
   console.log = originalConsole;
 }
 
@@ -41,9 +42,9 @@ export async function unMockConsoleLog() {
  * @returns Wait for this to "jump after" any async code which should
  *  be executed because of the mock time movement.
  */
-export async function mockTimer(time: number) {
+export async function mockTimer(time: number): Promise<void> {
   mockdate.set(time + Date.now());
-  jest.advanceTimersByTime(time);
+  await jest.advanceTimersByTimeAsync(time);
 }
 
 export type MountedSceneT = HTMLElement & {
@@ -62,11 +63,15 @@ export function mount(scene: ReactNode): MountedSceneT {
   const res: MountedSceneT = (rootElement as unknown) as MountedSceneT;
 
   res.destroy = () => {
-    act(() => root.unmount());
+    act(() => {
+      root.unmount();
+    });
     res.remove();
   };
 
-  res.snapshot = () => expect(res).toMatchSnapshot();
+  res.snapshot = () => {
+    expect(res).toMatchSnapshot();
+  };
 
   document.body.appendChild(rootElement);
   act(() => {
@@ -82,11 +87,13 @@ export function mount(scene: ReactNode): MountedSceneT {
  * @param time [miliseconds]
  * @return Wait for this.
  */
-export function wait(time: number) {
-  return act(() => mockTimer(time));
+export async function wait(time: number): Promise<void> {
+  await act(async () => {
+    await mockTimer(time);
+  });
 }
 
-export function timer(time: number) {
+export async function timer(time: number): Promise<unknown> {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
   });

@@ -1,8 +1,10 @@
+/* global process, require */
+
 import mockdate from 'mockdate';
 
 import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils';
 
-let LIB;
+let Lib;
 let ReactDOM;
 
 jest.mock('uuid');
@@ -39,11 +41,11 @@ afterEach(() => {
 });
 
 test('Naive server-side rendering', () => {
-  LIB = require('src');
+  Lib = require('src');
   const render = ReactDOM.renderToString((
-    <LIB.GlobalStateProvider>
+    <Lib.GlobalStateProvider>
       <Scene />
-    </LIB.GlobalStateProvider>
+    </Lib.GlobalStateProvider>
   ));
   expect(render).toMatchSnapshot();
 });
@@ -52,31 +54,29 @@ test('Naive server-side rendering', () => {
  * This is the sample SSR code assembly.
  */
 async function serverSideRender() {
-  LIB = require('src');
+  Lib = require('src');
   let render;
   serverSideRender.round = 0;
   const ssrContext = { state: {} };
   for (; serverSideRender.round < 10; serverSideRender.round += 1) {
-    /* eslint-disable no-await-in-loop */
     render = ReactDOM.renderToString((
-      <LIB.GlobalStateProvider
+      <Lib.GlobalStateProvider
         initialState={ssrContext.state}
         ssrContext={ssrContext}
       >
         <Scene />
-      </LIB.GlobalStateProvider>
+      </Lib.GlobalStateProvider>
     ));
     if (ssrContext.dirty) {
       await Promise.allSettled(ssrContext.pending);
     } else break;
-    /* eslint-disable no-await-in-loop */
   }
   return render;
 }
 
 test('Smart server-sider rendering', async () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
-  LIB = require('src');
+  Lib = require('src');
   mockConsoleLog();
   let render = serverSideRender();
   await jest.runAllTimers();

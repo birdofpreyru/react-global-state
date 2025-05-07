@@ -51,6 +51,8 @@ it('works as expected', () => {
   // after act() completion, however if the issue is present the value after
   // act() remains '12345', and the selection position is reset to the end (5).
   act(() => {
+    // TODO: Revise later.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
     const setter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
       'value',

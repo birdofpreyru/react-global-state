@@ -61,8 +61,8 @@ let button: Element | null;
 
 async function wait(time: number) {
   await act(async () => {
-    await mockTimer(time);
     mockdate.set(Date.now() + time);
+    await mockTimer(time);
   });
 }
 

@@ -1,5 +1,7 @@
 /** @jest-environment jsdom */
 
+/* global setTimeout */
+
 /**
  * Tests that if a function is used as the value, it is not called during
  * state update.
@@ -44,11 +46,13 @@ test('Functional initial value', () => {
 function TestComponent03() {
   TestComponent03.pass += 1;
   const [value] = useGlobalState('path', () => TestComponent03.func);
-  expect(value === TestComponent03.func).toBe(true);
+  expect(value).toBe(TestComponent03.func);
   return null;
 }
 
 TestComponent03.pass = 0;
+// TODO: Revise.
+// eslint-disable-next-line jest/prefer-spy-on
 TestComponent03.func = jest.fn();
 
 test('Functional initial value, returing a function', () => {
@@ -62,8 +66,12 @@ function TestComponent04() {
   const [value, set] = useGlobalState('path', 'value-04');
   setTimeout(() => set('value-04-2'));
   switch (TestComponent04.pass) {
-    case 1: expect(value).toBe('value-04'); break;
-    case 2: expect(value).toBe('value-04-2'); break;
+    case 1:
+      expect(value).toBe('value-04');
+      break;
+    case 2:
+      expect(value).toBe('value-04-2');
+      break;
     default: throw Error('Unexpected render pass');
   }
   return null;
@@ -80,8 +88,12 @@ function TestComponent05() {
   const [value, set] = useGlobalState('path', () => 'value-05');
   if (value.endsWith('05')) set((v) => `${v}-2`);
   switch (TestComponent05.pass) {
-    case 1: expect(value).toBe('value-05'); break;
-    case 2: expect(value).toBe('value-05-2'); break;
+    case 1:
+      expect(value).toBe('value-05');
+      break;
+    case 2:
+      expect(value).toBe('value-05-2');
+      break;
     default: throw Error('Unexpected render pass');
   }
   return null;
@@ -98,15 +110,23 @@ function TestComponent06() {
   const [value, set] = useGlobalState('path', () => TestComponent06.func);
   setTimeout(() => set(() => TestComponent06.func2));
   switch (TestComponent06.pass) {
-    case 1: expect(value === TestComponent06.func).toBe(true); break;
-    case 2: expect(value === TestComponent06.func2).toBe(true); break;
+    case 1:
+      expect(value).toBe(TestComponent06.func);
+      break;
+    case 2:
+      expect(value).toBe(TestComponent06.func2);
+      break;
     default: throw Error('Unexpected render pass');
   }
   return null;
 }
 
 TestComponent06.pass = 0;
+// TODO: Revise
+// eslint-disable-next-line jest/prefer-spy-on
 TestComponent06.func = jest.fn();
+// TODO: revise
+// eslint-disable-next-line jest/prefer-spy-on
 TestComponent06.func2 = jest.fn();
 
 test('Functional update to a function value', () => {
@@ -118,8 +138,8 @@ test('Functional update to a function value', () => {
 function TestComponent07() {
   TestComponent07.pass += 1;
   const [value, set] = useGlobalState('path', () => 'value-07');
-  if (!TestComponent07.set) TestComponent07.set = set;
-  else expect(set === TestComponent07.set).toBe(true);
+  if (TestComponent07.set) expect(set).toBe(TestComponent07.set);
+  else TestComponent07.set = set;
 
   // NOTE: Without useEffect(), doing these state updates directly inside
   // the render, we gonna end up with an infinite update loop, and error
@@ -128,9 +148,15 @@ function TestComponent07() {
     if (value.endsWith('07')) set((v) => `${v}-2`);
     else if (value.endsWith('-2')) set((v) => `${v}-3`);
     switch (TestComponent07.pass) {
-      case 1: expect(value).toBe('value-07'); break;
-      case 2: expect(value).toBe('value-07-2'); break;
-      case 3: expect(value).toBe('value-07-2-3'); break;
+      case 1:
+        expect(value).toBe('value-07');
+        break;
+      case 2:
+        expect(value).toBe('value-07-2');
+        break;
+      case 3:
+        expect(value).toBe('value-07-2-3');
+        break;
       default: throw Error('Unexpected render pass');
     }
   }, [value, set]);
