@@ -1,14 +1,16 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.19.1",
+  "version": "0.19.2",
   "description": "Hook-based global state for React",
   "main": "./build/code/index.js",
   "types": "./build/types/index.d.ts",
   "exports": {
+    "require": "./build/cjs/index.js",
     "default": "./build/code/index.js"
   },
   "scripts": {
-    "build": "rimraf build && npm run build:types && npm run build:code",
+    "build": "rimraf build && npm run build:types && npm run build:code && npm run build:cjs",
+    "build:cjs": "rimraf buidl/cjs && babel src -x .ts,.tsx --out-dir build/cjs --source-maps",
     "build:code": "rimraf build/code && babel src -x .ts,.tsx --out-dir build/code --source-maps --config-file ./babel.module.config.js",
     "build:types": "rimraf build/types && tsc --project tsconfig.types.json",
     "jest": "npm run jest:types && npm run jest:logic",
