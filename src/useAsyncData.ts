@@ -24,15 +24,23 @@ import type SsrContext from './SsrContext';
 
 export const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
+// NOTE: Here, and below it is important whether a loader and related
+// (re-)loading handlers return a promise or a value, as returning promises
+// mean the async mode, in which related global state values are updated
+// asynchronously (the new value comes into effect in a next rendering cycle),
+// while returning a non-promise value means a synchronous mode, in which
+// related global state values are updated immediately, within the current
+// rendering cycle.
+
 export type AsyncDataLoaderT<DataT>
 = (oldData: null | DataT, meta: {
   isAborted: () => boolean;
   oldDataTimestamp: number;
   setAbortCallback: (cb: () => void) => void;
-}) => DataT | Promise<DataT | null> | null;
+}) => (DataT | null) | Promise<DataT | null>;
 
 export type AsyncDataReloaderT<DataT>
-= (loader?: AsyncDataLoaderT<DataT>) => Promise<void>;
+= (loader?: AsyncDataLoaderT<DataT>) => void | Promise<void>;
 
 export type AsyncDataEnvelopeT<DataT> = {
   data: null | DataT;
@@ -71,6 +79,49 @@ export type UseAsyncDataResT<DataT> = {
   timestamp: number;
 };
 
+function finalizeLoad<DataT>(
+  data: DataT,
+  path: null | string | undefined,
+  globalState: GlobalState<unknown, SsrContext<unknown>>,
+  operationId: OperationIdT,
+): void {
+  // NOTE: We don't really mean that it hasn't been aborted,
+  // the "false" flag rather says we don't need to trigger "on aborted"
+  // callback for this operation, if any is registered - just drop it.
+  //
+  // Also, in the synchronous state update mode, we don't really need to set up
+  // the abort callback at all (as there is no way to use it), but for now it is
+  // set up, thus it should be cleaned out here.
+  globalState.asyncDataLoadDone(operationId, false);
+
+  type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
+  const state: EnvT = globalState.get<ForceT, EnvT>(path);
+
+  if (operationId === state?.operationId) {
+    if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+      /* eslint-disable no-console */
+      console.groupCollapsed(
+        `ReactGlobalState: async data (re-)loaded. Path: "${
+          path ?? ''
+        }"`,
+      );
+      console.log('Data:', cloneDeepForLog(data, path ?? ''));
+      /* eslint-enable no-console */
+    }
+    globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
+      ...state,
+      data,
+      operationId: '',
+      timestamp: Date.now(),
+    });
+    if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+      /* eslint-disable no-console */
+      console.groupEnd();
+      /* eslint-enable no-console */
+    }
+  }
+}
+
 /**
  * Executes the data loading operation.
  * @param path Data segment path inside the global state.
@@ -85,7 +136,7 @@ export type UseAsyncDataResT<DataT> = {
  * @return Resolves once the operation is done.
  * @ignore
  */
-export async function load<DataT>(
+export function load<DataT>(
   path: null | string | undefined,
   loader: AsyncDataLoaderT<DataT>,
   globalState: GlobalState<unknown, SsrContext<unknown>>,
@@ -96,7 +147,7 @@ export async function load<DataT>(
   // the caller methods as well, in some cases (see useAsyncCollection()
   // use case as well).
   operationId: OperationIdT = `C${uuid()}`,
-): Promise<void> {
+): void | Promise<void> {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
     console.log(
@@ -137,44 +188,19 @@ export async function load<DataT>(
     },
   });
 
-  let data: DataT | null;
-
-  try {
-    data = dataOrPromise instanceof Promise
-      ? await dataOrPromise : dataOrPromise;
-  } finally {
-    // NOTE: We don't really mean that it hasn't been aborted,
-    // the "false" flag rather says we don't need to trigger "on aborted"
-    // callback for this operation, if any is registered - just drop it.
-    globalState.asyncDataLoadDone(operationId, false);
-  }
-
-  type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
-  const state: EnvT = globalState.get<ForceT, EnvT>(path);
-
-  if (operationId === state?.operationId) {
-    if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-      /* eslint-disable no-console */
-      console.groupCollapsed(
-        `ReactGlobalState: async data (re-)loaded. Path: "${
-          path ?? ''
-        }"`,
-      );
-      console.log('Data:', cloneDeepForLog(data, path ?? ''));
-      /* eslint-enable no-console */
-    }
-    globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
-      ...state,
-      data,
-      operationId: '',
-      timestamp: Date.now(),
+  if (dataOrPromise instanceof Promise) {
+    return dataOrPromise.then((data) => {
+      finalizeLoad(data, path, globalState, operationId);
+    }).finally(() => {
+      // NOTE: We don't really mean that it hasn't been aborted,
+      // the "false" flag rather says we don't need to trigger "on aborted"
+      // callback for this operation, if any is registered - just drop it.
+      globalState.asyncDataLoadDone(operationId, false);
     });
-    if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-      /* eslint-disable no-console */
-      console.groupEnd();
-      /* eslint-enable no-console */
-    }
   }
+
+  finalizeLoad(dataOrPromise, path, globalState, operationId);
+  return undefined;
 }
 
 /**
@@ -237,7 +263,9 @@ function useAsyncData<DataT>(
   heap.path = path;
   heap.loader = loader;
 
-  heap.reload ??= async (customLoader?: AsyncDataLoaderT<DataT>) => {
+  heap.reload ??= (
+    customLoader?: AsyncDataLoaderT<DataT>,
+  ): void | Promise<void> => {
     const localLoader = customLoader ?? heap.loader;
     if (!localLoader || !heap.globalState) throw Error('Internal error');
     return load(heap.path, localLoader, heap.globalState);
@@ -248,12 +276,13 @@ function useAsyncData<DataT>(
       !options.disabled && !options.noSSR
       && !state.operationId && !state.timestamp
     ) {
-      globalState.ssrContext.pending.push(
-        load(path, loader, globalState, {
-          data: state.data,
-          timestamp: state.timestamp,
-        }, `S${uuid()}`),
-      );
+      const promiseOrVoid = load(path, loader, globalState, {
+        data: state.data,
+        timestamp: state.timestamp,
+      }, `S${uuid()}`);
+      if (promiseOrVoid instanceof Promise) {
+        globalState.ssrContext.pending.push(promiseOrVoid);
+      }
     }
   } else {
     const { disabled } = options;

@@ -43,13 +43,13 @@ export type AsyncCollectionLoaderT<
     isAborted: () => boolean;
     oldDataTimestamp: number;
     setAbortCallback: (cb: () => void) => void;
-  }) => DataT | Promise<DataT | null> | null;
+  }) => (DataT | null) | Promise<DataT | null>;
 
 export type AsyncCollectionReloaderT<
   DataT,
   IdT extends number | string = number | string,
 >
-  = (loader?: AsyncCollectionLoaderT<DataT, IdT>) => Promise<void>;
+  = (loader?: AsyncCollectionLoaderT<DataT, IdT>) => void | Promise<void>;
 
 type CollectionItemT<DataT> = {
   data: DataT | null;
@@ -208,7 +208,7 @@ function useHeap<
       for (const id of heap2.ids) {
         const itemPath = heap2.path ? `${heap2.path}.${id}` : `${id}`;
 
-        await load(
+        const promiseOrVoid = load(
           itemPath,
           // TODO: Revise! Most probably we don't have fully correct loader
           // typing, as it may return either promise or value, and those two
@@ -219,6 +219,8 @@ function useHeap<
           (oldData: DataT | null, meta) => localLoader(id, oldData, meta),
           heap2.globalState,
         );
+
+        if (promiseOrVoid instanceof Promise) await promiseOrVoid;
       }
     };
     heap = {
@@ -349,18 +351,21 @@ function useAsyncCollection<
         },
       );
       if (!state.timestamp && !state.operationId) {
-        globalState.ssrContext.pending.push(
-          // TODO: Revise! Most probably we don't have fully correct loader
-          // typing, as it may return either promise or value, and those two
-          // cases call for different runtime behavior, which in turns only
-          // happens if the outer function on the next line matches the same
-          // async / sync signature.
-          // eslint-disable-next-line @typescript-eslint/promise-function-async
-          load(itemPath, (...args) => loader(id, ...args), globalState, {
+        const promiseOrVoid = load(
+          itemPath,
+          (...args):
+            DataT | null | Promise<DataT | null> => loader(id, ...args),
+          globalState,
+          {
             data: state.data,
             timestamp: state.timestamp,
-          }, operationId),
+          },
+          operationId,
         );
+
+        if (promiseOrVoid instanceof Promise) {
+          globalState.ssrContext.pending.push(promiseOrVoid);
+        }
       }
     }
 
