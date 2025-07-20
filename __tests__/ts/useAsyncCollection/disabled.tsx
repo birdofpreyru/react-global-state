@@ -42,6 +42,5 @@ const Scene: FunctionComponent = () => (
 test('useAsyncCollection(): "disabled" option works', () => {
   mount(<Scene />);
   expect(loader).not.toHaveBeenCalled();
-  console.log(res);
   expect(res).toMatchSnapshot();
 });

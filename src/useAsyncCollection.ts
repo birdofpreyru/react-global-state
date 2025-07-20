@@ -160,8 +160,12 @@ function normalizeIds<IdT extends number | string>(
   idOrIds: IdT | IdT[],
 ): IdT[] {
   if (Array.isArray(idOrIds)) {
-    const res = [...idOrIds];
+    // Removes ID duplicates.
+    const res = Array.from(new Set(idOrIds));
+
+    // Ensures stable ID order.
     res.sort((a, b) => a.toString().localeCompare(b.toString()));
+
     return res;
   }
   return [idOrIds];
