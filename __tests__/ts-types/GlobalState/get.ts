@@ -22,12 +22,12 @@ expect(gs.get(null)).type.toBe<StateT1>();
 expect(gs.get(undefined)).type.toBe<StateT1>();
 
 declare const p1: null | string;
-// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-expect(gs.get(p1)).type.toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-invalid-void-type
+expect(gs.get(p1)).type.toBe<void>();
 
 declare const p2: string;
-// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-expect(gs.get(p2)).type.toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-invalid-void-type
+expect(gs.get(p2)).type.toBe<void>();
 
 expect(() => {
   // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-unused-vars
@@ -35,8 +35,8 @@ expect(() => {
 }).type.toRaiseError(2322);
 
 expect(gs.get('some.path')).type.toBe<ValueT>();
-// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-expect(gs.get('invalid.path')).type.toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-invalid-void-type
+expect(gs.get('invalid.path')).type.toBe<void>();
 
 expect(() => gs.get('some.path', {
   initialValue: 'invalid',
@@ -48,7 +48,7 @@ expect(() => gs.get('invalid.path', {
 })).type.toRaiseError(2769);
 
 // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-unnecessary-type-arguments, @typescript-eslint/no-invalid-void-type
-expect(gs.get<ForceT, void>()).type.toBeVoid();
+expect(gs.get<ForceT, void>()).type.toBe<void>();
 expect(gs.get<ForceT, 'OK'>()).type.toBe<'OK'>();
 
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type

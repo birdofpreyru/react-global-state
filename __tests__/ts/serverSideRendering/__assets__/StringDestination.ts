@@ -1,7 +1,7 @@
 // Writable stream which accumulate Buffer chunks into a string and allows to
 // await for it.
 
-import { Writable } from 'stream';
+import { Writable } from 'node:stream';
 
 import { Barrier } from '@dr.pogodin/js-utils';
 

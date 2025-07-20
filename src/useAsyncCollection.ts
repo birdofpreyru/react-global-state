@@ -38,12 +38,11 @@ export type AsyncCollectionT<
 export type AsyncCollectionLoaderT<
   DataT,
   IdT extends number | string = number | string,
-> =
-  (id: IdT, oldData: null | DataT, meta: {
-    isAborted: () => boolean;
-    oldDataTimestamp: number;
-    setAbortCallback: (cb: () => void) => void;
-  }) => (DataT | null) | Promise<DataT | null>;
+> = (id: IdT, oldData: null | DataT, meta: {
+  isAborted: () => boolean;
+  oldDataTimestamp: number;
+  setAbortCallback: (cb: () => void) => void;
+}) => DataT | null | Promise<DataT | null>;
 
 export type AsyncCollectionReloaderT<
   DataT,

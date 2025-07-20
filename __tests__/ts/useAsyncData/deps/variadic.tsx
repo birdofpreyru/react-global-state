@@ -4,6 +4,8 @@
 
 import { type FunctionComponent, useState } from 'react';
 
+import { getByTestId } from '@testing-library/dom';
+
 import { act, mount } from 'jest/utils';
 
 import {
@@ -11,7 +13,6 @@ import {
   newAsyncDataEnvelope,
   withGlobalStateType,
 } from 'src';
-import { getByTestId } from '@testing-library/dom';
 
 type StateT = {
   path: AsyncDataEnvelopeT<string[]>;

@@ -3,11 +3,11 @@
 import { useState } from 'react';
 
 import { SEC_MS, timer } from '@dr.pogodin/js-utils';
+import { getByTestId } from '@testing-library/dom';
 
 import { act, mount } from 'jest/utils';
 
 import { type AsyncDataEnvelopeT, newAsyncDataEnvelope, withGlobalStateType } from 'src';
-import { getByTestId } from '@testing-library/dom';
 
 jest.useFakeTimers();
 

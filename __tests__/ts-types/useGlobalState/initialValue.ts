@@ -18,6 +18,7 @@ test('with non-undefined "initialValue"', () => {
 });
 
 test('with possibly undefined "initialValue"', () => {
+  // eslint-disable-next-line no-unassigned-vars
   let initialValue: string | undefined;
   expect(useGlobalState<StateT, 'key'>('key', initialValue))
     .type.toBe<UseGlobalStateResT<string | undefined>>();

@@ -1,8 +1,11 @@
 /** @jest-environment jsdom */
 
-import { act, mount, timer } from 'jest/utils';
-import { getByText } from '@testing-library/react';
 import { useState } from 'react';
+
+import { getByText } from '@testing-library/react';
+
+import { act, mount, timer } from 'jest/utils';
+
 import { type AsyncDataEnvelopeT, withGlobalStateType } from 'src';
 
 jest.useFakeTimers();

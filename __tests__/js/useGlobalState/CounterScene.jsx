@@ -8,9 +8,10 @@
  * implements a button, which updates that state when clicked.
  */
 
-import GlobalState from '../../../src/GlobalState';
 import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
+
+import GlobalState from '../../../src/GlobalState';
 
 jest.useFakeTimers();
 

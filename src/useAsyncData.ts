@@ -37,7 +37,7 @@ export type AsyncDataLoaderT<DataT>
   isAborted: () => boolean;
   oldDataTimestamp: number;
   setAbortCallback: (cb: () => void) => void;
-}) => (DataT | null) | Promise<DataT | null>;
+}) => DataT | null | Promise<DataT | null>;
 
 export type AsyncDataReloaderT<DataT>
 = (loader?: AsyncDataLoaderT<DataT>) => void | Promise<void>;

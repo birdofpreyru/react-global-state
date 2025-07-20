@@ -16,4 +16,4 @@ expect(gs.set('some.path', 'value-b')).type.toBe<ValueT>();
 
 expect(() => gs.set('some.path', 'invalid')).type.toRaiseError(2769);
 
-expect(gs.set<ForceT, number>('some.path', 10)).type.toBeNumber();
+expect(gs.set<ForceT, number>('some.path', 10)).type.toBe<number>();

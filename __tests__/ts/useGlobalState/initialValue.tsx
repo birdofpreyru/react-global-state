@@ -34,7 +34,7 @@ const Component: React.FunctionComponent = () => {
         // "initial" value will override it at the next render. We want to test
         // that runtime behavior, thus expecting that error here.
         onClick={() => {
-          // @ts-expect-error "for test purposes"
+          // @ts-expect-error Argument of type 'undefined' is not assignable to parameter of type 'SetStateAction<string>'.
           setValue(undefined);
         }}
         type="button"

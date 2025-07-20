@@ -20,8 +20,8 @@ const SOME_PATH = 'some.path';
 expect(useGlobalState<StateT>()).type.toBe<UseGlobalStateResT<StateT>>();
 // eslint-disable-next-line react-hooks/rules-of-hooks
 expect(useGlobalState(null)).type.toBe<UseGlobalStateResT<void>>();
-// eslint-disable-next-line react-hooks/rules-of-hooks
-expect(useGlobalState(null)[0]).type.toBeVoid();
+// eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/no-invalid-void-type
+expect(useGlobalState(null)[0]).type.toBe<void>();
 
 expect(() => {
   const [, setter] = useGlobalState(null);
