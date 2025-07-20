@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`useAsyncCollection(): "disabled" option works 1`] = `
+{
+  "data": null,
+  "loading": false,
+  "reload": [Function],
+  "timestamp": 0,
+}
+`;

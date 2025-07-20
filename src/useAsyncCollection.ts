@@ -339,37 +339,41 @@ function useAsyncCollection<
   const heap = useHeap(ids, path, loader, globalState);
 
   // Server-side logic.
-  if (globalState.ssrContext && !options.noSSR) {
-    const operationId: OperationIdT = `S${uuid()}`;
-    for (const id of ids) {
-      const itemPath = path ? `${path}.${id}` : `${id}`;
-      const state = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(
-        itemPath,
-        {
-          initialValue: newAsyncDataEnvelope<DataT>(),
-        },
-      );
-      if (!state.timestamp && !state.operationId) {
-        const promiseOrVoid = load(
+  if (globalState.ssrContext) {
+    if (!options.disabled && !options.noSSR) {
+      const operationId: OperationIdT = `S${uuid()}`;
+      for (const id of ids) {
+        const itemPath = path ? `${path}.${id}` : `${id}`;
+        const state = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(
           itemPath,
-          (...args):
-            DataT | null | Promise<DataT | null> => loader(id, ...args),
-          globalState,
           {
-            data: state.data,
-            timestamp: state.timestamp,
+            initialValue: newAsyncDataEnvelope<DataT>(),
           },
-          operationId,
         );
+        if (!state.timestamp && !state.operationId) {
+          const promiseOrVoid = load(
+            itemPath,
+            (...args):
+              DataT | null | Promise<DataT | null> => loader(id, ...args),
+            globalState,
+            {
+              data: state.data,
+              timestamp: state.timestamp,
+            },
+            operationId,
+          );
 
-        if (promiseOrVoid instanceof Promise) {
-          globalState.ssrContext.pending.push(promiseOrVoid);
+          if (promiseOrVoid instanceof Promise) {
+            globalState.ssrContext.pending.push(promiseOrVoid);
+          }
         }
       }
     }
 
   // Client-side logic.
   } else {
+    const { disabled } = options;
+
     // Reference-counting & garbage collection.
 
     const idsHash = hash(ids);
@@ -377,15 +381,16 @@ function useAsyncCollection<
     // TODO: Violation of rules of hooks is fine here,
     // but perhaps it can be refactored to avoid the need for it.
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      gcOnWithhold(ids, path, globalState);
+      if (!disabled) gcOnWithhold(ids, path, globalState);
       return () => {
-        gcOnRelease(ids, path, globalState, garbageCollectAge);
+        if (!disabled) gcOnRelease(ids, path, globalState, garbageCollectAge);
       };
 
       // `ids` are represented in the dependencies array by `idsHash` value,
       // as useEffect() hook requires a constant size of dependencies array.
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
+      disabled,
       garbageCollectAge,
       globalState,
       idsHash,
@@ -397,38 +402,40 @@ function useAsyncCollection<
 
     // Data loading and refreshing.
     useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
-      void (async () => {
-        for (const id of ids) {
-          const itemPath = path ? `${path}.${id}` : `${id}`;
+      if (!disabled) {
+        void (async () => {
+          for (const id of ids) {
+            const itemPath = path ? `${path}.${id}` : `${id}`;
 
-          type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
-          const state2: EnvT = globalState.get<ForceT, EnvT>(itemPath);
+            type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
+            const state2: EnvT = globalState.get<ForceT, EnvT>(itemPath);
 
-          const { deps } = options;
-          if (
-            (deps && globalState.hasChangedDependencies(itemPath, deps))
-            || (
-              refreshAge < Date.now() - (state2?.timestamp ?? 0)
-              && (!state2?.operationId || state2.operationId.startsWith('S'))
-            )
-          ) {
-            if (!deps) globalState.dropDependencies(itemPath);
-            await load(
-              itemPath,
-              // TODO: I guess, the loader is not correctly typed here -
-              // it can be synchronous, and in that case the following method
-              // should be kept synchronous to not alter the sync logic.
-              // eslint-disable-next-line @typescript-eslint/promise-function-async
-              (old, ...args) => loader(id, old as DataT, ...args),
-              globalState,
-              {
-                data: state2?.data,
-                timestamp: state2?.timestamp ?? 0,
-              },
-            );
+            const { deps } = options;
+            if (
+              (deps && globalState.hasChangedDependencies(itemPath, deps))
+              || (
+                refreshAge < Date.now() - (state2?.timestamp ?? 0)
+                && (!state2?.operationId || state2.operationId.startsWith('S'))
+              )
+            ) {
+              if (!deps) globalState.dropDependencies(itemPath);
+              await load(
+                itemPath,
+                // TODO: I guess, the loader is not correctly typed here -
+                // it can be synchronous, and in that case the following method
+                // should be kept synchronous to not alter the sync logic.
+                // eslint-disable-next-line @typescript-eslint/promise-function-async
+                (old, ...args) => loader(id, old as DataT, ...args),
+                globalState,
+                {
+                  data: state2?.data,
+                  timestamp: state2?.timestamp ?? 0,
+                },
+              );
+            }
           }
-        }
-      })();
+        })();
+      }
     });
   }
 

@@ -4,7 +4,7 @@
 // instance lifetime, and related garbage-collecting.
 
 import mockdate from 'mockdate';
-import { useState } from 'react';
+import { type FunctionComponent, useState } from 'react';
 
 import { getByText } from '@testing-library/react';
 
@@ -25,7 +25,7 @@ const {
   useAsyncCollection,
 } = withGlobalStateType<StateT>();
 
-const Component: React.FunctionComponent = () => {
+const Component: FunctionComponent = () => {
   const [ids, setIds] = useState<string[]>([]);
   useAsyncCollection(ids, 'collection', (id) => `${id}-value`);
   return (
@@ -51,7 +51,7 @@ const Component: React.FunctionComponent = () => {
   );
 };
 
-const Scene: React.FunctionComponent<{
+const Scene: FunctionComponent<{
   gs: InstanceType<typeof GlobalState>;
 }> = ({ gs }) => {
   const [mounted, setMounted] = useState(true);
