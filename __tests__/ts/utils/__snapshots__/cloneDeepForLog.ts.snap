@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`key timeout works as expected 1`] = `
+[
+  [
+    "500ms spent to clone the logged value (key "2").",
+  ],
+]
+`;
+
+exports[`key timeout works as expected 2`] = `
+[
+  [
+    "500ms spent to clone the logged value (key "2").",
+  ],
+  [
+    "The logged value won't be clonned (key "2").",
+  ],
+]
+`;
+
+exports[`key timeout works as expected 3`] = `
+[
+  [
+    "500ms spent to clone the logged value (key "2").",
+  ],
+  [
+    "The logged value won't be clonned (key "2").",
+  ],
+  [
+    "500ms spent to clone the logged value (key "3").",
+  ],
+]
+`;
