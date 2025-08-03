@@ -32,12 +32,16 @@ export const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 // related global state values are updated immediately, within the current
 // rendering cycle.
 
-export type AsyncDataLoaderT<DataT>
-= (oldData: null | DataT, meta: {
+export type AsyncDataLoaderMetaT = {
   isAborted: () => boolean;
   oldDataTimestamp: number;
   setAbortCallback: (cb: () => void) => void;
-}) => DataT | null | Promise<DataT | null>;
+};
+
+export type AsyncDataLoaderT<DataT> = (
+  oldData: DataT | null,
+  meta: AsyncDataLoaderMetaT,
+) => DataT | null | Promise<DataT | null>;
 
 export type AsyncDataReloaderT<DataT>
 = (loader?: AsyncDataLoaderT<DataT>) => void | Promise<void>;

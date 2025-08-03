@@ -1,6 +1,6 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.19.3",
+  "version": "0.19.4",
   "description": "Hook-based global state for React",
   "main": "./build/code/index.js",
   "types": "./build/types/index.d.ts",
