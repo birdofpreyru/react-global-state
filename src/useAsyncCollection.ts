@@ -76,6 +76,7 @@ type HeapT<
   loader: AsyncCollectionLoaderT<DataT, IdT>;
   reload: AsyncCollectionReloaderT<DataT, IdT>;
   reloadSingle: AsyncDataReloaderT<DataT>;
+  setSingle: (data: DataT | null) => void;
 };
 
 /**
@@ -246,6 +247,10 @@ function useHeap<
         // eslint-disable-next-line @typescript-eslint/promise-function-async
         customLoader && ((id, ...args) => customLoader(...args)),
       ),
+      // TODO: It should be revised it works correctly.
+      setSingle(data: DataT | null) {
+        void ref.current!.reload(() => data);
+      },
     };
     ref.current = heap;
   }
@@ -454,6 +459,7 @@ function useAsyncCollection<
       data: maxage < Date.now() - timestamp ? null : e?.data ?? null,
       loading: !!e?.operationId,
       reload: heap.reloadSingle,
+      set: heap.setSingle,
       timestamp,
     };
   }

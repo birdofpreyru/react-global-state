@@ -10,7 +10,8 @@ It is defined as the generic type:
 type UseAsyncDataResT<DataT> = {
   data: DataT | null;
   loading: boolean;
-  reload: (loader?: AsyncDataLoaderT<DataT>) => Promise<void>;
+  reload: AsyncDataReloaderT<DataT>;
+  set: (data: DataT | null) => void;
   timestamp: number;
 };
 ```
@@ -39,6 +40,9 @@ type UseAsyncDataResT<DataT> = {
   - This method is a stable function &mdash; it is guaranteed to remain the same
     across re-renders of the host component.
   :::
+
+- `set` &mdash; **(data: [DataT] | null) => void** &mdash; Synchronously writes
+  given `data` into the envelope at the corresponding path of the global state.
 
 - `timestamp` &mdash; **number** &mdash; The timestamp (milliseconds) when
   `data`, if any, were loaded (or the last time refreshed).

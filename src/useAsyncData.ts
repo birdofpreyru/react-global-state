@@ -76,13 +76,52 @@ export type UseAsyncDataResT<DataT> = {
   data: DataT | null;
   loading: boolean;
   reload: AsyncDataReloaderT<DataT>;
+  set: (data: DataT | null) => void;
   timestamp: number;
 };
+
+/**
+ * Writes data into the global state, and prints console messages in the debug
+ * mode.
+ */
+function setState<
+  DataT,
+  EnvT extends AsyncDataEnvelopeT<DataT>,
+>(
+  data: DataT,
+  path: string | null | undefined,
+  gs: GlobalState<unknown, SsrContext<unknown>>,
+  prevState: EnvT = gs.get<ForceT, EnvT>(path),
+) {
+  if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+    /* eslint-disable no-console */
+    console.groupCollapsed(
+      `ReactGlobalState: async data (re-)loaded. Path: "${
+        path ?? ''
+      }"`,
+    );
+    console.log('Data:', cloneDeepForLog(data, path ?? ''));
+    /* eslint-enable no-console */
+  }
+
+  gs.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
+    ...prevState,
+    data,
+    operationId: '',
+    timestamp: Date.now(),
+  });
+
+  if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+    /* eslint-disable no-console */
+    console.groupEnd();
+    /* eslint-enable no-console */
+  }
+}
 
 function finalizeLoad<DataT>(
   data: DataT,
   path: null | string | undefined,
-  globalState: GlobalState<unknown, SsrContext<unknown>>,
+  gs: GlobalState<unknown, SsrContext<unknown>>,
   operationId: OperationIdT,
 ): void {
   // NOTE: We don't really mean that it hasn't been aborted,
@@ -92,34 +131,12 @@ function finalizeLoad<DataT>(
   // Also, in the synchronous state update mode, we don't really need to set up
   // the abort callback at all (as there is no way to use it), but for now it is
   // set up, thus it should be cleaned out here.
-  globalState.asyncDataLoadDone(operationId, false);
+  gs.asyncDataLoadDone(operationId, false);
 
   type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
-  const state: EnvT = globalState.get<ForceT, EnvT>(path);
+  const state: EnvT = gs.get<ForceT, EnvT>(path);
 
-  if (operationId === state?.operationId) {
-    if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-      /* eslint-disable no-console */
-      console.groupCollapsed(
-        `ReactGlobalState: async data (re-)loaded. Path: "${
-          path ?? ''
-        }"`,
-      );
-      console.log('Data:', cloneDeepForLog(data, path ?? ''));
-      /* eslint-enable no-console */
-    }
-    globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
-      ...state,
-      data,
-      operationId: '',
-      timestamp: Date.now(),
-    });
-    if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-      /* eslint-disable no-console */
-      console.groupEnd();
-      /* eslint-enable no-console */
-    }
-  }
+  if (operationId === state?.operationId) setState(data, path, gs, state);
 }
 
 /**
@@ -213,12 +230,15 @@ export type DataInEnvelopeAtPathT<
   PathT extends null | string | undefined,
 > = Exclude<Extract<ValueAtPathT<StateT, PathT, void>, AsyncDataEnvelopeT<unknown>>['data'], null>;
 
+// TODO: Perhaps split the heap management to a dedicated hook,
+// as it is done inside useAsyncCollection().
 type HeapT<DataT> = {
   // Note: these heap fields are necessary to make reload() a stable function.
   globalState?: GlobalState<unknown>;
   path?: null | string;
   loader?: AsyncDataLoaderT<DataT>;
   reload?: AsyncDataReloaderT<DataT>;
+  set?: (data: DataT | null) => void;
 };
 
 function useAsyncData<
@@ -269,6 +289,11 @@ function useAsyncData<DataT>(
     const localLoader = customLoader ?? heap.loader;
     if (!localLoader || !heap.globalState) throw Error('Internal error');
     return load(heap.path, localLoader, heap.globalState);
+  };
+
+  heap.set ??= (data: DataT | null) => {
+    if (!heap.globalState) throw Error('Internal error');
+    setState(data, heap.path, heap.globalState);
   };
 
   if (globalState.ssrContext) {
@@ -375,6 +400,7 @@ function useAsyncData<DataT>(
     data: maxage < Date.now() - localState.timestamp ? null : localState.data,
     loading: Boolean(localState.operationId),
     reload: heap.reload,
+    set: heap.set,
     timestamp: localState.timestamp,
   };
 }

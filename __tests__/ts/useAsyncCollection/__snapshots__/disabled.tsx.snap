@@ -5,6 +5,7 @@ exports[`useAsyncCollection(): "disabled" option works 1`] = `
   "data": null,
   "loading": false,
   "reload": [Function],
+  "set": [Function],
   "timestamp": 0,
 }
 `;
