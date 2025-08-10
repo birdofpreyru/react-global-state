@@ -10,7 +10,8 @@ It is defined as the generic type:
 type UseAsyncDataResT<DataT> = {
   data: DataT | null;
   loading: boolean;
-  reload: (loader?: AsyncDataLoaderT<DataT>) => Promise<void>;
+  reload: AsyncDataReloaderT<DataT>;
+  set: (data: DataT | null) => void;
   timestamp: number;
 };
 ```
@@ -26,10 +27,10 @@ type UseAsyncDataResT<DataT> = {
 - `loading` &mdash; **boolean** &mdash; _true_ if the loading operation is
   currently underway; _false_ otherwise.
 
-- `reload` &mdash; **(loader?: [AsyncDataLoaderT]&lt;[DataT]&gt;) => Promise&lt;void>**
-  &mdash; Imperatively triggers a reload of data at the corresponding path in
-  the global state, using provided custom `loader`, if any, or otherwise
-  the loader given to the corresponding [useAsyncData()] hook.
+- `reload` &mdash; [AsyncDataReloaderT]  &mdash; Imperatively triggers a reload
+  of data at the corresponding path in the global state, using provided custom
+  `loader`, if any, or otherwise the loader given to the corresponding
+  [useAsyncData()] hook.
 
   :::tip Tips
   - This method is intended for imperative code (_e.g._ UI event handlers).
@@ -40,6 +41,9 @@ type UseAsyncDataResT<DataT> = {
     across re-renders of the host component.
   :::
 
+- `set` &mdash; **(data: [DataT] | null) => void** &mdash; Synchronously writes
+  given `data` into the envelope at the corresponding path of the global state.
+
 - `timestamp` &mdash; **number** &mdash; The timestamp (milliseconds) when
   `data`, if any, were loaded (or the last time refreshed).
   :::caution
@@ -49,6 +53,7 @@ type UseAsyncDataResT<DataT> = {
   :::
 
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
+[AsyncDataReloaderT]: /docs/api/types/async-data-reloader
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata
 [UseAsyncDataOptionsT]: /docs/api/types/use-async-data-options

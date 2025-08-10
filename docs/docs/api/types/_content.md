@@ -4,8 +4,13 @@
   the [useAsyncCollection()] hook.
 - [AsyncDataEnvelopeT] &mdash; The type of a state segment storing data managed
   by [useAsyncData()] and [useAsyncCollection()] hooks, alongside related meta-data.
+
 - [AsyncDataLoaderT] &mdash; The signature of a valid data loader function for
   [useAsyncData()] hook.
+
+- [AsyncDataReloaderT] &mdash; The signature of data re-loader function in
+  the result of [useAsyncData()] hook (see `reload` in [UseAsyncDataResT]).
+
 - [ForceT] &mdash; A special type for &laquo;unlocking&raquo; overloads of
   hooks and functions that allow to enforce arbitrary value types.
 - [SetterT] &mdash; The type of setter returned by the [useGlobalState()] hook.
@@ -24,6 +29,7 @@
 [AsyncCollectionT]: /docs/api/types/async-collection
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
+[AsyncDataReloaderT]: /docs/api/types/async-data-reloader
 [ForceT]: /docs/api/types/force
 [SetterT]: /docs/api/types/setter
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
