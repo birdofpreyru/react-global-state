@@ -59,10 +59,10 @@ type AsyncCollectionReloaderT<
   for any of the requested _data_ object; or _false_ otherwise (when all
   requested objects are within their refresh limits).
 
-- `reload` &mdash; **(loader?: [AsyncCollectionLoaderT]&lt;[DataT]&gt;) => Promise&lt;void>**
-  &mdash; Imperatively triggers reloads of data for each of the requested
-  IDs , using provided custom `loader`, if any, or otherwise
-  the loader given to the corresponding [useAsyncCollection()] hook.
+- `reload` &mdash; [AsyncCollectionReloaderT] &mdash; Imperatively triggers
+  reloads of data for each of the requested IDs , using provided custom `loader`,
+  if any, or otherwise the loader given to the corresponding
+  [useAsyncCollection()] hook.
 
   :::tip Tips
   - This method is intended for imperative code (_e.g._ UI event handlers).
@@ -78,6 +78,7 @@ type AsyncCollectionReloaderT<
   the requested objects.
 
 [AsyncCollectionLoaderT]: /docs/api/types/async-collection-loader
+[AsyncCollectionReloaderT]: /docs/api/types/async-collection-reloader
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata
 [UseAsyncDataOptionsT]: /docs/api/types/use-async-data-options

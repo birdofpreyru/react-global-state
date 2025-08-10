@@ -47,8 +47,7 @@ export type AsyncCollectionLoaderT<
 export type AsyncCollectionReloaderT<
   DataT,
   IdT extends number | string = number | string,
->
-  = (loader?: AsyncCollectionLoaderT<DataT, IdT>) => void | Promise<void>;
+> = (loader?: AsyncCollectionLoaderT<DataT, IdT>) => void | Promise<void>;
 
 type CollectionItemT<DataT> = {
   data: DataT | null;
