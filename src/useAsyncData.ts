@@ -40,7 +40,7 @@ export type AsyncDataLoaderT<DataT>
 }) => DataT | null | Promise<DataT | null>;
 
 export type AsyncDataReloaderT<DataT>
-= (loader?: AsyncDataLoaderT<DataT>) => void | Promise<void>;
+= (loader?: AsyncDataLoaderT<DataT>) => DataT | null | Promise<DataT | null>;
 
 export type AsyncDataEnvelopeT<DataT> = {
   data: null | DataT;
@@ -147,7 +147,7 @@ export function load<DataT>(
   // the caller methods as well, in some cases (see useAsyncCollection()
   // use case as well).
   operationId: OperationIdT = `C${uuid()}`,
-): void | Promise<void> {
+): DataT | null | Promise<DataT | null> {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
     console.log(
@@ -191,6 +191,7 @@ export function load<DataT>(
   if (dataOrPromise instanceof Promise) {
     return dataOrPromise.then((data) => {
       finalizeLoad(data, path, globalState, operationId);
+      return data;
     }).finally(() => {
       // NOTE: We don't really mean that it hasn't been aborted,
       // the "false" flag rather says we don't need to trigger "on aborted"
@@ -200,7 +201,7 @@ export function load<DataT>(
   }
 
   finalizeLoad(dataOrPromise, path, globalState, operationId);
-  return undefined;
+  return dataOrPromise;
 }
 
 /**
@@ -265,7 +266,7 @@ function useAsyncData<DataT>(
 
   heap.reload ??= (
     customLoader?: AsyncDataLoaderT<DataT>,
-  ): void | Promise<void> => {
+  ): DataT | null | Promise<DataT | null> => {
     const localLoader = customLoader ?? heap.loader;
     if (!localLoader || !heap.globalState) throw Error('Internal error');
     return load(heap.path, localLoader, heap.globalState);
