@@ -30,11 +30,13 @@ const Component: React.FunctionComponent = () => {
   return <div>{e.data}</div>;
 };
 
+const now = Date.now();
+
 const Scene: React.FunctionComponent = () => (
   <GlobalStateProvider
     initialState={{
       key: newAsyncDataEnvelope('ok', {
-        timestamp: Date.now(),
+        timestamp: now,
       }),
     }}
   >

@@ -28,7 +28,7 @@ const Wrapper: React.FunctionComponent<{
 let pass01 = 0;
 
 const TestComponent01: React.FunctionComponent = () => {
-  pass01 += 1;
+  ++pass01;
   const [value] = useGlobalState<StateT, typeof PATH>(PATH, 'value-01');
   expect(value).toBe('value-01');
   return null;
@@ -42,7 +42,7 @@ test('Non-functional initial value', () => {
 let pass02 = 0;
 
 const TestComponent02: React.FunctionComponent = () => {
-  pass02 += 1;
+  ++pass02;
   const [value] = useGlobalState<StateT, typeof PATH>(PATH, () => 'value-02');
   expect(value).toBe('value-02');
   return null;
@@ -57,7 +57,7 @@ let pass03 = 0;
 const func03 = jest.fn();
 
 const TestComponent03: React.FunctionComponent = () => {
-  pass03 += 1;
+  ++pass03;
   const [value] = useGlobalState<StateT, typeof PATH>(
     PATH,
     () => func03,
@@ -75,7 +75,7 @@ test('Functional initial value, returing a function', () => {
 let pass04 = 0;
 
 const TestComponent04: React.FunctionComponent = () => {
-  pass04 += 1;
+  ++pass04;
   const [value, set] = useGlobalState<StateT, typeof PATH>(PATH, 'value-04');
   setTimeout(() => {
     set('value-04-2');
@@ -99,7 +99,7 @@ test('Setting a non-functional value', () => {
 let pass05 = 0;
 
 const TestComponent05: React.FunctionComponent = () => {
-  pass05 += 1;
+  ++pass05;
   const [value, set] = useGlobalState<StateT, typeof PATH>(
     PATH,
     () => 'value-05',
@@ -146,7 +146,7 @@ const func06a = jest.fn();
 const func06b = jest.fn();
 
 const TestComponent06: React.FunctionComponent = () => {
-  pass06 += 1;
+  ++pass06;
   const [value, set] = useGlobalState<StateT, typeof PATH>(
     'path',
     () => func06a,
@@ -172,18 +172,17 @@ test('Functional update to a function value', () => {
   expect(func06b).not.toHaveBeenCalled();
 });
 
-let t07Set: SetterT<Exclude<ValueT, undefined>>;
+let t07Set: SetterT<Exclude<ValueT, undefined>> | undefined;
 
 let pass07 = 0;
 
 const TestComponent07: React.FunctionComponent = () => {
-  pass07 += 1;
+  ++pass07;
   const [value, set] = useGlobalState<StateT, typeof PATH>(
     PATH,
     () => 'value-07',
   );
-  // TODO: Revise. Wrong typing?
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
   if (t07Set) expect(set).toBe(t07Set);
   else t07Set = set;
 

@@ -13,12 +13,16 @@ type GlobalStateT = InstanceType<typeof GlobalState<number>>;
 let componentGS: GlobalStateT | undefined;
 let sceneGS: GlobalStateT = new GlobalState(0);
 
+function captureGS(gs: GlobalStateT) {
+  componentGS = gs;
+}
+
 jest.useFakeTimers();
 
 const Component: FunctionComponent<{
   read: boolean;
 }> = ({ read }) => {
-  if (read) componentGS = getGlobalState();
+  if (read) captureGS(getGlobalState());
   return <div>Test Component</div>;
 };
 

@@ -7,6 +7,7 @@ import {
   type SetStateAction,
   useEffect,
   useRef,
+  useState,
   useSyncExternalStore,
 } from 'react';
 
@@ -16,7 +17,6 @@ import type GlobalState from './GlobalState';
 import { getGlobalState } from './GlobalStateProvider';
 
 import {
-  type CallbackT,
   type ForceT,
   type LockT,
   type TypeLock,
@@ -30,14 +30,16 @@ export type SetterT<T> = Dispatch<SetStateAction<T>>;
 
 type ListenerT = () => void;
 
-type GlobalStateRef = {
-  emitter: Emitter<[]>;
+type CurrentT = {
   globalState: GlobalState<unknown>;
   path: null | string | undefined;
+  prevValue: unknown;
+};
+
+type StableT = {
+  emitter: Emitter<[]>;
   setter: SetterT<unknown>;
   subscribe: (listener: ListenerT) => () => void;
-  state: unknown;
-  watcher: CallbackT;
 };
 
 export type UseGlobalStateResT<T> = [T, SetterT<T>];
@@ -134,85 +136,86 @@ function useGlobalState(
 ): UseGlobalStateResT<any> {
   const globalState = getGlobalState();
 
-  const ref = useRef<GlobalStateRef>(undefined);
+  const ref = useRef<CurrentT>(null);
 
-  // TODO: Revise how this `rc` variable is used, perhaps we can simplify stuff
-  // here.
-  let rc: GlobalStateRef | undefined = ref.current;
-  if (!ref.current) {
+  const [stable] = useState<StableT>(() => {
     const emitter = new Emitter();
-    ref.current = {
-      emitter,
-      globalState,
-      path,
-      setter: (value) => {
-        const newState = isFunction(value)
-          ? value(rc!.globalState.get(rc!.path)) as unknown
-          : value;
+    const setter = (value: unknown) => {
+      const rc = ref.current;
+      if (!rc) throw Error('Internal error');
 
-        if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-          /* eslint-disable no-console */
-          console.groupCollapsed(
-            `ReactGlobalState - useGlobalState setter triggered for path ${
-              rc!.path ?? ''
-            }`,
-          );
-          console.log('New value:', cloneDeepForLog(newState, rc!.path ?? ''));
-          console.groupEnd();
-          /* eslint-enable no-console */
-        }
-        rc!.globalState.set<ForceT, unknown>(rc!.path, newState);
+      const newState = isFunction(value)
+        ? value(rc.globalState.get(rc.path)) as unknown
+        : value;
 
-        // NOTE: The regular global state's update notifications, automatically
-        // triggered by the rc.globalState.set() call above, are batched, and
-        // scheduled to fire asynchronosuly at a later time, which is problematic
-        // for managed text inputs - if they have their value update delayed to
-        // future render cycles, it will result in reset of their cursor position
-        // to the value end. Calling the rc.emitter.emit() below causes a sooner
-        // state update for the current component, thus working around the issue.
-        // For additional details see the original issue:
-        // https://github.com/birdofpreyru/react-global-state/issues/22
-        if (newState !== rc!.state) rc!.emitter.emit();
-      },
-      state: isFunction(initialValue) ? initialValue() : initialValue,
-      subscribe: emitter.addListener.bind(emitter),
-      watcher: () => {
-        // TODO: Revise it later.
-        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-        const state = rc!.globalState.get(rc!.path) as unknown;
-        if (state !== rc!.state) rc!.emitter.emit();
-      },
+      if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+        /* eslint-disable no-console */
+        console.groupCollapsed(
+          `ReactGlobalState - useGlobalState setter triggered for path ${
+            rc.path ?? ''
+          }`,
+        );
+        console.log('New value:', cloneDeepForLog(newState, rc.path ?? ''));
+        console.groupEnd();
+        /* eslint-enable no-console */
+      }
+      rc.globalState.set<ForceT, unknown>(rc.path, newState);
+
+      // NOTE: The regular global state's update notifications, automatically
+      // triggered by the rc.globalState.set() call above, are batched, and
+      // scheduled to fire asynchronosuly at a later time, which is problematic
+      // for managed text inputs - if they have their value update delayed to
+      // future render cycles, it will result in reset of their cursor position
+      // to the value end. Calling the rc.emitter.emit() below causes a sooner
+      // state update for the current component, thus working around the issue.
+      // For additional details see the original issue:
+      // https://github.com/birdofpreyru/react-global-state/issues/22
+      if (newState !== rc.prevValue) emitter.emit();
     };
-  }
-  rc = ref.current!;
+    const subscribe = emitter.addListener.bind(emitter);
+    return { emitter, setter, subscribe };
+  });
 
-  rc.globalState = globalState;
-  rc.path = path;
+  const value = useSyncExternalStore(
+    stable.subscribe,
+    () => globalState.get<ForceT, unknown>(path, { initialValue }),
 
-  rc.state = useSyncExternalStore(
-    rc.subscribe,
-    () => rc.globalState.get<ForceT, unknown>(rc.path, { initialValue }),
-
-    () => rc.globalState.get<ForceT, unknown>(
-      rc.path,
+    () => globalState.get<ForceT, unknown>(
+      path,
       { initialState: true, initialValue },
     ),
   );
 
+  ref.current ??= {
+    globalState,
+    path,
+    prevValue: value,
+  };
+
   useEffect(() => {
-    const { watcher } = ref.current!;
+    ref.current = {
+      globalState,
+      path,
+      prevValue: ref.current!.prevValue,
+    };
+
+    const watcher = () => {
+      const nextValue = globalState.get<ForceT, unknown>(path);
+      if (ref.current!.prevValue !== nextValue) {
+        ref.current!.prevValue = nextValue;
+        stable.emitter.emit();
+      }
+    };
+
     globalState.watch(watcher);
     watcher();
+
     return () => {
       globalState.unWatch(watcher);
     };
-  }, [globalState]);
+  }, [globalState, stable.emitter, path]);
 
-  useEffect(() => {
-    ref.current!.watcher();
-  }, [path]);
-
-  return [rc.state, rc.setter];
+  return [value, stable.setter];
 }
 
 export default useGlobalState;

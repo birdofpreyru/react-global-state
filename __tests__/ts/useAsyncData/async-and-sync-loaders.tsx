@@ -26,20 +26,28 @@ type StateT = {
 let aReload: AsyncDataReloaderT<string> | undefined;
 let sReload: AsyncDataReloaderT<string> | undefined;
 
+function captureReloadA(value: AsyncDataReloaderT<string>) {
+  aReload = value;
+}
+
+function captureReloadS(value: AsyncDataReloaderT<string>) {
+  sReload = value;
+}
+
 const AsyncComponent: React.FunctionComponent = () => {
   const x = useAsyncData<ForceT, string>('async', async () => {
     await timer(100);
     return 'ok';
   });
   if (aReload) expect(aReload).toBe(x.reload);
-  else aReload = x.reload;
+  else captureReloadA(x.reload);
   return null;
 };
 
 const SyncComponent: React.FunctionComponent = () => {
   const x = useAsyncData<ForceT, string>('sync', () => 'ok');
   if (sReload) expect(sReload).toBe(x.reload);
-  else sReload = x.reload;
+  else captureReloadS(x.reload);
   return null;
 };
 

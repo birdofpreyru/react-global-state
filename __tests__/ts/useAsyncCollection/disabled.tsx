@@ -24,8 +24,12 @@ const loader = jest.fn((id: string) => `res-${id}`);
 
 let res: UseAsyncDataResT<string> | undefined;
 
+function captureRes(value: UseAsyncDataResT<string>) {
+  res = value;
+}
+
 const Component: FunctionComponent = () => {
-  res = useAsyncCollection('', 'collection', loader, { disabled: true });
+  captureRes(useAsyncCollection('', 'collection', loader, { disabled: true }));
   return null;
 };
 

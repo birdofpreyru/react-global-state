@@ -4,7 +4,7 @@ import {
   type ReactNode,
   createContext,
   use,
-  useRef,
+  useState,
 } from 'react';
 
 import GlobalState from './GlobalState';
@@ -95,26 +95,34 @@ const GlobalStateProvider = <
   { children, ...rest }: GlobalStateProviderProps<StateT, SsrContextT>,
 ): ReactNode => {
   type GST = GlobalState<StateT, SsrContextT>;
-  const localStateRef = useRef<GST>(undefined);
+
+  const [localState, setLocalState] = useState<GST>();
+
   let state: GST;
-  // TODO: Revise.
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if ('stateProxy' in rest && rest.stateProxy) {
-    localStateRef.current = undefined;
+
+  // Below we cast `rest.stateProxy` as "boolean" for safe backward
+  // compatibility with plain JavaScript (as TypeScript typings only
+  // permit "true" or GlobalState value; while legacy codebase may
+  // pass in a boolean value here, occasionally equal "false").
+  if ('stateProxy' in rest && (rest.stateProxy as boolean)) {
+    if (localState) setLocalState(undefined);
     state = rest.stateProxy === true ? getGlobalState() : rest.stateProxy;
+  } else if (localState) {
+    state = localState;
   } else {
-    if (!localStateRef.current) {
-      const {
-        initialState,
-        ssrContext,
-      } = rest as NewStateProps<StateT, SsrContextT>;
-      localStateRef.current = new GlobalState(
-        isFunction(initialState) ? initialState() : initialState,
-        ssrContext,
-      );
-    }
-    state = localStateRef.current;
+    const {
+      initialState,
+      ssrContext,
+    } = rest as NewStateProps<StateT, SsrContextT>;
+
+    state = new GlobalState(
+      isFunction(initialState) ? initialState() : initialState,
+      ssrContext,
+    );
+
+    setLocalState(state);
   }
+
   return <Context value={state}>{children}</Context>;
 };
 

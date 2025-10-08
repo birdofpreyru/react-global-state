@@ -2,7 +2,7 @@
  * Loads and uses item(s) in an async collection.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import type GlobalState from './GlobalState';
@@ -65,15 +65,14 @@ export type UseAsyncCollectionResT<
   timestamp: number;
 };
 
-type HeapT<
-  DataT,
-  IdT extends number | string,
-> = {
-  // Note: these heap fields are necessary to make reload() a stable function.
+type CurrentT<DataT, IdT extends number | string> = {
   globalState: GlobalState<unknown>;
   ids: IdT[];
-  path: null | string | undefined;
   loader: AsyncCollectionLoaderT<DataT, IdT>;
+  path: null | string | undefined;
+};
+
+type StableT<DataT, IdT extends number | string> = {
   reload: AsyncCollectionReloaderT<DataT, IdT>;
   reloadSingle: AsyncDataReloaderT<DataT>;
   setSingle: (data: DataT | null) => void;
@@ -172,93 +171,6 @@ function normalizeIds<IdT extends number | string>(
 }
 
 /**
- * Inits/updates, and returns the heap.
- */
-function useHeap<
-  DataT,
-  IdT extends number | string,
->(
-  ids: IdT[],
-  path: null | string | undefined,
-  loader: AsyncCollectionLoaderT<DataT, IdT>,
-  gs: GlobalState<unknown>,
-): HeapT<DataT, IdT> {
-  const ref = useRef<HeapT<DataT, IdT>>(undefined);
-
-  let heap = ref.current;
-
-  if (heap) {
-    // Update.
-    heap.ids = ids;
-    heap.path = path;
-    heap.loader = loader;
-    heap.globalState = gs;
-  } else {
-    // Initialization.
-    const reload = async (
-      customLoader?: AsyncCollectionLoaderT<DataT, IdT>,
-    ) => {
-      const heap2 = ref.current!;
-
-      const localLoader = customLoader ?? heap2.loader;
-      // TODO: Revise - not sure all related typing is 100% correct,
-      // thus let's keep this runtime assertion.
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (!localLoader || !heap2.globalState || !heap2.ids) {
-        throw Error('Internal error');
-      }
-
-      for (const id of heap2.ids) {
-        const itemPath = heap2.path ? `${heap2.path}.${id}` : `${id}`;
-
-        const promiseOrVoid = load(
-          itemPath,
-          // TODO: Revise! Most probably we don't have fully correct loader
-          // typing, as it may return either promise or value, and those two
-          // cases call for different runtime behavior, which in turns only
-          // happens if the outer function on the next line matches the same
-          // async / sync signature.
-          // eslint-disable-next-line @typescript-eslint/promise-function-async
-          (oldData: DataT | null, meta) => localLoader(id, oldData, meta),
-          heap2.globalState,
-        );
-
-        if (promiseOrVoid instanceof Promise) await promiseOrVoid;
-      }
-    };
-    heap = {
-      globalState: gs,
-      ids,
-      loader,
-      path,
-      reload,
-      // TODO: Revise! Most probably we don't have fully correct loader
-      // typing, as it may return either promise or value, and those two
-      // cases call for different runtime behavior, which in turns only
-      // happens if the outer function on the next line matches the same
-      // async / sync signature.
-      // eslint-disable-next-line @typescript-eslint/promise-function-async
-      reloadSingle: (customLoader) => ref.current!.reload(
-        // TODO: Revise! Most probably we don't have fully correct loader
-        // typing, as it may return either promise or value, and those two
-        // cases call for different runtime behavior, which in turns only
-        // happens if the outer function on the next line matches the same
-        // async / sync signature.
-        // eslint-disable-next-line @typescript-eslint/promise-function-async
-        customLoader && ((id, ...args) => customLoader(...args)),
-      ),
-      // TODO: It should be revised it works correctly.
-      setSingle(data: DataT | null) {
-        void ref.current!.reload(() => data);
-      },
-    };
-    ref.current = heap;
-  }
-
-  return heap;
-}
-
-/**
  * Resolves and stores at the given `path` of the global state elements of
  * an asynchronous data collection.
  */
@@ -343,8 +255,6 @@ function useAsyncCollection<
   const garbageCollectAge: number = options.garbageCollectAge ?? maxage;
 
   const globalState = getGlobalState();
-
-  const heap = useHeap(ids, path, loader, globalState);
 
   // Server-side logic.
   if (globalState.ssrContext) {
@@ -451,6 +361,82 @@ function useAsyncCollection<
     ForceT, Record<string, AsyncDataEnvelopeT<DataT>>
   >(path, {});
 
+  const ref = useRef<CurrentT<DataT, IdT>>(null);
+
+  ref.current ??= {
+    globalState,
+    ids,
+    loader,
+    path,
+  };
+
+  useEffect(() => {
+    ref.current = {
+      globalState,
+      ids,
+      loader,
+      path,
+    };
+  }, [globalState, ids, loader, path]);
+
+  const [stable] = useState<StableT<DataT, IdT>>(() => {
+    const reload = async (
+      customLoader?: AsyncCollectionLoaderT<DataT, IdT>,
+    ) => {
+      const rc = ref.current;
+      if (!rc) throw Error('Internal error');
+
+      const localLoader = customLoader ?? rc.loader;
+
+      // TODO: Revise - not sure all related typing is 100% correct,
+      // thus let's keep this runtime assertion.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!localLoader || !rc.globalState || !rc.ids) {
+        throw Error('Internal error');
+      }
+
+      for (const id of rc.ids) {
+        const itemPath = rc.path ? `${rc.path}.${id}` : `${id}`;
+
+        const promiseOrVoid = load(
+          itemPath,
+          // TODO: Revise! Most probably we don't have fully correct loader
+          // typing, as it may return either promise or value, and those two
+          // cases call for different runtime behavior, which in turns only
+          // happens if the outer function on the next line matches the same
+          // async / sync signature.
+          // eslint-disable-next-line @typescript-eslint/promise-function-async
+          (oldData: DataT | null, meta) => localLoader(id, oldData, meta),
+          rc.globalState,
+        );
+
+        if (promiseOrVoid instanceof Promise) await promiseOrVoid;
+      }
+    };
+
+    // TODO: Revise! Most probably we don't have fully correct loader
+    // typing, as it may return either promise or value, and those two
+    // cases call for different runtime behavior, which in turns only
+    // happens if the outer function on the next line matches the same
+    // async / sync signature.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    const reloadSingle: AsyncDataReloaderT<DataT> = (customLoader) => reload(
+      // TODO: Revise! Most probably we don't have fully correct loader
+      // typing, as it may return either promise or value, and those two
+      // cases call for different runtime behavior, which in turns only
+      // happens if the outer function on the next line matches the same
+      // async / sync signature.
+      // eslint-disable-next-line @typescript-eslint/promise-function-async
+      customLoader && ((id, ...args) => customLoader(...args)),
+    );
+
+    const setSingle = (data: DataT | null) => {
+      void reload(() => data);
+    };
+
+    return { reload, reloadSingle, setSingle };
+  });
+
   if (!Array.isArray(idOrIds)) {
     // TODO: Revise related typings!
     const e = localState[idOrIds as string];
@@ -458,8 +444,8 @@ function useAsyncCollection<
     return {
       data: maxage < Date.now() - timestamp ? null : e?.data ?? null,
       loading: !!e?.operationId,
-      reload: heap.reloadSingle,
-      set: heap.setSingle,
+      reload: stable.reloadSingle,
+      set: stable.setSingle,
       timestamp,
     };
   }
@@ -467,7 +453,7 @@ function useAsyncCollection<
   const res: UseAsyncCollectionResT<DataT, IdT> = {
     items: {} as Record<IdT, CollectionItemT<DataT>>,
     loading: false,
-    reload: heap.reload,
+    reload: stable.reload,
     timestamp: Number.MAX_VALUE,
   };
 
