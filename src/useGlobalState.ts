@@ -1,6 +1,6 @@
 // Hook for updates of global state.
 
-import { isFunction } from 'lodash';
+import isFunction from 'lodash/isFunction';
 
 import {
   type Dispatch,

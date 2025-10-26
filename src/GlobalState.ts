@@ -1,11 +1,9 @@
-import {
-  get,
-  isFunction,
-  isObject,
-  isNil,
-  set,
-  toPath,
-} from 'lodash';
+import get from 'lodash/get';
+import isFunction from 'lodash/isFunction';
+import isObject from 'lodash/isObject';
+import isNil from 'lodash/isNil';
+import set from 'lodash/set';
+import toPath from 'lodash/toPath';
 
 import type SsrContext from './SsrContext';
 
