@@ -114,7 +114,7 @@ function useGlobalState<
 >(
   path: PathT,
   initialValue: ValueOrInitializerT<
-    Exclude<ValueAtPathT<StateT, PathT, never>, undefined>>
+    Exclude<ValueAtPathT<StateT, PathT, never>, undefined>>,
 ): UseGlobalStateResT<Exclude<ValueAtPathT<StateT, PathT, void>, undefined>>;
 
 function useGlobalState<
@@ -122,7 +122,7 @@ function useGlobalState<
   PathT extends null | string | undefined,
 >(
   path: PathT,
-  initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>
+  initialValue?: ValueOrInitializerT<ValueAtPathT<StateT, PathT, never>>,
 ): UseGlobalStateResT<ValueAtPathT<StateT, PathT, void>>;
 
 function useGlobalState(
