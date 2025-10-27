@@ -12,8 +12,8 @@ declare function loader1(): 'OK';
 declare function loader2(): Promise<'OK'>;
 declare function numLoader(): number;
 
-expect<AsyncDataLoaderT<'OK'>>().type.toBeAssignableWith(loader1);
-expect<AsyncDataLoaderT<'OK'>>().type.toBeAssignableWith(loader2);
+expect<AsyncDataLoaderT<'OK'>>().type.toBeAssignableFrom(loader1);
+expect<AsyncDataLoaderT<'OK'>>().type.toBeAssignableFrom(loader2);
 
 expect(
   // eslint-disable-next-line react-hooks/rules-of-hooks

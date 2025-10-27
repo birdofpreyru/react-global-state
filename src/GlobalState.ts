@@ -1,9 +1,9 @@
-import get from 'lodash/get';
-import isFunction from 'lodash/isFunction';
-import isObject from 'lodash/isObject';
-import isNil from 'lodash/isNil';
-import set from 'lodash/set';
-import toPath from 'lodash/toPath';
+import get from 'lodash/get.js';
+import isFunction from 'lodash/isFunction.js';
+import isObject from 'lodash/isObject.js';
+import isNil from 'lodash/isNil.js';
+import set from 'lodash/set.js';
+import toPath from 'lodash/toPath.js';
 
 import type SsrContext from './SsrContext';
 
