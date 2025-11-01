@@ -9,13 +9,14 @@ console.warn = (...data: unknown[]) => {
   consoleWarnings.push(data);
 };
 
-type CloneDeepT = typeof LodashM['cloneDeep'];
-
-jest.mock<CloneDeepT>('lodash/cloneDeep.js', () => {
-  const real = jest.requireActual<CloneDeepT>('lodash/cloneDeep.js');
-  return <T>(value: T) => {
-    mockdate.set(Date.now() + mockCloneDeepDelay);
-    return real(value);
+jest.mock<typeof LodashM>('lodash-es', () => {
+  const real = jest.requireActual<typeof LodashM>('lodash-es');
+  return {
+    ...real,
+    cloneDeep<T>(value: T) {
+      mockdate.set(Date.now() + mockCloneDeepDelay);
+      return real.cloneDeep(value);
+    },
   };
 });
 

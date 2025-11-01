@@ -10,5 +10,8 @@
   ],
   "transform": {
     "\\.(j|t)sx?$": "babel-jest"
-  }
+  },
+  "transformIgnorePatterns": [
+    "/node_modules/?!lodash-es"
+  ]
 }

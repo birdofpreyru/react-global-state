@@ -1,7 +1,5 @@
 // Hook for updates of global state.
 
-import isFunction from 'lodash/isFunction.js';
-
 import {
   type Dispatch,
   type SetStateAction,
@@ -144,9 +142,10 @@ function useGlobalState(
       const rc = ref.current;
       if (!rc) throw Error('Internal error');
 
-      const newState = isFunction(value)
-        ? value(rc.globalState.get(rc.path)) as unknown
-        : value;
+      const newState = typeof value === 'function'
+        ? (value as (x: unknown) => unknown)(
+          rc.globalState.get<ForceT, unknown>(rc.path),
+        ) : value;
 
       if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
         /* eslint-disable no-console */

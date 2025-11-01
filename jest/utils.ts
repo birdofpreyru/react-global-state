@@ -4,7 +4,7 @@
  * Jest test utils.
  */
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import mockdate from 'mockdate';
 import { type ReactNode, act } from 'react';
 import { type Root, createRoot } from 'react-dom/client';

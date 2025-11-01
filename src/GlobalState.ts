@@ -1,9 +1,4 @@
-import get from 'lodash/get.js';
-import isFunction from 'lodash/isFunction.js';
-import isObject from 'lodash/isObject.js';
-import isNil from 'lodash/isNil.js';
-import set from 'lodash/set.js';
-import toPath from 'lodash/toPath.js';
+import { get, set, toPath } from 'lodash-es';
 
 import type SsrContext from './SsrContext';
 
@@ -136,7 +131,7 @@ export default class GlobalState<
     if (state !== undefined || opts?.initialValue === undefined) return state;
 
     const iv = opts.initialValue;
-    state = isFunction(iv) ? iv() : iv;
+    state = typeof iv === 'function' ? (iv as () => StateT)() : iv;
     if (this.#currentState === undefined) this.setEntireState(state);
     return state;
   }
@@ -223,7 +218,7 @@ export default class GlobalState<
   ): TypeLock<Forced, void, ValueT>;
 
   get<ValueT>(path?: null | string, opts?: GetOptsT<ValueT>): ValueT {
-    if (isNil(path)) {
+    if (typeof path !== 'string') {
       const res = this.getEntireState((opts as unknown) as GetOptsT<StateT>);
       return (res as unknown) as ValueT;
     }
@@ -234,7 +229,7 @@ export default class GlobalState<
     if (res !== undefined || opts?.initialValue === undefined) return res;
 
     const iv = opts.initialValue;
-    res = isFunction(iv) ? iv() : iv;
+    res = typeof iv === 'function' ? (iv as () => ValueT)() : iv;
 
     // TODO: Revise.
     // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
@@ -268,7 +263,7 @@ export default class GlobalState<
   ): TypeLock<Forced, void, ValueT>;
 
   set(path: null | string | undefined, value: unknown): unknown {
-    if (isNil(path)) return this.setEntireState(value as StateT);
+    if (typeof path !== 'string') return this.setEntireState(value as StateT);
 
     // TODO: Revise.
     // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
@@ -287,7 +282,7 @@ export default class GlobalState<
         // TODO: Revise: Typing is not quite correct here, but it works fine in the runtime.
         const next = pos[seg];
         if (Array.isArray(next)) pos[seg] = [...(next as unknown[])];
-        else if (isObject(next)) pos[seg] = { ...next };
+        else if (typeof next === 'object') pos[seg] = { ...next };
         else {
           // We arrived to a state sub-segment, where the remaining part of
           // the update path does not exist yet. We rely on lodash's set()

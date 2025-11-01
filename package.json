@@ -1,6 +1,6 @@
 {
   "name": "@dr.pogodin/react-global-state",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "description": "Hook-based global state for React",
   "main": "./build/code/index.js",
   "types": "./build/types/index.d.ts",
@@ -42,7 +42,7 @@
     "@babel/runtime": "^7.28.4",
     "@dr.pogodin/js-utils": "^0.1.4",
     "@types/lodash": "^4.17.20",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
@@ -58,6 +58,7 @@
     "@testing-library/react": "^16.3.0",
     "@tsconfig/recommended": "^1.0.11",
     "@types/jest": "^30.0.0",
+    "@types/lodash-es": "^4.17.12",
     "@types/pretty": "^2.0.3",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",

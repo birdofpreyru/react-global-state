@@ -1,5 +1,6 @@
 import type { GetFieldType } from 'lodash';
-import cloneDeep from 'lodash/cloneDeep.js';
+
+import { cloneDeep } from 'lodash-es';
 
 export type CallbackT = () => void;
 

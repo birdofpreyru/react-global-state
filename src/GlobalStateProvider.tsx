@@ -1,5 +1,3 @@
-import isFunction from 'lodash/isFunction.js';
-
 import {
   type ReactNode,
   createContext,
@@ -116,7 +114,7 @@ const GlobalStateProvider = <
     } = rest as NewStateProps<StateT, SsrContextT>;
 
     state = new GlobalState(
-      isFunction(initialState) ? initialState() : initialState,
+      typeof initialState === 'function' ? (initialState as () => StateT)() : initialState,
       ssrContext,
     );
 

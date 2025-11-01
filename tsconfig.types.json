@@ -1,6 +1,6 @@
 {
   "extends": "@tsconfig/recommended",
-  "include": ["src"],
+  "include": ["src", "types.d.ts"],
   "compilerOptions": {
     "declaration": true,
     "emitDeclarationOnly": true,
