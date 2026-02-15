@@ -60,7 +60,7 @@ test('Scene test in the front-end mode', async () => {
   });
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
   await JU.act(async () => {
     await JU.mockTimer(1000);
   });
@@ -69,7 +69,7 @@ test('Scene test in the front-end mode', async () => {
   });
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 });
 
 describe('Test `getSsrContext()` function', () => {

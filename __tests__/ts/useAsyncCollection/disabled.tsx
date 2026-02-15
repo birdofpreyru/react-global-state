@@ -6,8 +6,8 @@ import { mount } from 'jest/utils';
 
 import {
   type AsyncDataEnvelopeT,
-  newAsyncDataEnvelope,
   type UseAsyncDataResT,
+  newAsyncDataEnvelope,
   withGlobalStateType,
 } from 'src';
 

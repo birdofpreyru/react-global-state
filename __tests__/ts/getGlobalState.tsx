@@ -6,7 +6,7 @@ import { getByTestId } from '@testing-library/react';
 
 import { act, mount } from 'jest/utils';
 
-import { getGlobalState, GlobalState, GlobalStateProvider } from 'src';
+import { GlobalState, GlobalStateProvider, getGlobalState } from 'src';
 
 type GlobalStateT = InstanceType<typeof GlobalState<number>>;
 
@@ -65,7 +65,7 @@ test('base scenario', () => {
     getByTestId(scene, 'toggle-read').click();
   });
   expect(componentGS).toBe(sceneGS);
-  expect(componentGS?.get()).toBe(0);
+  expect(componentGS!.get()).toBe(0);
 
   const oldGS = sceneGS;
   act(() => {

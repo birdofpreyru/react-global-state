@@ -1,8 +1,8 @@
 import { expect } from 'tstyche';
 
 import {
-  type AsyncDataEnvelopeT,
   type AsyncCollectionLoaderT,
+  type AsyncDataEnvelopeT,
   type UseAsyncDataResT,
   useAsyncCollection,
 } from '../../../src';

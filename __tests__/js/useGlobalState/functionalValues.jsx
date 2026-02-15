@@ -7,8 +7,8 @@
  * state update.
  */
 
-import { useEffect } from 'react';
 import { mount } from 'jest/utils';
+import { useEffect } from 'react';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
 let renderPass;

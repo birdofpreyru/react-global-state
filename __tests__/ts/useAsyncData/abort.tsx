@@ -30,9 +30,9 @@ const Component: React.FunctionComponent = () => {
     'path',
     async (old, { isAborted, setAbortCallback }) => {
       isAbortedMap[x] = isAborted;
-      // TODO: Revise.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      setAbortCallback(() => onAbort(x));
+      setAbortCallback(() => {
+        onAbort(x);
+      });
       await timer(SEC_MS);
       return x;
     },
@@ -68,7 +68,7 @@ test('base scenario', async () => {
   // The value in the global state is "null", the 0 value data loading is
   // pending for 1 second.
   expect(gs.numAsyncDataAbortCallbacks).toBe(1);
-  expect(isAbortedMap[0]?.()).toBe(false);
+  expect(isAbortedMap[0]!()).toBe(false);
   expect(onAbort).not.toHaveBeenCalled();
   scene.snapshot();
 
@@ -78,7 +78,7 @@ test('base scenario', async () => {
   // The value in the global state is 1 now. isAborted() returns "true"
   // just because the operation has completed.
   expect(gs.numAsyncDataAbortCallbacks).toBe(0);
-  expect(isAbortedMap[0]?.()).toBe(true);
+  expect(isAbortedMap[0]!()).toBe(true);
   expect(onAbort).not.toHaveBeenCalled();
   scene.snapshot();
 
@@ -92,7 +92,7 @@ test('base scenario', async () => {
 
   // By this point the data has not been reloaded yet - the value is still 0.
   expect(gs.numAsyncDataAbortCallbacks).toBe(1);
-  expect(isAbortedMap[1]?.()).toBe(false);
+  expect(isAbortedMap[1]!()).toBe(false);
   expect(onAbort).not.toHaveBeenCalled();
   scene.snapshot();
 
@@ -107,8 +107,8 @@ test('base scenario', async () => {
   // At this point the operation for value 1 has been aborted, but the operation
   // for value #2 is still pending.
   expect(gs.numAsyncDataAbortCallbacks).toBe(1);
-  expect(isAbortedMap[1]?.()).toBe(true);
-  expect(isAbortedMap[2]?.()).toBe(false);
+  expect(isAbortedMap[1]!()).toBe(true);
+  expect(isAbortedMap[2]!()).toBe(false);
   expect(onAbort).toHaveBeenCalledTimes(1);
   expect(onAbort).toHaveBeenLastCalledWith(1);
   scene.snapshot();
@@ -119,7 +119,7 @@ test('base scenario', async () => {
   // Now the pending operation has completed, the final value in the global
   // state is 2.
   expect(gs.numAsyncDataAbortCallbacks).toBe(0);
-  expect(isAbortedMap[2]?.()).toBe(true);
+  expect(isAbortedMap[2]!()).toBe(true);
   expect(onAbort).toHaveBeenCalledTimes(1);
   expect(onAbort).toHaveBeenLastCalledWith(1);
   scene.snapshot();

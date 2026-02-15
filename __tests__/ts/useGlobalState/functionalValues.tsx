@@ -8,14 +8,14 @@
 import { type ReactNode, useEffect } from 'react';
 
 import { mount } from 'jest/utils';
-import { type SetterT, GlobalStateProvider, useGlobalState } from 'src/index';
+import { GlobalStateProvider, type SetterT, useGlobalState } from 'src/index';
 
 const PATH = 'path';
 
 type ValueT = jest.Mock | number | string | undefined;
 
-type StateT = { [PATH]?: ValueT };
 type State2T = { key: number };
+type StateT = { [PATH]?: ValueT };
 
 const Wrapper: React.FunctionComponent<{
   children: ReactNode;

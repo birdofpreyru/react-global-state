@@ -17,7 +17,7 @@ import {
   unMockConsoleLog,
 } from 'jest/utils';
 
-import { GlobalStateProvider, getSsrContext, SsrContext } from 'src/index';
+import { GlobalStateProvider, SsrContext, getSsrContext } from 'src/index';
 
 import Scene, { loaderA, loaderB } from './__assets__/TestScene';
 
@@ -60,7 +60,7 @@ test('Scene test in the front-end mode', async () => {
   });
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
   await act(async () => {
     await mockTimer(1000);
   });
@@ -69,7 +69,7 @@ test('Scene test in the front-end mode', async () => {
   });
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 });
 
 describe('Test `getSsrContext()` function', () => {
@@ -101,7 +101,7 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Missing GlobalStateProvider', () => {
-    console.error = () => null;
+    console.error = () => undefined;
     let message;
     try {
       mount(<SceneUsingSsrContext />);
@@ -135,7 +135,7 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when does not exist', () => {
-    console.error = () => null;
+    console.error = () => undefined;
     let message;
     try {
       mount((

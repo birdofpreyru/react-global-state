@@ -4,8 +4,8 @@
  * Tests that data reloading happens as expected when `deps` option is used.
  */
 
-import { useState } from 'react';
 import mockdate from 'mockdate';
+import { useState } from 'react';
 
 import { timer } from '@dr.pogodin/js-utils';
 
@@ -85,17 +85,17 @@ afterEach(() => {
 
 test('Scenario I', async () => {
   /* Check of the initial state. */
-  scene?.snapshot();
+  scene!.snapshot();
 
   /* Data are not stale. */
   await wait(10);
   await wait(10);
-  scene?.snapshot();
+  scene!.snapshot();
 
   /* Press of button forces data refresh via "deps" option. */
   act(() => {
     button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
   await wait(10);
-  scene?.snapshot();
+  scene!.snapshot();
 });

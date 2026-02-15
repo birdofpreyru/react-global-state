@@ -54,5 +54,5 @@ beforeEach(async () => {
 
 it('does not reload data', () => {
   expect(loader).not.toHaveBeenCalled();
-  scene?.snapshot();
+  scene!.snapshot();
 });

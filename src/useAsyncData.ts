@@ -7,9 +7,12 @@ import { v4 as uuid } from 'uuid';
 
 import { MIN_MS } from '@dr.pogodin/js-utils';
 
+import type GlobalState from './GlobalState';
 import { getGlobalState } from './GlobalStateProvider';
-import useGlobalState from './useGlobalState';
 
+import type SsrContext from './SsrContext';
+
+import useGlobalState from './useGlobalState';
 import {
   type ForceT,
   type LockT,
@@ -18,9 +21,6 @@ import {
   cloneDeepForLog,
   isDebugMode,
 } from './utils';
-
-import type GlobalState from './GlobalState';
-import type SsrContext from './SsrContext';
 
 export const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
@@ -33,17 +33,17 @@ export const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 // rendering cycle.
 
 export type AsyncDataLoaderT<DataT>
-  = (oldData: null | DataT, meta: {
+  = (oldData: DataT | null, meta: {
     isAborted: () => boolean;
     oldDataTimestamp: number;
     setAbortCallback: (cb: () => void) => void;
-  }) => DataT | null | Promise<DataT | null>;
+  }) => DataT | Promise<DataT | null> | null;
 
 export type AsyncDataReloaderT<DataT>
-  = (loader?: AsyncDataLoaderT<DataT>) => void | Promise<void>;
+  = (loader?: AsyncDataLoaderT<DataT>) => Promise<void> | void;
 
 export type AsyncDataEnvelopeT<DataT> = {
-  data: null | DataT;
+  data: DataT | null;
   numRefs: number;
   operationId: string;
   timestamp: number;
@@ -89,7 +89,7 @@ function setState<
   EnvT extends AsyncDataEnvelopeT<DataT>,
 >(
   data: DataT,
-  path: string | null | undefined,
+  path: null | string | undefined,
   gs: GlobalState<unknown, SsrContext<unknown>>,
   prevState: EnvT = gs.get<ForceT, EnvT>(path),
 ) {
@@ -164,7 +164,7 @@ export function load<DataT>(
   // the caller methods as well, in some cases (see useAsyncCollection()
   // use case as well).
   operationId: OperationIdT = `C${uuid()}`,
-): void | Promise<void> {
+): Promise<void> | void {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
     console.log(
@@ -235,8 +235,8 @@ export type DataInEnvelopeAtPathT<
 type HeapT<DataT> = {
   // Note: these heap fields are necessary to make reload() a stable function.
   globalState?: GlobalState<unknown>;
-  path?: null | string;
   loader?: AsyncDataLoaderT<DataT>;
+  path?: null | string;
   reload?: AsyncDataReloaderT<DataT>;
   set?: (data: DataT | null) => void;
 };
@@ -285,7 +285,7 @@ function useAsyncData<DataT>(
 
   heap.reload ??= (
     customLoader?: AsyncDataLoaderT<DataT>,
-  ): void | Promise<void> => {
+  ): Promise<void> | void => {
     const localLoader = customLoader ?? heap.loader;
     if (!localLoader || !heap.globalState) throw Error('Internal error');
     return load(heap.path, localLoader, heap.globalState);

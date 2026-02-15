@@ -5,12 +5,12 @@
 // These tests cover useGlobalState behavior when its "path" argument value
 // changes.
 
-import { useState } from 'react';
-import { timer } from '@dr.pogodin/js-utils';
-
 import { act, mount } from 'jest/utils';
+import { useState } from 'react';
+
 import { GlobalStateProvider, useGlobalState } from 'src';
 import GlobalState from 'src/GlobalState';
+import { timer } from '@dr.pogodin/js-utils';
 
 function Component() {
   const [path, setPath] = useState('pathA');

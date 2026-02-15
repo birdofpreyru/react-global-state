@@ -51,7 +51,7 @@ test('base scenario', () => {
   // As of React 18.3.2, although a warning about variadic useEffect()
   // dependencies is printed into the console, the actual logic is the one
   // we expect... so we have to test there is no warnings.
-  jest.spyOn(console, 'error').mockImplementation(() => undefined);
+  jest.spyOn(console, 'error').mockReturnValue(undefined);
 
   const component = getByTestId(scene, 'component');
   act(() => {

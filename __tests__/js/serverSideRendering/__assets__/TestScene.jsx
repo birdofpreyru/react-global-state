@@ -1,5 +1,5 @@
-import { timer } from '@dr.pogodin/js-utils';
 import { useAsyncData, useGlobalState } from 'src';
+import { timer } from '@dr.pogodin/js-utils';
 
 // TODO: Are we missing something here? Right now the test components A and B,
 // look identical along with their loaders. Were they intended to be slightly

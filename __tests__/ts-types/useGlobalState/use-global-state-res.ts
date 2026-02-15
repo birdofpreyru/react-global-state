@@ -1,4 +1,5 @@
 import { expect } from 'tstyche';
+
 import type { SetterT, UseGlobalStateResT } from '../../../src';
 
 declare const x: UseGlobalStateResT<'X'>;

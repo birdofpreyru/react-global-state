@@ -6,8 +6,8 @@
  * implements a button, which updates that state when clicked.
  */
 
-import GlobalState from 'src/GlobalState';
 import { type MountedSceneT, act, mount } from 'jest/utils';
+import GlobalState from 'src/GlobalState';
 import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 jest.useFakeTimers();
@@ -49,7 +49,7 @@ const CounterButton: React.FunctionComponent<{
  * This is the test scene.
  */
 const TestScene: React.FunctionComponent<{
-  stateProxy?: boolean | GlobalState<StateT>;
+  stateProxy?: GlobalState<StateT> | boolean;
 }> = ({ stateProxy }) => (
   <GlobalStateProvider<StateT>
     initialState={{ counter: 0 }}
@@ -85,7 +85,7 @@ afterEach(() => {
 
 test('Throws if GlobalStateProvider is missing', () => {
   const consoleError = console.error;
-  console.error = () => null;
+  console.error = () => undefined;
   let message;
   try {
     mount(<CounterView />);

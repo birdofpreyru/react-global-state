@@ -27,7 +27,9 @@ export const consoleLogs: unknown[] = [];
 const originalConsole = console.log;
 
 export function mockConsoleLog(): void {
-  console.log = (...args) => consoleLogs.push(cloneDeep(args));
+  console.log = (...args) => {
+    consoleLogs.push(cloneDeep(args));
+  };
   console.groupCollapsed = console.log;
   consoleLogs.splice(0);
 }

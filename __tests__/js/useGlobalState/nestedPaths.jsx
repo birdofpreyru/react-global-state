@@ -6,9 +6,9 @@
  * Updates of nested state paths should notify watchers of the wrapping paths.
  */
 
-import { timer } from '@dr.pogodin/js-utils';
 import { act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
+import { timer } from '@dr.pogodin/js-utils';
 
 /* Test with the state containing only objects. */
 

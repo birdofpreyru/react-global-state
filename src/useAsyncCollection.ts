@@ -11,11 +11,11 @@ import { getGlobalState } from './GlobalStateProvider';
 import {
   type AsyncDataEnvelopeT,
   type AsyncDataReloaderT,
+  DEFAULT_MAXAGE,
   type DataInEnvelopeAtPathT,
   type OperationIdT,
   type UseAsyncDataOptionsT,
   type UseAsyncDataResT,
-  DEFAULT_MAXAGE,
   load,
   newAsyncDataEnvelope,
 } from './useAsyncData';
@@ -38,16 +38,16 @@ export type AsyncCollectionT<
 export type AsyncCollectionLoaderT<
   DataT,
   IdT extends number | string = number | string,
-> = (id: IdT, oldData: null | DataT, meta: {
+> = (id: IdT, oldData: DataT | null, meta: {
   isAborted: () => boolean;
   oldDataTimestamp: number;
   setAbortCallback: (cb: () => void) => void;
-}) => DataT | null | Promise<DataT | null>;
+}) => DataT | Promise<DataT | null> | null;
 
 export type AsyncCollectionReloaderT<
   DataT,
   IdT extends number | string = number | string,
-> = (loader?: AsyncCollectionLoaderT<DataT, IdT>) => void | Promise<void>;
+> = (loader?: AsyncCollectionLoaderT<DataT, IdT>) => Promise<void> | void;
 
 type CollectionItemT<DataT> = {
   data: DataT | null;
@@ -234,7 +234,7 @@ function useAsyncCollection<
   path: PathT,
   loader: AsyncCollectionLoaderT<DataT, IdT>,
   options?: UseAsyncDataOptionsT,
-): UseAsyncDataResT<DataT> | UseAsyncCollectionResT<DataT, IdT>;
+): UseAsyncCollectionResT<DataT, IdT> | UseAsyncDataResT<DataT>;
 
 // TODO: This is largely similar to useAsyncData() logic, just more generic.
 // Perhaps, a bunch of logic blocks can be split into stand-alone functions,
@@ -248,7 +248,7 @@ function useAsyncCollection<
   path: null | string | undefined,
   loader: AsyncCollectionLoaderT<DataT, IdT>,
   options: UseAsyncDataOptionsT = {},
-): UseAsyncDataResT<DataT> | UseAsyncCollectionResT<DataT, IdT> {
+): UseAsyncCollectionResT<DataT, IdT> | UseAsyncDataResT<DataT> {
   const ids = normalizeIds(idOrIds);
   const maxage: number = options.maxage ?? DEFAULT_MAXAGE;
   const refreshAge: number = options.refreshAge ?? maxage;
@@ -272,7 +272,7 @@ function useAsyncCollection<
           const promiseOrVoid = load(
             itemPath,
             (...args):
-              DataT | null | Promise<DataT | null> => loader(id, ...args),
+              DataT | Promise<DataT | null> | null => loader(id, ...args),
             globalState,
             {
               data: state.data,
@@ -520,6 +520,6 @@ export interface UseAsyncCollectionI<StateT> {
     path: PathT,
     loader: AsyncCollectionLoaderT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>,
     options?: UseAsyncDataOptionsT,
-  ): UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>
-    | UseAsyncCollectionResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>;
+  ): UseAsyncCollectionResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>, IdT>
+    | UseAsyncDataResT<DataInEnvelopeAtPathT<StateT, `${PathT}.${IdT}`>>;
 }

@@ -1,4 +1,5 @@
 import { timer } from '@dr.pogodin/js-utils';
+
 import { type ForceT, useAsyncData, useGlobalState } from 'src/index';
 
 // TODO: Are we missing something here? Right now the test components A and B,

@@ -7,11 +7,6 @@
  * the same data into the same state segment.
  */
 
-import mockdate from 'mockdate';
-import { useState } from 'react';
-
-import { timer } from '@dr.pogodin/js-utils';
-
 import {
   act,
   consoleLogs,
@@ -20,8 +15,13 @@ import {
   mount,
   wait,
 } from 'jest/utils';
+import mockdate from 'mockdate';
+
+import { useState } from 'react';
 
 import { GlobalStateProvider, useAsyncData } from 'src/index';
+
+import { timer } from '@dr.pogodin/js-utils';
 
 jest.useFakeTimers();
 mockdate.set('2019-10-28Z');
@@ -116,7 +116,7 @@ test('Scenario I', async () => {
   await act(() => mockTimer(1));
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 
   /* Checks the loading is completed 1 second later. */
   await act(async () => {
@@ -127,7 +127,7 @@ test('Scenario I', async () => {
   });
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 
   /* A series of component (un-)mounts in a rapid succession, checks
    * it causes no data re-loads, and the final state is the same as
@@ -136,7 +136,7 @@ test('Scenario I', async () => {
     await clickButton();
     scene.snapshot();
     expect(loaderA).toHaveBeenCalledTimes(1);
-    expect(loaderB).toHaveBeenCalledTimes(0);
+    expect(loaderB).not.toHaveBeenCalled();
   }
 
   /**
@@ -148,7 +148,7 @@ test('Scenario I', async () => {
   await clickButton();
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 
   /* Checks the data loading is completed 1 sec later, and both components
    * are mounted. */
@@ -156,7 +156,7 @@ test('Scenario I', async () => {
   await wait(0);
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 
   /* Waits 6 secs to stale data, and unmounts ComponentA. Checks the data
    * are re-loaded by ComponentB, which is still mounted. */

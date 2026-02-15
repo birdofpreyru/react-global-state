@@ -27,10 +27,10 @@ beforeEach(() => {
   unMockConsoleLog();
 });
 
-type StateT1 = string | {
+type StateT1 = {
   ''?: string;
   key: string;
-};
+} | string;
 
 type StateT2 = Record<string, string>;
 
@@ -114,10 +114,10 @@ describe('ssrContext', () => {
   it('forbids to .watch() and .unWatch() the state', () => {
     const state = new GlobalState(undefined, new SsrContext<undefined>());
     expect(() => {
-      state.watch(jest.fn());
+      state.watch(jest.fn<undefined, []>());
     }).toThrowErrorMatchingSnapshot();
     expect(() => {
-      state.unWatch(jest.fn());
+      state.unWatch(jest.fn<undefined, []>());
     }).toThrowErrorMatchingSnapshot();
   });
 });
@@ -125,9 +125,9 @@ describe('ssrContext', () => {
 describe('.watch() and .unWatch() logic', () => {
   const state = new GlobalState({ test: 0 });
 
-  const watcher1 = jest.fn();
-  const watcher2 = jest.fn();
-  const watcher3 = jest.fn();
+  const watcher1 = jest.fn<undefined, []>();
+  const watcher2 = jest.fn<undefined, []>();
+  const watcher3 = jest.fn<undefined, []>();
 
   // These counter and function do a mock update of the state, which causes
   // the GlobalState to call all connected watchers. As they are called async,

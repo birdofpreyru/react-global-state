@@ -39,6 +39,9 @@ export {
   type AsyncDataEnvelopeT,
   type AsyncDataLoaderT,
   type AsyncDataReloaderT,
+  GlobalState,
+  GlobalStateProvider,
+  SsrContext,
   type UseAsyncCollectionI,
   type UseAsyncCollectionResT,
   type UseAsyncDataI,
@@ -47,10 +50,7 @@ export {
   type UseGlobalStateI,
   getGlobalState,
   getSsrContext,
-  GlobalState,
-  GlobalStateProvider,
   newAsyncDataEnvelope,
-  SsrContext,
   useAsyncCollection,
   useAsyncData,
   useGlobalState,
@@ -61,12 +61,12 @@ interface API<
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
 > {
-  getGlobalState: typeof getGlobalState<StateT, SsrContextT>;
-  getSsrContext: typeof getSsrContext<SsrContextT>;
   GlobalState: typeof GlobalState<StateT, SsrContextT>;
   GlobalStateProvider: typeof GlobalStateProvider<StateT, SsrContextT>;
-  newAsyncDataEnvelope: typeof newAsyncDataEnvelope;
   SsrContext: typeof SsrContext<StateT>;
+  getGlobalState: typeof getGlobalState<StateT, SsrContextT>;
+  getSsrContext: typeof getSsrContext<SsrContextT>;
+  newAsyncDataEnvelope: typeof newAsyncDataEnvelope;
   useAsyncCollection: UseAsyncCollectionI<StateT>;
   useAsyncData: UseAsyncDataI<StateT>;
   useGlobalState: UseGlobalStateI<StateT>;

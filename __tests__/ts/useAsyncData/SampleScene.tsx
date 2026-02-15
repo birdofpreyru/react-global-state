@@ -110,7 +110,7 @@ test('Scenario I', async () => {
   initTestScene();
 
   /* Empty scene. */
-  scene?.snapshot();
+  scene!.snapshot();
 
   /* Mounts ComponentA, checks the loading started. */
   act(() => {
@@ -119,9 +119,9 @@ test('Scenario I', async () => {
   await act(async () => {
     await mockTimer(1);
   });
-  scene?.snapshot();
+  scene!.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 
   /* Checks the loading is completed 1 second later. */
   await act(async () => {
@@ -130,18 +130,18 @@ test('Scenario I', async () => {
   await act(async () => {
     await mockTimer(0);
   });
-  scene?.snapshot();
+  scene!.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 
   /* A series of component (un-)mounts in a rapid succession, checks
    * it causes no data re-loads, and the final state is the same as
    * before: ComponentA mounted. */
   for (let i = 0; i < 4; i += 1) {
     await clickButton();
-    scene?.snapshot();
+    scene!.snapshot();
     expect(loaderA).toHaveBeenCalledTimes(1);
-    expect(loaderB).toHaveBeenCalledTimes(0);
+    expect(loaderB).not.toHaveBeenCalled();
   }
 
   /**
@@ -151,30 +151,30 @@ test('Scenario I', async () => {
    */
   await wait(6 * 60 * 1000);
   await clickButton();
-  scene?.snapshot();
+  scene!.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 
   /* Checks the data loading is completed 1 sec later, and both components
    * are mounted. */
   await wait(1000);
   await wait(0);
-  scene?.snapshot();
+  scene!.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
-  expect(loaderB).toHaveBeenCalledTimes(0);
+  expect(loaderB).not.toHaveBeenCalled();
 
   /* Waits 6 secs to stale data, and unmounts ComponentA. Checks the data
    * are re-loaded by ComponentB, which is still mounted. */
   await wait(6 * 60 * 1000);
   await clickButton();
-  scene?.snapshot();
+  scene!.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);
 
   /* Waits 1 sec, unmounts ComponentB, checks the data are loaded. */
   await wait(1000);
   await clickButton();
-  scene?.snapshot();
+  scene!.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);
 

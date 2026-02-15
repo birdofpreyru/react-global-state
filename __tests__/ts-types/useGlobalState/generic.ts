@@ -12,8 +12,8 @@ expect(useGlobalState()).type.toBe<UseGlobalStateResT<unknown>>();
 // eslint-disable-next-line react-hooks/rules-of-hooks
 expect(useGlobalState<'OK'>()).type.toBe<UseGlobalStateResT<'OK'>>();
 
-type ValueT = 'value-a' | 'value-b';
 type StateT = { some: { path: ValueT } };
+type ValueT = 'value-a' | 'value-b';
 const SOME_PATH = 'some.path';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks

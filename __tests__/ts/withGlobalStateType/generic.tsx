@@ -4,8 +4,8 @@ import { type MountedSceneT, mount } from 'jest/utils';
 
 import { withGlobalStateType } from 'src/index';
 
-type ValueT = 'value-a' | 'value-b';
 type StateT = { some: { path: ValueT } };
+type ValueT = 'value-a' | 'value-b';
 
 const Gs = withGlobalStateType<StateT>();
 

@@ -11,9 +11,9 @@ import {
 
 import { GlobalStateProvider, SsrContext } from 'src/index';
 
-import type * as TestSceneNS from './__assets__/TestScene';
-
 import StringDestination from './__assets__/StringDestination';
+
+import type * as TestSceneNS from './__assets__/TestScene';
 
 jest.mock('uuid');
 jest.useFakeTimers();

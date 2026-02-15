@@ -9,8 +9,8 @@ import { timer } from '@dr.pogodin/js-utils';
 
 import { act, mount } from 'jest/utils';
 
-import { GlobalStateProvider, useGlobalState } from 'src/index';
 import GlobalState from 'src/GlobalState';
+import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 type StateT = {
   pathA?: string;

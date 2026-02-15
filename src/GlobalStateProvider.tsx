@@ -67,11 +67,11 @@ type NewStateProps<StateT, SsrContextT extends SsrContext<StateT>> = {
 type GlobalStateProviderProps<
   StateT,
   SsrContextT extends SsrContext<StateT>,
-> = {
+> = (NewStateProps<StateT, SsrContextT> | {
+  stateProxy: GlobalState<StateT, SsrContextT> | true;
+}) & {
   children?: ReactNode;
-} & (NewStateProps<StateT, SsrContextT> | {
-  stateProxy: true | GlobalState<StateT, SsrContextT>;
-});
+};
 
 /**
  * Provides global state to its children.

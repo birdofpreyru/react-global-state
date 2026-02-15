@@ -113,7 +113,7 @@ export default class GlobalState<
    */
   hasChangedDependencies(path: string, deps: unknown[]): boolean {
     const prevDeps = this.#dependencies[path];
-    let changed = !prevDeps || prevDeps.length !== deps.length;
+    let changed = prevDeps?.length !== deps.length;
     for (let i = 0; !changed && i < deps.length; ++i) {
       changed = prevDeps![i] !== deps[i];
     }

@@ -10,14 +10,14 @@ import { getByText } from '@testing-library/dom';
 
 import { act, mount } from 'jest/utils';
 
-import GlobalState from 'src/GlobalState';
-
 import {
   type AsyncDataEnvelopeT,
   type ForceT,
   GlobalStateProvider,
   useAsyncCollection,
 } from 'src';
+
+import GlobalState from 'src/GlobalState';
 
 mockdate.set('2021-05-08Z');
 

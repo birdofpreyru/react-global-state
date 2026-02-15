@@ -57,7 +57,7 @@ expect(() => {
   };
 }).type.toRaiseError(2322);
 
-declare const x10: ValueAtPathT<string | StateT1, 'some.path', never>;
+declare const x10: ValueAtPathT<StateT1 | string, 'some.path', never>;
 expect(x10).type.toBe<'value-a' | 'value-b' | undefined>();
 
 // When the state type is unknown.

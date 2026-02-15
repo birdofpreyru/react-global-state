@@ -6,14 +6,14 @@
  * Tests that data reloading happens as expected when `deps` option is used.
  */
 
-import { useState } from 'react';
+import { act, mockTimer, mount } from 'jest/utils';
 import mockdate from 'mockdate';
 
-import { timer } from '@dr.pogodin/js-utils';
-
-import { act, mockTimer, mount } from 'jest/utils';
+import { useState } from 'react';
 
 import { GlobalStateProvider, useAsyncData } from 'src';
+
+import { timer } from '@dr.pogodin/js-utils';
 
 jest.useFakeTimers();
 mockdate.set('2020-04-09Z');

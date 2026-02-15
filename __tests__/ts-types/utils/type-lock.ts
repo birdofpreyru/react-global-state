@@ -1,7 +1,7 @@
 import { expect } from 'tstyche';
 
 import type { ForceT } from '../../../src';
-import type { TypeLock, LockT } from '../../../src/utils';
+import type { LockT, TypeLock } from '../../../src/utils';
 
 declare const t01: TypeLock<LockT, never, 'x'>;
 expect(t01).type.toBe<never>();

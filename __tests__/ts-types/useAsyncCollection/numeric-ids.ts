@@ -59,7 +59,7 @@ describe('useAsyncCollection() supports numeric IDs', () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (id: IdT) => 'OK',
     );
-    type ResC = UseAsyncDataResT<'OK'> | UseAsyncCollectionResT<'OK', IdT>;
+    type ResC = UseAsyncCollectionResT<'OK', IdT> | UseAsyncDataResT<'OK'>;
     expect<typeof resC>().type.toBe<ResC>();
   });
 
@@ -81,7 +81,7 @@ describe('useAsyncCollection() supports numeric IDs', () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (id: IdT) => 'OK' as const,
     );
-    type ResC = UseAsyncDataResT<'OK'> | UseAsyncCollectionResT<'OK', IdT>;
+    type ResC = UseAsyncCollectionResT<'OK', IdT> | UseAsyncDataResT<'OK'>;
     expect<typeof resC>().type.toBe<ResC>();
   });
 });

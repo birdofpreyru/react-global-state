@@ -11,9 +11,9 @@ import {
 
 import { GlobalStateProvider, SsrContext } from 'src/index';
 
-import type * as TestSceneNS from './__assets__/TestScene';
-
 import StringDestination from './__assets__/StringDestination';
+
+import type * as TestSceneNS from './__assets__/TestScene';
 
 jest.mock('uuid');
 jest.useFakeTimers();
@@ -56,11 +56,13 @@ test('Naive server-side rendering', (done) => {
       <Scene />
     </GlobalStateProvider>,
     {
-      async onAllReady() {
-        const dest = new StringDestination();
-        stream.pipe(dest);
-        await expect(dest.waitResult()).resolves.toMatchSnapshot();
-        done();
+      onAllReady() {
+        void (async () => {
+          const dest = new StringDestination();
+          stream.pipe(dest);
+          await expect(dest.waitResult()).resolves.toMatchSnapshot();
+          done();
+        })();
       },
     },
   );

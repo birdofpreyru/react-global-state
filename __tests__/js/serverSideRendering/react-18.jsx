@@ -1,8 +1,8 @@
 /* global process, require */
 
-import mockdate from 'mockdate';
-
 import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils';
+
+import mockdate from 'mockdate';
 
 import StringDestination from './__assets__/StringDestination';
 
