@@ -86,19 +86,18 @@ to make convenient and safe static type analysis possible.
     :::
 
 3.  Another overload permits to force any **DataT** type under the caller's
-    discretion (simplified by omitting details behind the exact **DataT**
-    definition):
+    discretion:
     ```ts
     function useGlobalState<
-      Forced extends ForceT | false = false,
+      Forced extends ForceT | LockT = LockT,
       ValueT = void,
     >(
       path: null | string | undefined,
-      initialValue?: ValueOrInitializerT<ValueT>,
-    ): UseGlobalStateResT<ValueT>;
+      initialValue?: ValueOrInitializerT<TypeLock<Forced, never, ValueT>>,
+    ): UseGlobalStateResT<TypeLock<Forced, void, ValueT>>;
     ```
     Generic parameters are:
-    - `Unlocked` &mdash; [ForceT] | **false** &mdash; The default value, **false**, forbids
+    - `Unlocked` &mdash; [ForceT] | [LockT] &mdash; The default value, [LockT], forbids
       TypeScript to use this overload (it does so by forcing **DataT** to evaluate
       as **void**). It must be set equal [ForceT] explicitly to use this overload.
     - `ValueT` &mdash; The type of value at the state `path`, defaults
@@ -161,6 +160,7 @@ It returns an array with two elements `[value, setValue]` (see the type
 [ForceT]: /docs/api/types/force
 [functional updates]: https://reactjs.org/docs/hooks-reference.html#functional-updates
 [GlobalState]: /docs/api/classes/globalstate
+[LockT]: /docs/api/types/lock
 [SetterT]: /docs/api/types/setter
 [useGlobalState()]: #
 [UseGlobalStateResT]: /docs/api/types/use-global-state-res

@@ -78,7 +78,7 @@ making convenient and safe static type analysis possible.
     force any **DataT** type under the caller's discretion:
     ```ts
     function useAsyncData<
-      Forced extends ForceT | false = false,
+      Forced extends ForceT | LockT = LockT,
       DataT = unknown,
     >(
       path: null | string | undefined,
@@ -87,9 +87,9 @@ making convenient and safe static type analysis possible.
     ): UseAsyncDataResT<DataT>;
     ```
     Generic parameters are:
-    - `Forced` &mdash; [ForceT] | **false** &mdash; The default value, _false_,
+    - `Forced` &mdash; [ForceT] | [LockT] &mdash; The default value, [LockT],
       forbids
-      TypeScript to use this overload (it does so by forcing **DataT** to evaluate
+      TypeScript to use this overload (it does so by forcing `DataT` to evaluate
       as _void_). It must be set equal [ForceT] explicitly to use this overload.
 
     - `DataT` &mdash; The type of loaded datum, defaults to **unknown**.
@@ -143,6 +143,7 @@ Returns an object of the type [UseAsyncDataResT]&lt;**DataT**&gt;.
 [AsyncDataEnvelopeT]: /docs/api/types/async-data-envelope
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
 [ForceT]: /docs/api/types/force
+[LockT]: /docs/api/types/lock
 [newAsyncDataEnvelope()]: /docs/api/functions/new-async-data-envelope
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata

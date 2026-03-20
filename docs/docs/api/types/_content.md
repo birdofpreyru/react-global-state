@@ -13,6 +13,10 @@
 
 - [ForceT] &mdash; A special type for &laquo;unlocking&raquo; overloads of
   hooks and functions that allow to enforce arbitrary value types.
+
+- [LockT] &mdash; The counter-part of [ForceT], which you will probably never
+  use directly.
+
 - [SetterT] &mdash; The type of setter returned by the [useGlobalState()] hook.
 - [UseAsyncDataOptionsT] &mdash; The type of options object accepted by
   [useAsyncData()] and [useAsyncCollection()] hooks.
@@ -31,6 +35,7 @@
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
 [AsyncDataReloaderT]: /docs/api/types/async-data-reloader
 [ForceT]: /docs/api/types/force
+[LockT]: /docs/api/types/lock
 [SetterT]: /docs/api/types/setter
 [useAsyncCollection()]: /docs/api/hooks/useasynccollection
 [useAsyncData()]: /docs/api/hooks/useasyncdata

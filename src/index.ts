@@ -16,9 +16,11 @@ import {
   type AsyncDataEnvelopeT,
   type AsyncDataLoaderT,
   type AsyncDataReloaderT,
+  type LoadAsyncDataI,
   type UseAsyncDataI,
   type UseAsyncDataOptionsT,
   type UseAsyncDataResT,
+  loadAsyncData,
   newAsyncDataEnvelope,
   useAsyncData,
 } from './useAsyncData';
@@ -50,6 +52,7 @@ export {
   type UseGlobalStateI,
   getGlobalState,
   getSsrContext,
+  loadAsyncData,
   newAsyncDataEnvelope,
   useAsyncCollection,
   useAsyncData,
@@ -66,6 +69,7 @@ interface API<
   SsrContext: typeof SsrContext<StateT>;
   getGlobalState: typeof getGlobalState<StateT, SsrContextT>;
   getSsrContext: typeof getSsrContext<SsrContextT>;
+  loadAsyncData: LoadAsyncDataI<StateT>;
   newAsyncDataEnvelope: typeof newAsyncDataEnvelope;
   useAsyncCollection: UseAsyncCollectionI<StateT>;
   useAsyncData: UseAsyncDataI<StateT>;
@@ -81,6 +85,7 @@ const api = {
   SsrContext,
   getGlobalState,
   getSsrContext,
+  loadAsyncData,
   newAsyncDataEnvelope,
   useAsyncCollection,
   useAsyncData,

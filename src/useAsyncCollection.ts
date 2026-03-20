@@ -16,7 +16,7 @@ import {
   type OperationIdT,
   type UseAsyncDataOptionsT,
   type UseAsyncDataResT,
-  load,
+  loadAsyncData,
   newAsyncDataEnvelope,
 } from './useAsyncData';
 
@@ -269,7 +269,7 @@ function useAsyncCollection<
           },
         );
         if (!state.timestamp && !state.operationId) {
-          const promiseOrVoid = load(
+          const promiseOrVoid = loadAsyncData<ForceT, DataT>(
             itemPath,
             (...args):
               DataT | Promise<DataT | null> | null => loader(id, ...args),
@@ -337,7 +337,7 @@ function useAsyncCollection<
               )
             ) {
               if (!deps) globalState.dropDependencies(itemPath);
-              await load(
+              await loadAsyncData<ForceT, DataT>(
                 itemPath,
                 // TODO: I guess, the loader is not correctly typed here -
                 // it can be synchronous, and in that case the following method
@@ -346,7 +346,7 @@ function useAsyncCollection<
                 (old, ...args) => loader(id, old as DataT, ...args),
                 globalState,
                 {
-                  data: state2?.data,
+                  data: state2?.data ?? null,
                   timestamp: state2?.timestamp ?? 0,
                 },
               );
@@ -398,7 +398,7 @@ function useAsyncCollection<
       for (const id of rc.ids) {
         const itemPath = rc.path ? `${rc.path}.${id}` : `${id}`;
 
-        const promiseOrVoid = load(
+        const promiseOrVoid = loadAsyncData<ForceT, DataT>(
           itemPath,
           // TODO: Revise! Most probably we don't have fully correct loader
           // typing, as it may return either promise or value, and those two

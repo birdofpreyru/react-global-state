@@ -20,6 +20,7 @@ function withGlobalStateType<
   getSsrContext: ...;
   GlobalState: ...;
   GlobalStateProvider: ...;
+  loadAsyncData: ...;
   newAsyncDataEnvelope: ...;
   SsrContext: ...;
   useAsyncCollection: ...;

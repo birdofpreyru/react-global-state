@@ -15,6 +15,7 @@ exports[`withGlobalStateType() result matches snapshot 1`] = `
   "SsrContext": [Function],
   "getGlobalState": [Function],
   "getSsrContext": [Function],
+  "loadAsyncData": [Function],
   "newAsyncDataEnvelope": [Function],
   "useAsyncCollection": [Function],
   "useAsyncData": [Function],

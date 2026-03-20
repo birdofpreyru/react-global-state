@@ -110,7 +110,7 @@ _Compile-time TypeScript overloads:_
 
 3.  This implementation allows to force any value type at the caller's discretion:
     ```ts
-    get<Forced extends ForceT | false = false, ValueT = void>(
+    get<Forced extends ForceT | LockT = LockT, ValueT = void>(
       path?: null | string,
       opts?: GetOptsT<ValueT>,
     ): ValueT;
@@ -118,12 +118,12 @@ _Compile-time TypeScript overloads:_
     &uArr; _Simplified by omitting some details behind the actual **ValueT**
     definition and usage._
 
-    By default, the _false_ value of **Forced** generic param forbids compiler
-    to use this overload; it must be set equal **ForceT** to work, _e.g._
+    By default, the [LockT] value of the `Forced` generic param forbids compiler
+    to use this overload; it must be set equal to [ForceT] to work, _e.g._
     ```ts
     // Forces TypeScript to assume the value at `path` has "string" type.
 
-    import { type ForceT } from '@dr.pogodin/react-global-state';
+    import type { ForceT } from '@dr.pogodin/react-global-state';
 
     globalState.get<ForceT, string>(path);
     ```
@@ -176,7 +176,7 @@ _Compile-time TypeScript overloads:_
 2.  This overload allows to force any **ValueT** type at the caller's
     discretion:
     ```ts
-    set<Forced extends ForceT | false = false, ValueT = never>(
+    set<Forced extends ForceT | LockT = LockT, ValueT = never>(
       path: null | string | undefined,
       value: ValueT,
     ): ValueT; 
@@ -184,13 +184,13 @@ _Compile-time TypeScript overloads:_
     &uArr; _Simplified by omitting details behind the actual **ValueT**
     definition and use._
 
-    The default value of **Forced** generic parameter, _false_, forbids TypeScript
-    to use this overload, unless **Forced** is explicitly set equal _ForcedT_,
-    _i.e._ you use this overload like this:
+    The default value of the `Forced` generic parameter, [LockT], forbids
+    TypeScript to use this overload, unless `Forced` is explicitly set equal to
+    [ForceT], _i.e._ you use this overload like this:
     ```ts
     // Forces TypeScript to assume `value` has "string" type:
 
-    import { type ForceT } from '@dr.pogodin/react-global-state';
+    import type { ForceT } from '@dr.pogodin/react-global-state';
 
     globalState.set<ForceT, string>('some.path', 'some string value');
     ```
@@ -235,8 +235,10 @@ This method throws if [SsrContext] is attached to the state instance:
 the state watching functionlity is intended for the client-side only.
 :::
 
+[ForceT]: /docs/api/types/force
 [getGlobalState()]: /docs/api/hooks/getglobalstate
 [GlobalState]: #
+[LockT]: /docs/api/types/lock
 [SsrContext]: /docs/api/classes/ssrcontext
 [useGlobalState()]: /docs/api/hooks/useglobalstate
 [ValueOrInitializerT]: /docs/api/types/value-or-initializer

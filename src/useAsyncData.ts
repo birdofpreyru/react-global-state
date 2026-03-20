@@ -139,6 +139,30 @@ function finalizeLoad<DataT>(
   if (operationId === state?.operationId) setState(data, path, gs, state);
 }
 
+export function loadAsyncData<
+  StateT,
+  PathT extends null | string | undefined,
+  DataT extends DataInEnvelopeAtPathT<
+    StateT, PathT> = DataInEnvelopeAtPathT<StateT, PathT>,
+>(
+  path: PathT,
+  loader: AsyncDataLoaderT<DataT>,
+  globalState: GlobalState<StateT, SsrContext<StateT>>,
+  old?: { data: DataT | null; timestamp: number },
+  operationId?: OperationIdT,
+): Promise<void> | void;
+
+export function loadAsyncData<
+  Forced extends ForceT | LockT = LockT,
+  DataT = unknown,
+>(
+  path: null | string | undefined,
+  loader: AsyncDataLoaderT<TypeLock<Forced, void, DataT>>,
+  globalState: GlobalState<unknown, SsrContext<unknown>>,
+  old?: { data: DataT | null; timestamp: number },
+  operationId?: OperationIdT,
+): Promise<void> | void;
+
 /**
  * Executes the data loading operation.
  * @param path Data segment path inside the global state.
@@ -153,7 +177,7 @@ function finalizeLoad<DataT>(
  * @return Resolves once the operation is done.
  * @ignore
  */
-export function load<DataT>(
+export function loadAsyncData<DataT>(
   path: null | string | undefined,
   loader: AsyncDataLoaderT<DataT>,
   globalState: GlobalState<unknown, SsrContext<unknown>>,
@@ -288,7 +312,12 @@ function useAsyncData<DataT>(
   ): Promise<void> | void => {
     const localLoader = customLoader ?? heap.loader;
     if (!localLoader || !heap.globalState) throw Error('Internal error');
-    return load(heap.path, localLoader, heap.globalState);
+
+    return loadAsyncData<ForceT, DataT>(
+      heap.path,
+      localLoader,
+      heap.globalState,
+    );
   };
 
   heap.set ??= (data: DataT | null) => {
@@ -301,10 +330,17 @@ function useAsyncData<DataT>(
       !options.disabled && !options.noSSR
       && !state.operationId && !state.timestamp
     ) {
-      const promiseOrVoid = load(path, loader, globalState, {
-        data: state.data,
-        timestamp: state.timestamp,
-      }, `S${uuid()}`);
+      const promiseOrVoid = loadAsyncData<ForceT, DataT>(
+        path,
+        loader,
+        globalState,
+        {
+          data: state.data,
+          timestamp: state.timestamp,
+        },
+        `S${uuid()}`,
+      );
+
       if (promiseOrVoid instanceof Promise) {
         globalState.ssrContext.pending.push(promiseOrVoid);
       }
@@ -382,7 +418,8 @@ function useAsyncData<DataT>(
           )
         ) {
           if (!deps) globalState.dropDependencies(path ?? '');
-          void load(path, loader, globalState, {
+
+          void loadAsyncData<ForceT, DataT>(path, loader, globalState, {
             data: state2.data,
             timestamp: state2.timestamp,
           });
@@ -406,6 +443,29 @@ function useAsyncData<DataT>(
 }
 
 export { useAsyncData };
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface LoadAsyncDataI<StateT> {
+  <
+    PathT extends null | string | undefined,
+    DataT extends DataInEnvelopeAtPathT<
+      StateT, PathT> = DataInEnvelopeAtPathT<StateT, PathT>,
+  >(
+    path: PathT,
+    loader: AsyncDataLoaderT<DataT>,
+    globalState: GlobalState<StateT, SsrContext<StateT>>,
+    old?: { data: DataT | null; timestamp: number },
+    operationId?: OperationIdT,
+  ): Promise<void> | void;
+
+  <Forced extends ForceT | LockT = LockT, DataT = unknown>(
+    path: null | string | undefined,
+    loader: AsyncDataLoaderT<TypeLock<Forced, void, DataT>>,
+    globalState: GlobalState<unknown, SsrContext<unknown>>,
+    old?: { data: DataT | null; timestamp: number },
+    operationId?: OperationIdT,
+  ): Promise<void> | void;
+}
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface UseAsyncDataI<StateT> {
