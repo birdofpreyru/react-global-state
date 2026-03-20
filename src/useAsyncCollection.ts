@@ -33,7 +33,7 @@ import {
 export type AsyncCollectionT<
   DataT = unknown,
   IdT extends number | string = number | string,
-> = Record<IdT, AsyncDataEnvelopeT<DataT>>;
+> = Partial<Record<IdT, AsyncDataEnvelopeT<DataT>>>;
 
 export type AsyncCollectionLoaderT<
   DataT,

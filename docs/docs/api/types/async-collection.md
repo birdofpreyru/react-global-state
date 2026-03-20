@@ -10,7 +10,7 @@ corresponding data, wrapped into auxiliary [envelopes][AsyncDataEnvelopeT]:
 type AsyncCollectionT<
   DataT = unknown,
   IdT extends number | string = number | string,
-> = { [id in IdT]?: AsyncDataEnvelopeT<DataT> };
+> = Partial<Record<IdT, AsyncDataEnvelopeT<DataT>>>;
 ```
 
 ## Generic Parameters
