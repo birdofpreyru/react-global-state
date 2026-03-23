@@ -34,9 +34,8 @@ export const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
 export type AsyncDataLoaderT<DataT>
   = (oldData: DataT | null, meta: {
-    isAborted: () => boolean;
+    abortSignal: AbortSignal;
     oldDataTimestamp: number;
-    setAbortCallback: (cb: () => void) => void;
   }) => DataT | Promise<DataT | null> | null;
 
 export type AsyncDataReloaderT<DataT>
@@ -211,22 +210,14 @@ export function loadAsyncData<DataT>(
     definedOld = { data: e.data, timestamp: e.timestamp };
   }
 
+  const controller = new AbortController();
+  globalState.setAsyncDataAbortCallback(operationId, () => {
+    controller.abort();
+  });
+
   const dataOrPromise = loader(definedOld.data, {
-    isAborted: () => {
-      // TODO: Can we improve the typing, to avoid ForceT?
-      const opid = globalState.get<
-        ForceT, AsyncDataEnvelopeT<DataT>>(path).operationId;
-      return opid !== operationId;
-    },
+    abortSignal: controller.signal,
     oldDataTimestamp: definedOld.timestamp,
-    setAbortCallback(cb: () => void) {
-      const opid = globalState.get<
-        ForceT, AsyncDataEnvelopeT<DataT>>(path).operationId;
-      if (opid !== operationId) {
-        throw Error(`Operation #${operationId} has completed already`);
-      }
-      globalState.setAsyncDataAbortCallback(operationId, cb);
-    },
   });
 
   if (dataOrPromise instanceof Promise) {

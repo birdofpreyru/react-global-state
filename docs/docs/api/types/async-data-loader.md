@@ -7,12 +7,21 @@ for the [useAsyncData()] hook.
 
 It is defined as a generic type:
 ```ts
-export type AsyncDataLoaderT<DataT>
-  = (oldData: null | DataT, meta: {
-    isAborted: () => boolean;
+type AsyncDataLoaderT<DataT>
+  = (oldData: DataT | null, meta: {
+    abortSignal: AbortSignal;
     oldDataTimestamp: number;
   }) => DataT | Promise<DataT | null> | null;
 ```
+
+:::info
+- Prior to the library
+  [v0.22.0](https://github.com/birdofpreyru/react-global-state/releases/tag/v0.22.0)
+  the `meta` object passed into the loader included `isAborted()`,
+  and `setAbortCallback()` methods. They have been removed in favor of
+  the new `abortSignal` field.
+:::
+
 ## Generic Parameters
 [DataT]: #data-type
 - `DataT` <Link id="data-type" /> &mdash; The type of data loaded by the loader
@@ -24,28 +33,14 @@ export type AsyncDataLoaderT<DataT>
 
 - `meta` &mdash; Holds additional information about the loading opeartion:
 
-  - `isAborted` &mdash; **() => boolean** &mdash; In various situations
-    the library may abort an ongoing loading operation (or rather ignore
-    the result of such aborted operation). The loader function may call
-    this given `isAborted` method, to check whether it has been aborted
-    or not, and if it has been aborted it may just exit with **null** result &mdash;
-    as far as the library is concerned the result of that call will be
-    silently discarted anyway.
-
-    :::info
-    Technically `isAborted()` (if memoized and used in the outer context of
-    the loader) also returns _true_ after the loading operation has completed
-    without an abort; _i.e._ it actually checks whether the current loading
-    operation, if any, is the same for which this callback has been created.
-    :::
+  - `abortSignal` &mdash; [AbortSignal] &mdash; Triggered if the loading
+    operation has been aborted, and the return value of the current loader
+    invokation will be ignored. For the optimal performance, the loader should
+    react on this signal by terminating any asynchronous work early, and
+    resolving _null_ (or any other value).
 
   - `oldDataTimestamp` &mdash; **number** &mdash; Unix timestamp (milliseconds)
     of the given `oldData`, if any, or 0.
-
-  - `setAbortCallback` &mdash; **(cb: () => void) => void** &mdash;
-    Allows to register an abort callback, which will be triggered when, and if
-    the current loading operation is aborted. If called repeatedly, the new
-    callback will replace the previous one for that operation.
 
 ## Result
 The data loader function must return either [DataT] value, or **null**,
@@ -55,6 +50,7 @@ state while the promise settlement is awaited; otherwise the value ([DataT] or
 **null**) is written into the envelope synchronously, without visiting
 the intermediate (re-)loading state.
 
+[AbortSignal]: https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal
 [AsyncDataLoaderT]: /docs/api/types/async-data-loader
 [Promise]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 [useAsyncData()]: /docs/api/hooks/useasyncdata

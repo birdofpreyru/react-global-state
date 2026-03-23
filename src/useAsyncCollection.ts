@@ -39,9 +39,8 @@ export type AsyncCollectionLoaderT<
   DataT,
   IdT extends number | string = number | string,
 > = (id: IdT, oldData: DataT | null, meta: {
-  isAborted: () => boolean;
+  abortSignal: AbortSignal;
   oldDataTimestamp: number;
-  setAbortCallback: (cb: () => void) => void;
 }) => DataT | Promise<DataT | null> | null;
 
 export type AsyncCollectionReloaderT<

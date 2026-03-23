@@ -26,9 +26,9 @@ export default class GlobalState<
 > {
   readonly ssrContext?: SsrContextT;
 
-  #asyncDataAbortCallbacks: Record<string, () => void> = {};
+  #asyncDataAbortCallbacks = new Map<string, () => void>();
 
-  #dependencies: Record<string, readonly unknown[]> = {};
+  #dependencies = new Map<string, readonly unknown[]>();
 
   #initialState: StateT;
 
@@ -80,7 +80,7 @@ export default class GlobalState<
    * just for the sake of testing the library.
    */
   get numAsyncDataAbortCallbacks(): number {
-    return Object.keys(this.#asyncDataAbortCallbacks).length;
+    return this.#asyncDataAbortCallbacks.size;
   }
 
   /**
@@ -89,15 +89,15 @@ export default class GlobalState<
    * it drops the callback.
    */
   asyncDataLoadDone(opid: string, aborted: boolean): void {
-    if (aborted) this.#asyncDataAbortCallbacks[opid]?.();
-    delete this.#asyncDataAbortCallbacks[opid];
+    if (aborted) this.#asyncDataAbortCallbacks.get(opid)?.();
+    this.#asyncDataAbortCallbacks.delete(opid);
   }
 
   /**
    * Drops the record of dependencies, if any, for the given path.
    */
   dropDependencies(path: string): void {
-    delete this.#dependencies[path];
+    this.#dependencies.delete(path);
   }
 
   /**
@@ -112,12 +112,12 @@ export default class GlobalState<
    * level in the logic?
    */
   hasChangedDependencies(path: string, deps: unknown[]): boolean {
-    const prevDeps = this.#dependencies[path];
+    const prevDeps = this.#dependencies.get(path);
     let changed = prevDeps?.length !== deps.length;
     for (let i = 0; !changed && i < deps.length; ++i) {
       changed = prevDeps![i] !== deps[i];
     }
-    this.#dependencies[path] = Object.freeze(deps);
+    this.#dependencies.set(path, Object.freeze(deps));
     return changed;
   }
 
@@ -168,7 +168,7 @@ export default class GlobalState<
    * the given operation ID. Throws if already registered.
    */
   setAsyncDataAbortCallback(opid: string, cb: () => void): void {
-    this.#asyncDataAbortCallbacks[opid] = cb;
+    this.#asyncDataAbortCallbacks.set(opid, cb);
   }
 
   /**
