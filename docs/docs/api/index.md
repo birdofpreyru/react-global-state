@@ -10,7 +10,7 @@ import TypesList from './types/_content.md';
 
 # Overview
 
-:::tip JavaScript _vs._ TypeScript API
+:::tip[JavaScript _vs._ TypeScript API]
 This API reference uses TypeScript vocabulary and syntax to describe both
 JavaScript and TypeScript flavors of the library. Most stuff in this library
 works the same way both in JS and TS, beside static type-checks, of course.

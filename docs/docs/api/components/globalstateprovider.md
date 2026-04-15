@@ -59,11 +59,11 @@ activates the "proxy mode", no matter other props values.
   [ValueOrInitializerT]&lt;[StateT]&gt; &mdash;
   The initial global state content.
 
-  :::caution BEWARE
+  :::caution[BEWARE]
   The library assumes the `initialState` is never mutated after it has
   been provided to [GlobalStateProvider].
   :::
-  :::info JavaScript _vs._ TypeScript
+  :::info[JavaScript _vs._ TypeScript]
   In TypeScript version this property is obligatory (beside when [stateProxy]
   prop is used instead), and its value must satisfy
   the [ValueOrInitializerT]&lt;[StateT]&gt; type.

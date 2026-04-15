@@ -124,7 +124,7 @@ to make convenient and safe static type analysis possible.
   - Otherwise, the given value itself will be written to the `path`,
     if the current value at `path` is _undefined_.
 
-  :::caution Beware
+  :::caution[Beware]
   Don't get misled by the `initialValue` name &mdash; it **DOES NOT IMPLY**
   the initial value is used exclusively on the first [useGlobalState()] call;
   instead the given initial value is applied on each call of [useGlobalState()]

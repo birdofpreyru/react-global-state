@@ -64,7 +64,7 @@ type AsyncCollectionReloaderT<
   if any, or otherwise the loader given to the corresponding
   [useAsyncCollection()] hook.
 
-  :::tip Tips
+  :::tip[Tips]
   - This method is intended for imperative code (_e.g._ UI event handlers).
     When data should be reloaded in response to local or global state changes,
     prefer to use `deps` option of [UseAsyncDataOptionsT] to manage reloads.

@@ -182,7 +182,7 @@ function SampleReactComponent() {
   &zwnj; &mdash; _written in 2020 it covers the original motivation and features,
   but not the&nbsp;TypeScript flavour of the library._
 
-## Frequently Asked Questions {#faq}
+## Frequently Asked Questions {/* #faq */}
 
 - _Does React Global State library avoid unnecessary component re-renders when values updated in the global state are irrelevant to those components?_
 

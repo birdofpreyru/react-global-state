@@ -13,7 +13,6 @@
   the corresponding [section][Functions] above.
 :::
 
-<!-- Links -->
 [Functions]: /docs/api#functions
 [getGlobalState()]: /docs/api/functions/getglobalstate
 [getSsrContext()]: /docs/api/functions/getssrcontext
