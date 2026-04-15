@@ -47,7 +47,7 @@ expect(() => gs.get('invalid.path', {
   initialValue: 'invalid',
 })).type.toRaiseError(2769);
 
-// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-unnecessary-type-arguments, @typescript-eslint/no-invalid-void-type
+// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-invalid-void-type
 expect(gs.get<ForceT, void>()).type.toBe<void>();
 expect(gs.get<ForceT, 'OK'>()).type.toBe<'OK'>();
 
