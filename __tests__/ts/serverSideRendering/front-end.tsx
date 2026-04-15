@@ -21,8 +21,6 @@ import { GlobalStateProvider, SsrContext, getSsrContext } from 'src/index';
 
 import Scene, { loaderA, loaderB } from './__assets__/TestScene';
 
-jest.mock('uuid');
-
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
 

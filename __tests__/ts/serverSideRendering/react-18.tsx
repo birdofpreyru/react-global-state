@@ -15,7 +15,6 @@ import StringDestination from './__assets__/StringDestination';
 
 import type * as TestSceneNS from './__assets__/TestScene';
 
-jest.mock('uuid');
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
 

@@ -3,7 +3,6 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import { MIN_MS } from '@dr.pogodin/js-utils';
 
@@ -186,7 +185,7 @@ export function loadAsyncData<DataT>(
   // and UUID always generated inside this function? Or do we need it in
   // the caller methods as well, in some cases (see useAsyncCollection()
   // use case as well).
-  operationId: OperationIdT = `C${uuid()}`,
+  operationId: OperationIdT = `C${globalThis.crypto.randomUUID()}`,
 ): Promise<void> | void {
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
@@ -329,7 +328,7 @@ function useAsyncData<DataT>(
           data: state.data,
           timestamp: state.timestamp,
         },
-        `S${uuid()}`,
+        `S${globalThis.crypto.randomUUID()}`,
       );
 
       if (promiseOrVoid instanceof Promise) {

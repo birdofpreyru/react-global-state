@@ -11,13 +11,13 @@ import { type Root, createRoot } from 'react-dom/client';
 
 export { act };
 
-(global as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = true;
+(globalThis as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = true;
 
 /**
  * Generates a mock UUID.
  * @param seed
  */
-export function getMockUuid(seed = 0): string {
+export function getMockUuid(seed = 0): `${string}-${string}-${string}-${string}-${string}` {
   const x = seed.toString(16).padStart(32, '0');
   return `${x.slice(0, 8)}-${x.slice(8, 12)}-${x.slice(12, 16)}-${x.slice(16, 20)}-${x.slice(20)}`;
 }

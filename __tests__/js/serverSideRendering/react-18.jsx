@@ -9,7 +9,6 @@ import StringDestination from './__assets__/StringDestination';
 let Lib;
 let ReactDOM;
 
-jest.mock('uuid');
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
 

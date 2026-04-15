@@ -3,7 +3,6 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import type GlobalState from './GlobalState';
 import { getGlobalState } from './GlobalStateProvider';
@@ -258,7 +257,7 @@ function useAsyncCollection<
   // Server-side logic.
   if (globalState.ssrContext) {
     if (!options.disabled && !options.noSSR) {
-      const operationId: OperationIdT = `S${uuid()}`;
+      const operationId: OperationIdT = `S${globalThis.crypto.randomUUID()}`;
       for (const id of ids) {
         const itemPath = path ? `${path}.${id}` : `${id}`;
         const state = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(

@@ -3,6 +3,7 @@
   "collectCoverageFrom": ["src/**/*.{js,jsx,ts,tsx}"],
   "coverageDirectory": "__coverage__",
   "rootDir": "..",
+  "setupFilesAfterEnv": ["./jest/setup.ts"],
   "testPathIgnorePatterns": [
     "/__assets__/",
     "/__tests__/ts-types/",

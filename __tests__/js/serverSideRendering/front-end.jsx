@@ -14,8 +14,6 @@ import mockdate from 'mockdate';
 let JU;
 let Lib;
 
-jest.mock('uuid');
-
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
 
