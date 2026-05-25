@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import type GlobalState from './GlobalState';
-import { getGlobalState } from './GlobalStateProvider';
+import { useGlobalStateObject } from './GlobalStateProvider';
 
 import {
   type AsyncDataEnvelopeT,
@@ -252,7 +252,7 @@ function useAsyncCollection<
   const refreshAge: number = options.refreshAge ?? maxage;
   const garbageCollectAge: number = options.garbageCollectAge ?? maxage;
 
-  const globalState = getGlobalState();
+  const globalState = useGlobalStateObject();
 
   // Server-side logic.
   if (globalState.ssrContext) {

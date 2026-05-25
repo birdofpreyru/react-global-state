@@ -1,8 +1,8 @@
 import GlobalState from './GlobalState';
 
 import GlobalStateProvider, {
-  getGlobalState,
-  getSsrContext,
+  useGlobalStateObject,
+  useSsrContext,
 } from './GlobalStateProvider';
 
 import SsrContext from './SsrContext';
@@ -50,13 +50,13 @@ export {
   type UseAsyncDataOptionsT,
   type UseAsyncDataResT,
   type UseGlobalStateI,
-  getGlobalState,
-  getSsrContext,
   loadAsyncData,
   newAsyncDataEnvelope,
   useAsyncCollection,
   useAsyncData,
   useGlobalState,
+  useGlobalStateObject,
+  useSsrContext,
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -67,13 +67,13 @@ interface API<
   GlobalState: typeof GlobalState<StateT, SsrContextT>;
   GlobalStateProvider: typeof GlobalStateProvider<StateT, SsrContextT>;
   SsrContext: typeof SsrContext<StateT>;
-  getGlobalState: typeof getGlobalState<StateT, SsrContextT>;
-  getSsrContext: typeof getSsrContext<SsrContextT>;
   loadAsyncData: LoadAsyncDataI<StateT>;
   newAsyncDataEnvelope: typeof newAsyncDataEnvelope;
   useAsyncCollection: UseAsyncCollectionI<StateT>;
   useAsyncData: UseAsyncDataI<StateT>;
   useGlobalState: UseGlobalStateI<StateT>;
+  useGlobalStateObject: typeof useGlobalStateObject<StateT, SsrContextT>;
+  useSsrContext: typeof useSsrContext<SsrContextT>;
 }
 
 const api = {
@@ -83,18 +83,18 @@ const api = {
   GlobalState,
   GlobalStateProvider,
   SsrContext,
-  getGlobalState,
-  getSsrContext,
   loadAsyncData,
   newAsyncDataEnvelope,
   useAsyncCollection,
   useAsyncData,
   useGlobalState,
+  useGlobalStateObject,
+  useSsrContext,
 };
 
 export function withGlobalStateType<
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
 >(): API<StateT, SsrContextT> {
-  return api as API<StateT, SsrContextT>;
+  return api;
 }

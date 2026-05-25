@@ -12,7 +12,7 @@ import {
 import { Emitter } from '@dr.pogodin/js-utils';
 
 import type GlobalState from './GlobalState';
-import { getGlobalState } from './GlobalStateProvider';
+import { useGlobalStateObject } from './GlobalStateProvider';
 
 import {
   type ForceT,
@@ -132,7 +132,7 @@ function useGlobalState(
   // TODO: Revise it later!
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): UseGlobalStateResT<any> {
-  const globalState = getGlobalState();
+  const globalState = useGlobalStateObject();
 
   const ref = useRef<CurrentT>(null);
 

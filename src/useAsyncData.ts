@@ -7,7 +7,7 @@ import { useEffect, useRef } from 'react';
 import { MIN_MS } from '@dr.pogodin/js-utils';
 
 import type GlobalState from './GlobalState';
-import { getGlobalState } from './GlobalStateProvider';
+import { useGlobalStateObject } from './GlobalStateProvider';
 
 import type SsrContext from './SsrContext';
 
@@ -287,7 +287,7 @@ function useAsyncData<DataT>(
 
   // Note: here we can't depend on useGlobalState() to init the initial value,
   // because that way we'll have issues with SSR (see details below).
-  const globalState = getGlobalState();
+  const globalState = useGlobalStateObject();
   const state = globalState.get<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
     initialValue: newAsyncDataEnvelope<DataT>(),
   });
