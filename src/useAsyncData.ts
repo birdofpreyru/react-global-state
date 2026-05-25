@@ -347,7 +347,7 @@ function useAsyncData<DataT>(
     //
     // TODO: Though, maybe there is a way to refactor it into a cleaner code.
     // The same applies to other useEffect() hooks below.
-    useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
+    useEffect(() => {
       const numRefsPath = path ? `${path}.numRefs` : 'numRefs';
       if (!disabled) {
         const numRefs = globalState.get<ForceT, number>(numRefsPath);
@@ -390,7 +390,7 @@ function useAsyncData<DataT>(
     // special case the otherwise wrong behavior is actually what we need.
 
     // Data loading and refreshing.
-    useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
+    useEffect(() => {
       if (!disabled) {
         const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
           ForceT, AsyncDataEnvelopeT<DataT>>(path);

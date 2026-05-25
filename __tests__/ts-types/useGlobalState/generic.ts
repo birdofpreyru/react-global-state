@@ -7,20 +7,16 @@ import {
   useGlobalState,
 } from '../../../src';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
 expect(useGlobalState()).type.toBe<UseGlobalStateResT<unknown>>();
-// eslint-disable-next-line react-hooks/rules-of-hooks
 expect(useGlobalState<'OK'>()).type.toBe<UseGlobalStateResT<'OK'>>();
 
 type StateT = { some: { path: ValueT } };
 type ValueT = 'value-a' | 'value-b';
 const SOME_PATH = 'some.path';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
 expect(useGlobalState<StateT>()).type.toBe<UseGlobalStateResT<StateT>>();
-// eslint-disable-next-line react-hooks/rules-of-hooks
 expect(useGlobalState(null)).type.toBe<UseGlobalStateResT<void>>();
-// eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/no-invalid-void-type
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 expect(useGlobalState(null)[0]).type.toBe<void>();
 
 expect(() => {
@@ -34,7 +30,6 @@ expect(() => {
 }).type.toRaiseError(2345);
 
 expect(
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useGlobalState<StateT, typeof SOME_PATH>(SOME_PATH),
 ).type.toBe<UseGlobalStateResT<ValueT>>();
 

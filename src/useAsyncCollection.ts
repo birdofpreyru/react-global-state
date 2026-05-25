@@ -296,7 +296,7 @@ function useAsyncCollection<
 
     // TODO: Violation of rules of hooks is fine here,
     // but perhaps it can be refactored to avoid the need for it.
-    useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
+    useEffect(() => {
       if (!disabled) gcOnWithhold(ids, path, globalState);
       return () => {
         if (!disabled) gcOnRelease(ids, path, globalState, garbageCollectAge);
@@ -304,7 +304,6 @@ function useAsyncCollection<
 
       // `ids` are represented in the dependencies array by `idsHash` value,
       // as useEffect() hook requires a constant size of dependencies array.
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       disabled,
       garbageCollectAge,
@@ -317,7 +316,7 @@ function useAsyncCollection<
     // special case the otherwise wrong behavior is actually what we need.
 
     // Data loading and refreshing.
-    useEffect(() => { // eslint-disable-line react-hooks/rules-of-hooks
+    useEffect(() => {
       if (!disabled) {
         void (async () => {
           for (const id of ids) {

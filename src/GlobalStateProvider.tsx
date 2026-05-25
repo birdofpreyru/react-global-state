@@ -27,7 +27,6 @@ export function getGlobalState<
   // useGlobalState(), while this getGlobalState() is reserved for nieche cases;
   // on the other hand, perhaps we can rename it into useSomething, to both
   // follow conventions, and to keep stuff clearly named at the same time.
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const globalState = use(Context);
   if (!globalState) throw new Error('Missing GlobalStateProvider');
   return globalState as GlobalState<StateT, SsrContextT>;
