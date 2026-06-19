@@ -5,6 +5,15 @@
  * in this module we only test for several corner-cases.
  */
 
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from '@jest/globals';
+
 import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils';
 
 import GlobalState from 'src/GlobalState';
@@ -114,10 +123,10 @@ describe('ssrContext', () => {
   it('forbids to .watch() and .unWatch() the state', () => {
     const state = new GlobalState(undefined, new SsrContext<undefined>());
     expect(() => {
-      state.watch(jest.fn<undefined, []>());
+      state.watch(jest.fn<() => void>());
     }).toThrowErrorMatchingSnapshot();
     expect(() => {
-      state.unWatch(jest.fn<undefined, []>());
+      state.unWatch(jest.fn<() => void>());
     }).toThrowErrorMatchingSnapshot();
   });
 });
@@ -125,9 +134,9 @@ describe('ssrContext', () => {
 describe('.watch() and .unWatch() logic', () => {
   const state = new GlobalState({ test: 0 });
 
-  const watcher1 = jest.fn<undefined, []>();
-  const watcher2 = jest.fn<undefined, []>();
-  const watcher3 = jest.fn<undefined, []>();
+  const watcher1 = jest.fn<() => void>();
+  const watcher2 = jest.fn<() => void>();
+  const watcher3 = jest.fn<() => void>();
 
   // These counter and function do a mock update of the state, which causes
   // the GlobalState to call all connected watchers. As they are called async,

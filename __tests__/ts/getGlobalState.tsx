@@ -2,11 +2,12 @@
 
 import { type FunctionComponent, useState } from 'react';
 
+import { expect, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/react';
 
 import { act, mount } from 'jest/utils';
 
-import { GlobalState, GlobalStateProvider, getGlobalState } from 'src';
+import { GlobalState, GlobalStateProvider, useGlobalStateObject } from 'src';
 
 type GlobalStateT = InstanceType<typeof GlobalState<number>>;
 
@@ -22,7 +23,8 @@ jest.useFakeTimers();
 const Component: FunctionComponent<{
   read: boolean;
 }> = ({ read }) => {
-  if (read) captureGS(getGlobalState());
+  const gs = useGlobalStateObject<number>();
+  if (read) captureGS(gs);
   return <div>Test Component</div>;
 };
 

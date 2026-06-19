@@ -10,6 +10,16 @@
 import mockdate from 'mockdate';
 
 import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  jest,
+  test,
+} from '@jest/globals';
+
+import {
   type MountedSceneT,
   act,
   mockTimer,
@@ -17,7 +27,7 @@ import {
   unMockConsoleLog,
 } from 'jest/utils';
 
-import { GlobalStateProvider, SsrContext, getSsrContext } from 'src/index';
+import { GlobalStateProvider, SsrContext, useSsrContext } from 'src/index';
 
 import Scene, { loaderA, loaderB } from './__assets__/TestScene';
 
@@ -70,13 +80,13 @@ test('Scene test in the front-end mode', async () => {
   expect(loaderB).not.toHaveBeenCalled();
 });
 
-describe('Test `getSsrContext()` function', () => {
+describe('Test `useSsrContext()` function', () => {
   const SceneUsingSsrContext: React.FunctionComponent<{
     throwWithoutSsrContext?: boolean;
   }> = ({
     throwWithoutSsrContext = true,
   }) => {
-    const ssrContext = getSsrContext(throwWithoutSsrContext);
+    const ssrContext = useSsrContext(throwWithoutSsrContext);
     return (
       <div>
         {JSON.stringify(ssrContext, null, 2)}

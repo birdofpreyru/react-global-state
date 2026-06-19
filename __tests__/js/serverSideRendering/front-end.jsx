@@ -70,9 +70,9 @@ test('Scene test in the front-end mode', async () => {
   expect(loaderB).not.toHaveBeenCalled();
 });
 
-describe('Test `getSsrContext()` function', () => {
+describe('Test `useSsrContext()` function', () => {
   function SceneUsingSsrContext({ throwWithoutSsrContext }) {
-    const ssrContext = Lib.getSsrContext(throwWithoutSsrContext);
+    const ssrContext = Lib.useSsrContext(throwWithoutSsrContext);
     return (
       <div>
         {JSON.stringify(ssrContext, null, 2)}

@@ -5,6 +5,8 @@
  * in an async manner.
  */
 
+import { afterAll, jest, test } from '@jest/globals';
+
 import { type MountedSceneT, act, mount } from 'jest/utils';
 
 import { GlobalStateProvider, useGlobalState } from 'src/index';

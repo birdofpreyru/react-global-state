@@ -25,7 +25,6 @@ import {
   type ForceT,
   type LockT,
   type TypeLock,
-  hash,
   isDebugMode,
 } from './utils';
 
@@ -285,74 +284,74 @@ function useAsyncCollection<
         }
       }
     }
-
-  // Client-side logic.
-  } else {
-    const { disabled } = options;
-
-    // Reference-counting & garbage collection.
-
-    const idsHash = hash(ids);
-
-    // TODO: Violation of rules of hooks is fine here,
-    // but perhaps it can be refactored to avoid the need for it.
-    useEffect(() => {
-      if (!disabled) gcOnWithhold(ids, path, globalState);
-      return () => {
-        if (!disabled) gcOnRelease(ids, path, globalState, garbageCollectAge);
-      };
-
-      // `ids` are represented in the dependencies array by `idsHash` value,
-      // as useEffect() hook requires a constant size of dependencies array.
-    }, [
-      disabled,
-      garbageCollectAge,
-      globalState,
-      idsHash,
-      path,
-    ]);
-
-    // NOTE: a bunch of Rules of Hooks ignored belows because in our very
-    // special case the otherwise wrong behavior is actually what we need.
-
-    // Data loading and refreshing.
-    useEffect(() => {
-      if (!disabled) {
-        void (async () => {
-          for (const id of ids) {
-            const itemPath = path ? `${path}.${id}` : `${id}`;
-
-            type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
-            const state2: EnvT = globalState.get<ForceT, EnvT>(itemPath);
-
-            const { deps } = options;
-            if (
-              (deps && globalState.hasChangedDependencies(itemPath, deps))
-              || (
-                refreshAge < Date.now() - (state2?.timestamp ?? 0)
-                && (!state2?.operationId || state2.operationId.startsWith('S'))
-              )
-            ) {
-              if (!deps) globalState.dropDependencies(itemPath);
-              await loadAsyncData<ForceT, DataT>(
-                itemPath,
-                // TODO: I guess, the loader is not correctly typed here -
-                // it can be synchronous, and in that case the following method
-                // should be kept synchronous to not alter the sync logic.
-                // eslint-disable-next-line @typescript-eslint/promise-function-async
-                (old, ...args) => loader(id, old as DataT, ...args),
-                globalState,
-                {
-                  data: state2?.data ?? null,
-                  timestamp: state2?.timestamp ?? 0,
-                },
-              );
-            }
-          }
-        })();
-      }
-    });
   }
+
+  const { disabled } = options;
+
+  // Reference-counting & garbage collection.
+
+  const idsString = JSON.stringify(ids);
+
+  useEffect(() => {
+    const localIds = JSON.parse(idsString) as IdT[];
+
+    if (!disabled) gcOnWithhold(localIds, path, globalState);
+    return () => {
+      if (!disabled) {
+        gcOnRelease(localIds, path, globalState, garbageCollectAge);
+      }
+    };
+
+    // `ids` are represented in the dependencies array by `idsHash` value,
+    // as useEffect() hook requires a constant size of dependencies array.
+  }, [
+    disabled,
+    garbageCollectAge,
+    globalState,
+    idsString,
+    path,
+  ]);
+
+  // NOTE: a bunch of Rules of Hooks ignored belows because in our very
+  // special case the otherwise wrong behavior is actually what we need.
+
+  // Data loading and refreshing.
+  useEffect(() => {
+    if (!disabled) {
+      void (async () => {
+        for (const id of ids) {
+          const itemPath = path ? `${path}.${id}` : `${id}`;
+
+          type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
+          const state2: EnvT = globalState.get<ForceT, EnvT>(itemPath);
+
+          const { deps } = options;
+          if (
+            (deps && globalState.hasChangedDependencies(itemPath, deps))
+            || (
+              refreshAge < Date.now() - (state2?.timestamp ?? 0)
+              && (!state2?.operationId || state2.operationId.startsWith('S'))
+            )
+          ) {
+            if (!deps) globalState.dropDependencies(itemPath);
+            await loadAsyncData<ForceT, DataT>(
+              itemPath,
+              // TODO: I guess, the loader is not correctly typed here -
+              // it can be synchronous, and in that case the following method
+              // should be kept synchronous to not alter the sync logic.
+              // eslint-disable-next-line @typescript-eslint/promise-function-async
+              (old, ...args) => loader(id, old, ...args),
+              globalState,
+              {
+                data: state2?.data ?? null,
+                timestamp: state2?.timestamp ?? 0,
+              },
+            );
+          }
+        }
+      })();
+    }
+  });
 
   const [localState] = useGlobalState<
     ForceT, Record<string, AsyncDataEnvelopeT<DataT>>
@@ -434,12 +433,30 @@ function useAsyncCollection<
     return { reload, reloadSingle, setSingle };
   });
 
+  const [stale, setStale] = useState({} as Record<IdT, boolean>);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      setStale(() => {
+        const now = Date.now();
+        const res = {} as Record<IdT, boolean>;
+        for (const [key, e] of Object.entries(localState)) {
+          res[key as IdT] = maxage < now - e.timestamp;
+        }
+        return res;
+      });
+    });
+    return () => {
+      cancelAnimationFrame(id);
+    };
+  }, [localState, maxage]);
+
   if (!Array.isArray(idOrIds)) {
     // TODO: Revise related typings!
     const e = localState[idOrIds as string];
     const timestamp = e?.timestamp ?? 0;
     return {
-      data: maxage < Date.now() - timestamp ? null : e?.data ?? null,
+      data: stale[idOrIds] ? null : e?.data ?? null,
       loading: !!e?.operationId,
       reload: stable.reloadSingle,
       set: stable.setSingle,
@@ -461,7 +478,7 @@ function useAsyncCollection<
     const timestamp = e?.timestamp ?? 0;
 
     res.items[id] = {
-      data: maxage < Date.now() - timestamp ? null : e?.data ?? null,
+      data: stale[id] ? null : e?.data ?? null,
       loading,
       timestamp,
     };

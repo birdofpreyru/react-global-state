@@ -5,6 +5,13 @@
 // unnecessary reload.
 
 import {
+  beforeEach,
+  expect,
+  it,
+  jest,
+} from '@jest/globals';
+
+import {
   type MountedSceneT,
   act,
   mount,

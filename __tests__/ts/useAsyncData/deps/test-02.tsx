@@ -9,6 +9,13 @@ import mockdate from 'mockdate';
 import { timer } from '@dr.pogodin/js-utils';
 
 import {
+  beforeEach,
+  expect,
+  jest,
+  test,
+} from '@jest/globals';
+
+import {
   type MountedSceneT,
   act,
   mockTimer,

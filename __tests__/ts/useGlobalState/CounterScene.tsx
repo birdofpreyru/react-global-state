@@ -6,6 +6,14 @@
  * implements a button, which updates that state when clicked.
  */
 
+import {
+  afterEach,
+  expect,
+  it,
+  jest,
+  test,
+} from '@jest/globals';
+
 import { type MountedSceneT, act, mount } from 'jest/utils';
 import GlobalState from 'src/GlobalState';
 import { GlobalStateProvider, useGlobalState } from 'src/index';

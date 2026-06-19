@@ -1,9 +1,9 @@
 /** @jest-environment jsdom */
 
 import mockdate from 'mockdate';
-
 import { useState } from 'react';
 
+import { expect, test } from '@jest/globals';
 import { getByText } from '@testing-library/dom';
 
 import { act, mount } from 'jest/utils';

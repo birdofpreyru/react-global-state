@@ -3,6 +3,14 @@ import type { FunctionComponent } from 'react';
 import ReactDOM from 'react-dom/server';
 
 import {
+  afterEach,
+  beforeEach,
+  expect,
+  jest,
+  test,
+} from '@jest/globals';
+
+import {
   type MountedSceneT,
   consoleLogs,
   mockConsoleLog,

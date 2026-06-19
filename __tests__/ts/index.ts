@@ -1,3 +1,5 @@
+import { expect, test } from '@jest/globals';
+
 import type * as SrcNS from '../../src';
 
 test('Library exports match expectations', () => {

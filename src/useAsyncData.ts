@@ -2,7 +2,7 @@
  * Loads and uses async data into the GlobalState path.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { MIN_MS } from '@dr.pogodin/js-utils';
 
@@ -247,12 +247,11 @@ export type DataInEnvelopeAtPathT<
 // TODO: Perhaps split the heap management to a dedicated hook,
 // as it is done inside useAsyncCollection().
 type HeapT<DataT> = {
-  // Note: these heap fields are necessary to make reload() a stable function.
-  globalState?: GlobalState<unknown>;
-  loader?: AsyncDataLoaderT<DataT>;
-  path?: null | string;
-  reload?: AsyncDataReloaderT<DataT>;
-  set?: (data: DataT | null) => void;
+  // NOTE: These heap fields are necessary to make reload() and set() stable
+  // functions.
+  globalState: GlobalState<unknown>;
+  loader: AsyncDataLoaderT<DataT>;
+  path: null | string | undefined;
 };
 
 function useAsyncData<
@@ -292,28 +291,36 @@ function useAsyncData<DataT>(
     initialValue: newAsyncDataEnvelope<DataT>(),
   });
 
-  const { current: heap } = useRef<HeapT<DataT>>({});
-  heap.globalState = globalState;
-  heap.path = path;
-  heap.loader = loader;
+  const { current: heap } = useRef<HeapT<DataT>>({
+    globalState,
+    loader,
+    path,
+  });
 
-  heap.reload ??= (
-    customLoader?: AsyncDataLoaderT<DataT>,
-  ): Promise<void> | void => {
-    const localLoader = customLoader ?? heap.loader;
-    if (!localLoader || !heap.globalState) throw Error('Internal error');
+  useEffect(() => {
+    heap.globalState = globalState;
+    heap.path = path;
+    heap.loader = loader;
+  });
 
-    return loadAsyncData<ForceT, DataT>(
-      heap.path,
-      localLoader,
-      heap.globalState,
-    );
-  };
+  // NOTE: State inititalizer function here helps to avoid ESLint warnings
+  // about accessing references during the render.
+  const [stable] = useState(() => ({
+    reload: (
+      customLoader?: AsyncDataLoaderT<DataT>,
+    ): Promise<void> | void => {
+      const localLoader = customLoader ?? heap.loader;
 
-  heap.set ??= (data: DataT | null) => {
-    if (!heap.globalState) throw Error('Internal error');
-    setState(data, heap.path, heap.globalState);
-  };
+      return loadAsyncData<ForceT, DataT>(
+        heap.path,
+        localLoader,
+        heap.globalState,
+      );
+    },
+    set: (data: DataT | null) => {
+      setState(data, heap.path, heap.globalState);
+    },
+  }));
 
   if (globalState.ssrContext) {
     if (
@@ -335,99 +342,117 @@ function useAsyncData<DataT>(
         globalState.ssrContext.pending.push(promiseOrVoid);
       }
     }
-  } else {
-    const { disabled } = options;
+  }
 
-    // This takes care about the client-side reference counting, and garbage
-    // collection.
-    //
-    // Note: the Rules of Hook below are violated by conditional call to a hook,
-    // but as the condition is actually server-side or client-side environment,
-    // it is effectively non-conditional at the runtime.
-    //
-    // TODO: Though, maybe there is a way to refactor it into a cleaner code.
-    // The same applies to other useEffect() hooks below.
-    useEffect(() => {
-      const numRefsPath = path ? `${path}.numRefs` : 'numRefs';
-      if (!disabled) {
-        const numRefs = globalState.get<ForceT, number>(numRefsPath);
-        globalState.set<ForceT, number>(numRefsPath, numRefs + 1);
-      }
-      return () => {
-        if (!disabled) {
-          const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
-            ForceT, AsyncDataEnvelopeT<DataT>>(
-            path,
-          );
-          if (
-            state2.numRefs === 1
-            && garbageCollectAge < Date.now() - state2.timestamp
-          ) {
-            if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
-              /* eslint-disable no-console */
-              console.log(
-                `ReactGlobalState - useAsyncData garbage collected at path ${
-                  path ?? ''
-                }`,
-              );
-              /* eslint-enable no-console */
-            }
-            globalState.dropDependencies(path ?? '');
-            globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
-              ...state2,
-              data: null,
-              numRefs: 0,
-              timestamp: 0,
-            });
-          } else {
-            globalState.set<ForceT, number>(numRefsPath, state2.numRefs - 1);
-          }
-        }
-      };
-    }, [disabled, garbageCollectAge, globalState, path]);
+  const { disabled } = options;
 
-    // Note: a bunch of Rules of Hooks ignored belows because in our very
-    // special case the otherwise wrong behavior is actually what we need.
-
-    // Data loading and refreshing.
-    useEffect(() => {
+  // This takes care about the client-side reference counting, and garbage
+  // collection.
+  //
+  // Note: the Rules of Hook below are violated by conditional call to a hook,
+  // but as the condition is actually server-side or client-side environment,
+  // it is effectively non-conditional at the runtime.
+  //
+  // TODO: Though, maybe there is a way to refactor it into a cleaner code.
+  // The same applies to other useEffect() hooks below.
+  useEffect(() => {
+    const numRefsPath = path ? `${path}.numRefs` : 'numRefs';
+    if (!disabled) {
+      const numRefs = globalState.get<ForceT, number>(numRefsPath);
+      globalState.set<ForceT, number>(numRefsPath, numRefs + 1);
+    }
+    return () => {
       if (!disabled) {
         const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
-          ForceT, AsyncDataEnvelopeT<DataT>>(path);
-
-        const { deps } = options;
+          ForceT, AsyncDataEnvelopeT<DataT>>(
+          path,
+        );
         if (
-          // The hook is called with a list of dependencies, that mismatch
-          // dependencies last used to retrieve the data at given path.
-          (deps && globalState.hasChangedDependencies(path ?? '', deps))
-
-          // Data at the path are stale, and are not being loaded.
-          || (
-            refreshAge < Date.now() - state2.timestamp
-            && (!state2.operationId || state2.operationId.startsWith('S'))
-          )
+          state2.numRefs === 1
+          && garbageCollectAge < Date.now() - state2.timestamp
         ) {
-          if (!deps) globalState.dropDependencies(path ?? '');
-
-          void loadAsyncData<ForceT, DataT>(path, loader, globalState, {
-            data: state2.data,
-            timestamp: state2.timestamp,
+          if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
+            /* eslint-disable no-console */
+            console.log(
+              `ReactGlobalState - useAsyncData garbage collected at path ${
+                path ?? ''
+              }`,
+            );
+            /* eslint-enable no-console */
+          }
+          globalState.dropDependencies(path ?? '');
+          globalState.set<ForceT, AsyncDataEnvelopeT<DataT>>(path, {
+            ...state2,
+            data: null,
+            numRefs: 0,
+            timestamp: 0,
           });
+        } else {
+          globalState.set<ForceT, number>(numRefsPath, state2.numRefs - 1);
         }
       }
-    });
-  }
+    };
+  }, [disabled, garbageCollectAge, globalState, path]);
+
+  // Note: a bunch of Rules of Hooks ignored belows because in our very
+  // special case the otherwise wrong behavior is actually what we need.
+
+  // Data loading and refreshing.
+  useEffect(() => {
+    if (!disabled) {
+      const state2: AsyncDataEnvelopeT<DataT> = globalState.get<
+        ForceT, AsyncDataEnvelopeT<DataT>>(path);
+
+      const { deps } = options;
+      if (
+        // The hook is called with a list of dependencies, that mismatch
+        // dependencies last used to retrieve the data at given path.
+        (deps && globalState.hasChangedDependencies(path ?? '', deps))
+
+        // Data at the path are stale, and are not being loaded.
+        || (
+          refreshAge < Date.now() - state2.timestamp
+          && (!state2.operationId || state2.operationId.startsWith('S'))
+        )
+      ) {
+        if (!deps) globalState.dropDependencies(path ?? '');
+
+        void loadAsyncData<ForceT, DataT>(path, loader, globalState, {
+          data: state2.data,
+          timestamp: state2.timestamp,
+        });
+      }
+    }
+  });
 
   const [localState] = useGlobalState<ForceT, AsyncDataEnvelopeT<DataT>>(
     path,
     newAsyncDataEnvelope<DataT>(),
   );
 
+  const [stale, setStale] = useState<boolean>(
+    () => maxage < Date.now() - localState.timestamp,
+  );
+
+  // NOTE: This is done inside useEffect() as it is illegal to call non-pure
+  // Date.now() function inside the render body.
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      setStale(maxage < Date.now() - localState.timestamp);
+    });
+    return () => {
+      cancelAnimationFrame(id);
+    };
+  }, [
+    localState.timestamp,
+    maxage,
+  ]);
+
   return {
-    data: maxage < Date.now() - localState.timestamp ? null : localState.data,
-    loading: Boolean(localState.operationId),
-    reload: heap.reload,
-    set: heap.set,
+    data: stale ? null : localState.data,
+    loading: !!localState.operationId,
+    reload: stable.reload,
+    set: stable.set,
     timestamp: localState.timestamp,
   };
 }

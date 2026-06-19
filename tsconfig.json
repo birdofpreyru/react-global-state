@@ -16,6 +16,7 @@
     "paths": {
       "*": ["./*"]
     },
+    "types": ["node"],
     "verbatimModuleSyntax": true
   }
 }

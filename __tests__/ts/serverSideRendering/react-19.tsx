@@ -3,6 +3,14 @@ import type { FunctionComponent } from 'react';
 import { prerenderToNodeStream } from 'react-dom/static';
 
 import {
+  afterEach,
+  beforeEach,
+  expect,
+  jest,
+  test,
+} from '@jest/globals';
+
+import {
   type MountedSceneT,
   consoleLogs,
   mockConsoleLog,

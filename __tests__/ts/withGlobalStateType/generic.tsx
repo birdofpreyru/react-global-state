@@ -1,5 +1,12 @@
 /** @jest-environment jsdom */
 
+import {
+  afterEach,
+  describe,
+  expect,
+  it,
+} from '@jest/globals';
+
 import { type MountedSceneT, mount } from 'jest/utils';
 
 import { withGlobalStateType } from 'src/index';
