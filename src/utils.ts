@@ -114,6 +114,13 @@ export function escape(x: number | string): string {
 }
 
 /**
+ * Reverses escape() operation.
+ */
+export function unEscape(escaped: string): string {
+  return escaped.replace(/%1/g, '/').replace(/%0/g, '%');
+}
+
+/**
  * Hashes given string array. For our current needs we are fine to go with
  * the most trivial implementation, which probably should not be called "hash"
  * in the strict sense: we just escape each given string to not include '/'
@@ -121,4 +128,11 @@ export function escape(x: number | string): string {
  */
 export function hash(items: Array<number | string>): string {
   return items.map(escape).join('/');
+}
+
+/**
+ * Reverses hash() operation.
+ */
+export function unHash(hashed: string): string[] {
+  return hashed ? hashed.split('/').map(unEscape) : [];
 }

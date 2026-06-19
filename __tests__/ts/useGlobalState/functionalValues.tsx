@@ -184,6 +184,8 @@ const TestComponent07: React.FunctionComponent = () => {
   );
 
   if (t07Set) expect(set).toBe(t07Set);
+
+  // eslint-disable-next-line react-hooks/globals
   else t07Set = set;
 
   // NOTE: Without useEffect(), doing these state updates directly inside
