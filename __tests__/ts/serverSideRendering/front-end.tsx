@@ -70,7 +70,7 @@ test('Scene test in the front-end mode', async () => {
   expect(loaderB).not.toHaveBeenCalled();
 });
 
-describe('Test `getSsrContext()` function', () => {
+describe('Test `useSsrContext()` function', () => {
   const SceneUsingSsrContext: React.FunctionComponent<{
     throwWithoutSsrContext?: boolean;
   }> = ({

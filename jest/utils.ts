@@ -9,6 +9,8 @@ import mockdate from 'mockdate';
 import { type ReactNode, act } from 'react';
 import { type Root, createRoot } from 'react-dom/client';
 
+import { expect, jest } from '@jest/globals';
+
 export { act };
 
 (globalThis as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = true;

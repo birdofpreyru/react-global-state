@@ -130,7 +130,7 @@ function TestComponent07() {
   const [value, set] = useGlobalState('path', () => 'value-07');
 
   // eslint-disable-next-line react/hook-use-state
-  const [firstSet] = useState(set);
+  const [firstSet] = useState(() => set);
   expect(set).toBe(firstSet);
 
   // NOTE: Without useEffect(), doing these state updates directly inside

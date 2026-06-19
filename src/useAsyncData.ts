@@ -2,7 +2,7 @@
  * Loads and uses async data into the GlobalState path.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 
 import { MIN_MS } from '@dr.pogodin/js-utils';
 
@@ -134,7 +134,10 @@ function finalizeLoad<DataT>(
   type EnvT = AsyncDataEnvelopeT<DataT> | undefined;
   const state: EnvT = gs.get<ForceT, EnvT>(path);
 
-  if (operationId === state?.operationId) setState(data, path, gs, state);
+  if (operationId === state?.operationId) {
+    console.log('LOAD DONE', data);
+    setState(data, path, gs, state);
+  }
 }
 
 export function loadAsyncData<
@@ -187,6 +190,7 @@ export function loadAsyncData<DataT>(
   // use case as well).
   operationId: OperationIdT = `C${globalThis.crypto.randomUUID()}`,
 ): Promise<void> | void {
+  console.log('LOADING');
   if (process.env.NODE_ENV !== 'production' && isDebugMode()) {
     /* eslint-disable no-console */
     console.log(
@@ -248,7 +252,7 @@ export type DataInEnvelopeAtPathT<
 // as it is done inside useAsyncCollection().
 type HeapT<DataT> = {
   globalState: GlobalState<unknown>;
-  loader: AsyncDataLoaderT<DataT>;
+  // loader: AsyncDataLoaderT<DataT>;
   path: null | string | undefined;
   reload: AsyncDataReloaderT<DataT>;
   set: (data: DataT | null) => void;
@@ -291,9 +295,11 @@ function useAsyncData<DataT>(
     initialValue: newAsyncDataEnvelope<DataT>(),
   });
 
+  const currentLoader = useEffectEvent(loader);
+
   const [heap, setHeap] = useState<HeapT<DataT>>({
     globalState,
-    loader,
+    // loader,
     path,
     reload: (
       customLoader?: AsyncDataLoaderT<DataT>,
@@ -301,7 +307,7 @@ function useAsyncData<DataT>(
       let result: Promise<void> | undefined | void;
 
       setHeap((current) => {
-        const localLoader = customLoader ?? current.loader;
+        const localLoader = customLoader ?? currentLoader;
 
         result = loadAsyncData<ForceT, DataT>(
           current.path,
@@ -322,19 +328,26 @@ function useAsyncData<DataT>(
     },
   });
 
-  useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      setHeap((prev) => ({
-        ...prev,
-        globalState,
-        loader,
-        path,
-      }));
+  /*
+  if (
+    heap.globalState !== globalState
+    || heap.loader !== loader
+    || heap.path !== path
+  ) {
+    console.log(
+      'AGAIN',
+      heap.globalState !== globalState,
+      heap.loader !== loader,
+      heap.path !== path,
+    );
+    setHeap({
+      ...heap,
+      globalState,
+      loader,
+      path,
     });
-    return () => {
-      cancelAnimationFrame(id);
-    };
-  }, [globalState, loader, path]);
+  }
+    */
 
   if (globalState.ssrContext) {
     if (

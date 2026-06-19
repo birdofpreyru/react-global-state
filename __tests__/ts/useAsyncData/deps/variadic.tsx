@@ -4,6 +4,7 @@
 
 import { type FunctionComponent, useState } from 'react';
 
+import { expect, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/dom';
 
 import { act, mount } from 'jest/utils';
@@ -20,10 +21,12 @@ type StateT = {
 
 const { GlobalStateProvider, useAsyncData } = withGlobalStateType<StateT>();
 
-const Component: React.FunctionComponent = () => {
+const Component: FunctionComponent = () => {
   const [deps, setDeps] = useState<string[]>([]);
 
   const { data } = useAsyncData('path', () => deps, { deps });
+
+  console.log('DEPS', deps, data);
 
   return (
     <div
@@ -33,7 +36,7 @@ const Component: React.FunctionComponent = () => {
       }}
       role="presentation"
     >
-      {data}
+      {JSON.stringify(data)}
     </div>
   );
 };

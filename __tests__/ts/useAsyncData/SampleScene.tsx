@@ -11,6 +11,14 @@ import { useState } from 'react';
 import { timer } from '@dr.pogodin/js-utils';
 
 import {
+  afterEach,
+  beforeEach,
+  expect,
+  jest,
+  test,
+} from '@jest/globals';
+
+import {
   type MountedSceneT,
   act,
   consoleLogs,

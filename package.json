@@ -53,6 +53,7 @@
     "@babel/preset-react": "^7.29.7",
     "@babel/preset-typescript": "^7.29.7",
     "@dr.pogodin/eslint-configs": "^0.2.14",
+    "@jest/globals": "^30.4.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@tsconfig/recommended": "^1.0.13",
