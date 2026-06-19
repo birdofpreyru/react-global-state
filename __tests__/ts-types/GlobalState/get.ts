@@ -16,7 +16,7 @@ type StateT1 = {
 const gs = new GlobalState<StateT1>({ some: { path: 'value-a' } });
 
 expect(gs.getEntireState()).type.toBe<StateT1>();
-expect(() => gs.setEntireState('invalid')).type.toRaiseError(2345);
+expect(gs.setEntireState).type.not.toBeCallableWith('invalid');
 expect(gs.get()).type.toBe<StateT1>();
 expect(gs.get(null)).type.toBe<StateT1>();
 expect(gs.get(undefined)).type.toBe<StateT1>();
@@ -48,7 +48,7 @@ expect(() => gs.get('invalid.path', {
 })).type.toRaiseError(2769);
 
 // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression, @typescript-eslint/no-invalid-void-type
-expect(gs.get<ForceT, void>()).type.toBe<void>();
+expect(gs.get<ForceT>()).type.toBe<void>();
 expect(gs.get<ForceT, 'OK'>()).type.toBe<'OK'>();
 
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type

@@ -5,10 +5,10 @@
  * state update.
  */
 
-import { type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { mount } from 'jest/utils';
-import { GlobalStateProvider, type SetterT, useGlobalState } from 'src/index';
+import { GlobalStateProvider, useGlobalState } from 'src/index';
 
 const PATH = 'path';
 
@@ -172,8 +172,6 @@ test('Functional update to a function value', () => {
   expect(func06b).not.toHaveBeenCalled();
 });
 
-let t07Set: SetterT<Exclude<ValueT, undefined>> | undefined;
-
 let pass07 = 0;
 
 const TestComponent07: React.FunctionComponent = () => {
@@ -183,10 +181,9 @@ const TestComponent07: React.FunctionComponent = () => {
     () => 'value-07',
   );
 
-  if (t07Set) expect(set).toBe(t07Set);
-
-  // eslint-disable-next-line react-hooks/globals
-  else t07Set = set;
+  // eslint-disable-next-line react/hook-use-state
+  const [firstSet] = useState(() => set);
+  expect(set).toBe(firstSet);
 
   // NOTE: Without useEffect(), doing these state updates directly inside
   // the render, we gonna end up with an infinite update loop, and error

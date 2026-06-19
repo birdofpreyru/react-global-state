@@ -17,7 +17,7 @@ import {
   unMockConsoleLog,
 } from 'jest/utils';
 
-import { GlobalStateProvider, SsrContext, getSsrContext } from 'src/index';
+import { GlobalStateProvider, SsrContext, useSsrContext } from 'src/index';
 
 import Scene, { loaderA, loaderB } from './__assets__/TestScene';
 
@@ -76,7 +76,7 @@ describe('Test `getSsrContext()` function', () => {
   }> = ({
     throwWithoutSsrContext = true,
   }) => {
-    const ssrContext = getSsrContext(throwWithoutSsrContext);
+    const ssrContext = useSsrContext(throwWithoutSsrContext);
     return (
       <div>
         {JSON.stringify(ssrContext, null, 2)}
