@@ -1,4 +1,11 @@
 # getGlobalState()
+:::danger[Deprecated]
+It was renamed into [useGlobalStateObject()] in the library [v0.24.0].
+:::
+
+## Original Documentation
+_Valid for library versions prior to [v0.24.0]_
+
 ```jsx
 import { getGlobalState } from '@dr.pogodin/react-global-state';
 ```
@@ -45,4 +52,6 @@ Returns [GlobalState]&lt;[StateT]&gt; instance.
 [use()]: https://react.dev/reference/react/use
 [useContext()]: https://react.dev/reference/react/useContext
 [useGlobalState()]: /docs/api/hooks/useglobalstate
+[useGlobalStateObject()]: /docs/api/hooks/useGlobalStateObject
+[v0.24.0]: https://github.com/birdofpreyru/react-global-state/releases/tag/v0.24.0
 [withGlobalStateType()]: /docs/api/functions/with-global-state-type

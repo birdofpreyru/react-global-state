@@ -5,7 +5,7 @@ import { GlobalState } from '@dr.pogodin/react-global-state';
 The [GlobalState] class implements container that
 holds and manages the global state content. Users are not supposed to create
 new [GlobalState] instances explicitly, but they may access the current instance
-via the [getGlobalState()] hook. It allows imperative interactions with
+via the [useGlobalStateObject()] hook. It allows imperative interactions with
 the global state, instead of the normal declarative state access via
 the [useGlobalState()] hook.
 
@@ -236,10 +236,10 @@ the state watching functionlity is intended for the client-side only.
 :::
 
 [ForceT]: /docs/api/types/force
-[getGlobalState()]: /docs/api/hooks/getglobalstate
 [GlobalState]: #
 [LockT]: /docs/api/types/lock
 [SsrContext]: /docs/api/classes/ssrcontext
 [useGlobalState()]: /docs/api/hooks/useglobalstate
+[useGlobalStateObject()]: /docs/api/hooks/useGlobalStateObject
 [ValueOrInitializerT]: /docs/api/types/value-or-initializer
 [withGlobalStateType()]: /docs/api/functions/with-global-state-type

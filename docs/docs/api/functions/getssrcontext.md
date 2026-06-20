@@ -1,4 +1,15 @@
+---
+sidebar_class_name: deprecated
+---
+
 # getSsrContext()
+:::danger[Deprecated]
+It was renamed into [useSsrContext()] in the library [v0.24.0].
+:::
+
+## Original Documentation
+_Valid for library versions prior to [v0.24.0]_
+
 ```jsx
 import { getSsrContext } from '@dr.pogodin/react-global-state';
 ```
@@ -58,4 +69,6 @@ This function throws in these cases:
 [SsrContext]: /docs/api/classes/ssrcontext
 [use()]: https://react.dev/reference/react/use
 [useContext()]: https://react.dev/reference/react/useContext
+[useSsrContext()]: /docs/api/hooks/useSsrContext
+[v0.24.0]: https://github.com/birdofpreyru/react-global-state/releases/tag/v0.24.0
 [withGlobalStateType()]: /docs/api/functions/with-global-state-type

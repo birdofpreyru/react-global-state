@@ -16,8 +16,6 @@ function withGlobalStateType<
   StateT,
   SsrContext extends SsrContext<StateT> = SsrContext<StateT>,
 >(): {
-  getGlobalState: ...;
-  getSsrContext: ...;
   GlobalState: ...;
   GlobalStateProvider: ...;
   loadAsyncData: ...;
@@ -26,6 +24,8 @@ function withGlobalStateType<
   useAsyncCollection: ...;
   useAsyncData: ...;
   useGlobalState: ...;
+  useGlobalStateObject: ...;
+  useSsrContext: ...;
 };
 ```
 &uArr; _Simplified by omitting the actual types of returned components,

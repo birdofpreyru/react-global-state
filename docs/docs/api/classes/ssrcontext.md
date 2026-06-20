@@ -9,7 +9,7 @@ its primary purpose is to keep data related to the global state, but you may als
 sub-class and use it to keep any other data that are required for rendering in
 your app, and need to be persistent across SSR iterations. In either case, for
 SSR purposes you provide an instance of [SsrContext] to your [GlobalStateProvider],
-and then you may access it from within React components using the [getSsrContext()]
+and then you may access it from within React components using the [useSsrContext()]
 hook.
 
 :::info
@@ -66,8 +66,8 @@ Creates a new [SsrContext] instance.
   value for [`state` field], which can be left _undefined_, to start the render
   with default initial state.
 
-[getSsrContext()]: /docs/api/hooks/getssrcontext
 [GlobalStateProvider]: /docs/api/components/globalstateprovider
 [SsrContext]: /docs/api/classes/ssrcontext
 [useAsyncData()]: /docs/api/hooks/useasyncdata
+[useSsrContext()]: /docs/api/hooks/useSsrContext
 [withGlobalStateType()]: /docs/api/functions/with-global-state-type
