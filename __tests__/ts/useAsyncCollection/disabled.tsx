@@ -2,6 +2,8 @@
 
 import type { FunctionComponent } from 'react';
 
+import { expect, jest, test } from '@jest/globals';
+
 import { mount } from 'jest/utils';
 
 import {

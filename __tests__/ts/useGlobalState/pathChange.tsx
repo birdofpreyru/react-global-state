@@ -6,6 +6,7 @@
 import { useState } from 'react';
 
 import { timer } from '@dr.pogodin/js-utils';
+import { expect, it } from '@jest/globals';
 
 import { act, mount } from 'jest/utils';
 

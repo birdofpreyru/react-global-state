@@ -1,5 +1,6 @@
 /** @jest-environment jsdom */
 
+import { afterEach, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/dom';
 
 import { type MountedSceneT, act, mount } from 'jest/utils';

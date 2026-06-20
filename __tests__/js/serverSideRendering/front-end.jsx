@@ -3,31 +3,33 @@
 // ^^^ although it is strange to do SSR test in JSDom environment,
 // some of the tests should be done at the client side.
 
-/* global console, process, require */
+/* global console, process */
 
 /**
  * Base test of the server-side rendering features.
  */
 
+import {
+  act,
+  mockTimer,
+  mount,
+  unMockConsoleLog,
+} from 'jest/utils';
+
 import mockdate from 'mockdate';
 
-let JU;
-let Lib;
+import { GlobalStateProvider, useSsrContext } from 'src/index';
+
+import Scene, { loaderA, loaderB } from './__assets__/TestScene';
 
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
 
-let loaderA;
-let loaderB;
-let Scene;
 let scene;
 
 beforeEach(() => {
-  jest.resetModules();
   delete process.env.REACT_GLOBAL_STATE_DEBUG;
-  JU = require('jest/utils');
-  JU.unMockConsoleLog();
-  ({ default: Scene, loaderA, loaderB } = require('./__assets__/TestScene'));
+  unMockConsoleLog();
   loaderA.mockClear();
   loaderB.mockClear();
 });
@@ -46,33 +48,32 @@ afterEach(() => {
 });
 
 test('Scene test in the front-end mode', async () => {
-  Lib = require('src');
-  scene = JU.mount((
-    <Lib.GlobalStateProvider>
+  scene = mount((
+    <GlobalStateProvider>
       <Scene />
-    </Lib.GlobalStateProvider>
+    </GlobalStateProvider>
   ));
   scene.snapshot();
-  await JU.act(async () => {
-    await JU.mockTimer(100);
+  await act(async () => {
+    await mockTimer(100);
   });
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).not.toHaveBeenCalled();
-  await JU.act(async () => {
-    await JU.mockTimer(1000);
+  await act(async () => {
+    await mockTimer(1000);
   });
-  await JU.act(async () => {
-    await JU.mockTimer(0);
+  await act(async () => {
+    await mockTimer(0);
   });
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).not.toHaveBeenCalled();
 });
 
-describe('Test `getSsrContext()` function', () => {
+describe('Test `useSsrContext()` function', () => {
   function SceneUsingSsrContext({ throwWithoutSsrContext }) {
-    const ssrContext = Lib.getSsrContext(throwWithoutSsrContext);
+    const ssrContext = useSsrContext(throwWithoutSsrContext);
     return (
       <div>
         {JSON.stringify(ssrContext, null, 2)}
@@ -95,11 +96,10 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Missing GlobalStateProvider', () => {
-    Lib = require('src');
     console.error = () => null;
     let message;
     try {
-      JU.mount(<SceneUsingSsrContext />);
+      mount(<SceneUsingSsrContext />);
     } catch (error) {
       ({ message } = error);
     }
@@ -107,24 +107,22 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when exists', () => {
-    Lib = require('src');
-    scene = JU.mount((
-      <Lib.GlobalStateProvider ssrContext={{ key: 'Dummy SSR Context' }}>
+    scene = mount((
+      <GlobalStateProvider ssrContext={{ key: 'Dummy SSR Context' }}>
         <SceneUsingSsrContext />
-      </Lib.GlobalStateProvider>
+      </GlobalStateProvider>
     ));
     scene.snapshot();
   });
 
   test('Get SSR context when does not exist', () => {
-    Lib = require('src');
     console.error = () => null;
     let message;
     try {
-      JU.mount((
-        <Lib.GlobalStateProvider>
+      mount((
+        <GlobalStateProvider>
           <SceneUsingSsrContext />
-        </Lib.GlobalStateProvider>
+        </GlobalStateProvider>
       ));
     } catch (error) {
       ({ message } = error);
@@ -133,11 +131,10 @@ describe('Test `getSsrContext()` function', () => {
   });
 
   test('Get SSR context when does not exist, but no throw is opted in', () => {
-    Lib = require('src');
-    scene = JU.mount((
-      <Lib.GlobalStateProvider>
+    scene = mount((
+      <GlobalStateProvider>
         <SceneUsingSsrContext throwWithoutSsrContext={false} />
-      </Lib.GlobalStateProvider>
+      </GlobalStateProvider>
     ));
     scene.snapshot();
   });

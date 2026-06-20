@@ -72,15 +72,15 @@ exports[`Scene test in the front-end mode 3`] = `
 </div>
 `;
 
-exports[`Test \`getSsrContext()\` function Get SSR context when does not exist 1`] = `"No SSR context found"`;
+exports[`Test \`useSsrContext()\` function Get SSR context when does not exist 1`] = `"No SSR context found"`;
 
-exports[`Test \`getSsrContext()\` function Get SSR context when does not exist, but no throw is opted in 1`] = `
+exports[`Test \`useSsrContext()\` function Get SSR context when does not exist, but no throw is opted in 1`] = `
 <div>
   <div />
 </div>
 `;
 
-exports[`Test \`getSsrContext()\` function Get SSR context when exists 1`] = `
+exports[`Test \`useSsrContext()\` function Get SSR context when exists 1`] = `
 <div>
   <div>
     {
@@ -92,4 +92,4 @@ exports[`Test \`getSsrContext()\` function Get SSR context when exists 1`] = `
 </div>
 `;
 
-exports[`Test \`getSsrContext()\` function Missing GlobalStateProvider 1`] = `"Missing GlobalStateProvider"`;
+exports[`Test \`useSsrContext()\` function Missing GlobalStateProvider 1`] = `"Missing GlobalStateProvider"`;

@@ -5,6 +5,7 @@
 // asynchronously, passing through the loading state.
 
 import { timer } from '@dr.pogodin/js-utils';
+import { expect, test } from '@jest/globals';
 
 import { act, mount } from 'jest/utils';
 

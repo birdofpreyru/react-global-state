@@ -10,6 +10,13 @@ import { useState } from 'react';
 import { timer } from '@dr.pogodin/js-utils';
 
 import {
+  afterEach,
+  beforeEach,
+  jest,
+  test,
+} from '@jest/globals';
+
+import {
   type MountedSceneT,
   act,
   mockTimer,

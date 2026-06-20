@@ -6,6 +6,8 @@
 // the input element only in subsequent render cycle, see the issue
 // https://github.com/birdofpreyru/react-global-state/issues/22).
 
+import { expect, it, jest } from '@jest/globals';
+
 import { type MountedSceneT, act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src';
 

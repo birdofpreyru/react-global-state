@@ -10,12 +10,13 @@
     "declaration": true,
     "jsx": "react-jsx",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "noUncheckedIndexedAccess": true,
     "outDir": "build",
     "paths": {
       "*": ["./*"]
     },
+    "types": ["node"],
     "verbatimModuleSyntax": true
   }
 }

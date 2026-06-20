@@ -13,46 +13,38 @@ import type { ValueOrInitializerT } from './utils';
 const Context = createContext<GlobalState<unknown> | null>(null);
 
 /**
- * Gets {@link GlobalState} instance from the context. In most cases
- * you should use {@link useGlobalState}, and other hooks to interact with
- * the global state, instead of accessing it directly.
- * @return
+ * Returns the GlobalState object from the context. In most cases you should use
+ * other hooks, like useGlobalState(), etc. to interact with the global state,
+ * instead of accessing the GlobalState object directly.
  */
-export function getGlobalState<
+export function useGlobalStateObject<
   StateT,
   SsrContextT extends SsrContext<StateT> = SsrContext<StateT>,
 >(): GlobalState<StateT, SsrContextT> {
-  // TODO: Think about it: on one hand we on purpose called this function
-  // as getGlobalState(), so that ppl looking for the state hook prefer using
-  // useGlobalState(), while this getGlobalState() is reserved for nieche cases;
-  // on the other hand, perhaps we can rename it into useSomething, to both
-  // follow conventions, and to keep stuff clearly named at the same time.
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const globalState = use(Context);
   if (!globalState) throw new Error('Missing GlobalStateProvider');
   return globalState as GlobalState<StateT, SsrContextT>;
 }
 
 /**
- * @category Hooks
- * @desc Gets SSR context.
- * @param throwWithoutSsrContext If `true` (default),
- * this hook will throw if no SSR context is attached to the global state;
- * set `false` to not throw in such case. In either case the hook will throw
- * if the {@link &lt;GlobalStateProvider&gt;} (hence the state) is missing.
+ * Returns SSR context.
+ * @param throwWithoutSsrContext - If _true_ (default), this hook will throw
+ *  if no SSR context is attached to the global state; set _false_ to not throw
+ *  in such case. In either case this hook will throw if the <GlobalStateProvider>
+ *  (hence the global state) is missing.
  * @returns SSR context.
  * @throws
- * - If current component has no parent {@link &lt;GlobalStateProvider&gt;}
- *   in the rendered React tree.
- * - If `throwWithoutSsrContext` is `true`, and there is no SSR context attached
- *   to the global state provided by {@link &lt;GlobalStateProvider&gt;}.
+ *  - If current component has no parent <GlobalStateProvider> in the rendered
+ *    React tree.
+ *  - If `throwWithoutSsrContext` is _true_ (default), and there is no SSR
+ *    context attached to the global state provided by <GlobalStateProvider>.
  */
-export function getSsrContext<
+export function useSsrContext<
   SsrContextT extends SsrContext<unknown>,
 >(
   throwWithoutSsrContext = true,
 ): SsrContextT | undefined {
-  const { ssrContext } = getGlobalState<SsrContextT['state'], SsrContextT>();
+  const { ssrContext } = useGlobalStateObject<SsrContextT['state'], SsrContextT>();
   if (!ssrContext && throwWithoutSsrContext) {
     throw new Error('No SSR context found');
   }
@@ -104,7 +96,12 @@ const GlobalStateProvider = <
   // pass in a boolean value here, occasionally equal "false").
   if ('stateProxy' in rest && (rest.stateProxy as boolean)) {
     if (localState) setLocalState(undefined);
-    state = rest.stateProxy === true ? getGlobalState() : rest.stateProxy;
+
+    if (rest.stateProxy === true) {
+      const gs = use(Context);
+      if (!gs) throw Error('Missing GlobalStateProvider');
+      state = gs as GlobalState<StateT, SsrContextT>;
+    } else state = rest.stateProxy;
   } else if (localState) {
     state = localState;
   } else {

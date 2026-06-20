@@ -1,6 +1,7 @@
 import type { GetFieldType } from 'lodash';
-
 import { cloneDeep } from 'lodash-es';
+
+import type { ObjectKey } from '@dr.pogodin/js-utils';
 
 export type CallbackT = () => void;
 
@@ -101,24 +102,15 @@ export function cloneDeepForLog<T>(value: T, key: string = ''): T {
   return res;
 }
 
-/**
- * Converts given value to an escaped string. For now, we are good with the most
- * trivial escape logic:
- *  - '%' characters are replaced by '%0' code pair;
- *  - '/' characters are replaced by '%1' code pair.
- */
-export function escape(x: number | string): string {
-  return typeof x === 'string'
-    ? x.replace(/%/g, '%0').replace(/\//g, '%1')
-    : x.toString();
-}
-
-/**
- * Hashes given string array. For our current needs we are fine to go with
- * the most trivial implementation, which probably should not be called "hash"
- * in the strict sense: we just escape each given string to not include '/'
- * characters, and then we join all those strings using '/' as the separator.
- */
-export function hash(items: Array<number | string>): string {
-  return items.map(escape).join('/');
+export function areEqual<K extends ObjectKey>(
+  a: Record<K, boolean>,
+  b: Record<K, boolean>,
+): boolean {
+  for (const [key, value] of Object.entries(a)) {
+    if (b[key as K] !== value) return false;
+  }
+  for (const [key, value] of Object.entries(b)) {
+    if (a[key as K] !== value) return false;
+  }
+  return true;
 }

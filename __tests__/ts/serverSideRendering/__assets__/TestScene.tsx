@@ -1,4 +1,5 @@
 import { timer } from '@dr.pogodin/js-utils';
+import { jest } from '@jest/globals';
 
 import { type ForceT, useAsyncData, useGlobalState } from 'src/index';
 

@@ -7,6 +7,7 @@ import mockdate from 'mockdate';
 import { useState } from 'react';
 
 import { timer } from '@dr.pogodin/js-utils';
+import { expect, it } from '@jest/globals';
 import { getByText } from '@testing-library/dom';
 
 import { act, mount } from 'jest/utils';

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { SEC_MS, timer } from '@dr.pogodin/js-utils';
+import { expect, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/dom';
 
 import { act, mount } from 'jest/utils';

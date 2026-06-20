@@ -8,7 +8,7 @@
  */
 
 import { mount } from 'jest/utils';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GlobalStateProvider, useGlobalState } from 'src';
 
 let renderPass;
@@ -128,8 +128,10 @@ test('Functional update to a function value', () => {
 function TestComponent07() {
   ++renderPass;
   const [value, set] = useGlobalState('path', () => 'value-07');
-  if (TestComponent07.set) expect(set).toBe(TestComponent07.set);
-  else TestComponent07.set = set;
+
+  // eslint-disable-next-line react/hook-use-state
+  const [stable] = useState(() => set);
+  expect(set).toBe(stable);
 
   // NOTE: Without useEffect(), doing these state updates directly inside
   // the render, we gonna end up with an infinite update loop, and error

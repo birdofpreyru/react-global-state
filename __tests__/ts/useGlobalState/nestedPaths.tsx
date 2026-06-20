@@ -5,6 +5,7 @@
  */
 
 import { timer } from '@dr.pogodin/js-utils';
+import { afterEach, test } from '@jest/globals';
 
 import { type MountedSceneT, act, mount } from 'jest/utils';
 import { GlobalStateProvider, useGlobalState } from 'src/index';
