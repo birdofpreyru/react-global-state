@@ -99,7 +99,7 @@ test('Smart server-sider rendering', async () => {
   Lib = require('src');
   mockConsoleLog();
   let render = serverSideRender();
-  await jest.runAllTimers();
+  await jest.runAllTimersAsync();
   render = await render;
   expect(serverSideRender.round).toBe(1);
   expect(render).toMatchSnapshot();
