@@ -5,6 +5,7 @@ function preset(api, options) {
   if (options) envPreset = [envPreset, options];
   return {
     plugins: [
+      'babel-plugin-react-compiler',
       ['module-resolver', {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
         root: ['./src', '.'],

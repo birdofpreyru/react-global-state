@@ -5,5 +5,5 @@
 // of them are not 100% ready for a full, seamless transition to ES modules.
 
 module.exports = {
-  presets: [['./config/babel/preset', { targets: 'node >= 20' }]],
+  presets: [['./config/babel/preset', { targets: 'node >= 22' }]],
 };
