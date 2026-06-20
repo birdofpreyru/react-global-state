@@ -14,7 +14,9 @@ import {
   mockTimer,
   mount,
   wait,
+  waitNextAnimFrame,
 } from 'jest/utils';
+
 import mockdate from 'mockdate';
 
 import { useState } from 'react';
@@ -23,7 +25,10 @@ import { GlobalStateProvider, useAsyncData } from 'src/index';
 
 import { timer } from '@dr.pogodin/js-utils';
 
-jest.useFakeTimers();
+jest.useFakeTimers({
+  doNotFake: ['cancelAnimationFrame', 'requestAnimationFrame'],
+});
+
 mockdate.set('2019-10-28Z');
 
 const loaderA = jest.fn(async () => {
@@ -80,8 +85,9 @@ function clickButton() {
   return act(() => mockTimer(10));
 }
 
-function initTestScene() {
+async function initTestScene() {
   scene = mount(<Scene />);
+  await waitNextAnimFrame();
   button = document.querySelector('[data-testid=button]');
 }
 
@@ -104,7 +110,7 @@ afterEach(() => {
 test('Scenario I', async () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
   mockConsoleLog();
-  initTestScene();
+  await initTestScene();
 
   /* Empty scene. */
   scene.snapshot();
@@ -114,6 +120,7 @@ test('Scenario I', async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
   await act(() => mockTimer(1));
+  await waitNextAnimFrame();
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).not.toHaveBeenCalled();
@@ -122,9 +129,7 @@ test('Scenario I', async () => {
   await act(async () => {
     await mockTimer(1000);
   });
-  await act(async () => {
-    await mockTimer(0);
-  });
+  await waitNextAnimFrame();
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).not.toHaveBeenCalled();
@@ -134,6 +139,7 @@ test('Scenario I', async () => {
    * before: ComponentA mounted. */
   for (let i = 0; i < 4; i += 1) {
     await clickButton();
+    await waitNextAnimFrame();
     scene.snapshot();
     expect(loaderA).toHaveBeenCalledTimes(1);
     expect(loaderB).not.toHaveBeenCalled();
@@ -146,6 +152,7 @@ test('Scenario I', async () => {
    */
   await wait(6 * 60 * 1000);
   await clickButton();
+  await waitNextAnimFrame();
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).not.toHaveBeenCalled();
@@ -153,7 +160,7 @@ test('Scenario I', async () => {
   /* Checks the data loading is completed 1 sec later, and both components
    * are mounted. */
   await wait(1000);
-  await wait(0);
+  await waitNextAnimFrame();
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).not.toHaveBeenCalled();
@@ -162,6 +169,7 @@ test('Scenario I', async () => {
    * are re-loaded by ComponentB, which is still mounted. */
   await wait(6 * 60 * 1000);
   await clickButton();
+  await waitNextAnimFrame();
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);
@@ -169,6 +177,7 @@ test('Scenario I', async () => {
   /* Waits 1 sec, unmounts ComponentB, checks the data are loaded. */
   await wait(1000);
   await clickButton();
+  await waitNextAnimFrame();
   scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);

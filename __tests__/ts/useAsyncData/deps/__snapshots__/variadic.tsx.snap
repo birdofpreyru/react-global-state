@@ -5,7 +5,9 @@ exports[`base scenario 1`] = `
   <div
     data-testid="component"
     role="presentation"
-  />
+  >
+    []
+  </div>
 </div>
 `;
 
@@ -15,7 +17,7 @@ exports[`base scenario 2`] = `
     data-testid="component"
     role="presentation"
   >
-    0
+    ["0"]
   </div>
 </div>
 `;

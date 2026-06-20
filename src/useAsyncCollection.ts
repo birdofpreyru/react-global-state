@@ -25,6 +25,7 @@ import {
   type ForceT,
   type LockT,
   type TypeLock,
+  areEqual,
   isDebugMode,
 } from './utils';
 
@@ -435,21 +436,22 @@ function useAsyncCollection<
 
   const [stale, setStale] = useState({} as Record<IdT, boolean>);
 
+  // TODO: Merge into the data-reloading effect above?
   useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      setStale(() => {
-        const now = Date.now();
-        const res = {} as Record<IdT, boolean>;
-        for (const [key, e] of Object.entries(localState)) {
-          res[key as IdT] = maxage < now - e.timestamp;
-        }
-        return res;
-      });
+    const now = Date.now();
+    const nowStale = {} as Record<IdT, boolean>;
+    for (const [key, e] of Object.entries(localState)) {
+      nowStale[key as IdT] = maxage < now - e.timestamp;
+    }
+
+    const id = areEqual(stale, nowStale) ? null : requestAnimationFrame(() => {
+      setStale(nowStale);
     });
+
     return () => {
-      cancelAnimationFrame(id);
+      if (id !== null) cancelAnimationFrame(id);
     };
-  }, [localState, maxage]);
+  });
 
   if (!Array.isArray(idOrIds)) {
     // TODO: Revise related typings!

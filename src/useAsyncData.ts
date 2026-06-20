@@ -434,19 +434,17 @@ function useAsyncData<DataT>(
     () => maxage < Date.now() - localState.timestamp,
   );
 
-  // NOTE: This is done inside useEffect() as it is illegal to call non-pure
-  // Date.now() function inside the render body.
+  // TODO: Merge into the data-reloading effect above?
   useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      setStale(maxage < Date.now() - localState.timestamp);
+    const nowStale = maxage < Date.now() - localState.timestamp;
+    const id = stale === nowStale ? null : requestAnimationFrame(() => {
+      setStale(nowStale);
     });
+
     return () => {
-      cancelAnimationFrame(id);
+      if (id !== null) cancelAnimationFrame(id);
     };
-  }, [
-    localState.timestamp,
-    maxage,
-  ]);
+  });
 
   return {
     data: stale ? null : localState.data,

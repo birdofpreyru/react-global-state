@@ -9,6 +9,7 @@ import mockdate from 'mockdate';
 import { type ReactNode, act } from 'react';
 import { type Root, createRoot } from 'react-dom/client';
 
+import { Barrier } from '@dr.pogodin/js-utils';
 import { expect, jest } from '@jest/globals';
 
 export { act };
@@ -53,7 +54,7 @@ export async function mockTimer(time: number): Promise<void> {
 
 export type MountedSceneT = HTMLElement & {
   destroy: () => void;
-  snapshot: () => void;
+  snapshot: (hint?: string) => void;
 };
 
 /**
@@ -73,8 +74,8 @@ export function mount(scene: ReactNode): MountedSceneT {
     res.remove();
   };
 
-  res.snapshot = () => {
-    expect(res).toMatchSnapshot();
+  res.snapshot = (hint?: string) => {
+    expect(res).toMatchSnapshot(hint ?? '');
   };
 
   document.body.appendChild(rootElement);
@@ -100,5 +101,18 @@ export async function wait(time: number): Promise<void> {
 export async function timer(time: number): Promise<unknown> {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
+  });
+}
+
+/**
+ * Awaits for the next animation frame.
+ */
+export async function waitNextAnimFrame(): Promise<void> {
+  await act(async () => {
+    const barrier = new Barrier();
+    requestAnimationFrame(() => {
+      void barrier.resolve(undefined);
+    });
+    await barrier;
   });
 }

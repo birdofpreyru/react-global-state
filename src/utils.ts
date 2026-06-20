@@ -1,6 +1,7 @@
 import type { GetFieldType } from 'lodash';
-
 import { cloneDeep } from 'lodash-es';
+
+import type { ObjectKey } from '@dr.pogodin/js-utils';
 
 export type CallbackT = () => void;
 
@@ -99,4 +100,17 @@ export function cloneDeepForLog<T>(value: T, key: string = ''): T {
   }
 
   return res;
+}
+
+export function areEqual<K extends ObjectKey>(
+  a: Record<K, boolean>,
+  b: Record<K, boolean>,
+): boolean {
+  for (const [key, value] of Object.entries(a)) {
+    if (b[key as K] !== value) return false;
+  }
+  for (const [key, value] of Object.entries(b)) {
+    if (a[key as K] !== value) return false;
+  }
+  return true;
 }

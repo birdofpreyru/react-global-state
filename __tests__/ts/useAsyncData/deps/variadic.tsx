@@ -7,7 +7,7 @@ import { type FunctionComponent, useState } from 'react';
 import { expect, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/dom';
 
-import { act, mount } from 'jest/utils';
+import { act, mount, waitNextAnimFrame } from 'jest/utils';
 
 import {
   type AsyncDataEnvelopeT,
@@ -34,7 +34,7 @@ const Component: React.FunctionComponent = () => {
       }}
       role="presentation"
     >
-      {data}
+      {JSON.stringify(data)}
     </div>
   );
 };
@@ -45,8 +45,9 @@ const Scene: FunctionComponent = () => (
   </GlobalStateProvider>
 );
 
-test('base scenario', () => {
+test('base scenario', async () => {
   const scene = mount(<Scene />);
+  await waitNextAnimFrame();
   scene.snapshot();
 
   // As of React 18.3.2, although a warning about variadic useEffect()
@@ -58,6 +59,7 @@ test('base scenario', () => {
   act(() => {
     component.click();
   });
+  await waitNextAnimFrame();
   scene.snapshot();
   expect(console.error).not.toHaveBeenCalled();
 });
