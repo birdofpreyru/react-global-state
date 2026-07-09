@@ -15,7 +15,7 @@ jest.mock<typeof LodashM>('lodash-es', () => {
   const real = jest.requireActual<typeof LodashM>('lodash-es');
   return {
     ...real,
-    cloneDeep<T>(value: T) {
+    cloneDeep(value) {
       mockdate.set(Date.now() + mockCloneDeepDelay);
       return real.cloneDeep(value);
     },
