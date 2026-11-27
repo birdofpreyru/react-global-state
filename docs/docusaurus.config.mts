@@ -36,7 +36,7 @@ const config: Config = {
       {
         docs: {
           editUrl: EDIT_BASE,
-          sidebarPath: './sidebars.ts',
+          sidebarPath: './sidebars.mts',
         },
         theme: {
           customCss: './src/css/custom.css',
