@@ -14,10 +14,9 @@ import {
   jest,
 } from '@jest/globals';
 
-import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils';
-
-import GlobalState from 'src/GlobalState';
-import { type ForceT, SsrContext } from 'src/index';
+import GlobalState from 'build/GlobalState.js';
+import { type ForceT, SsrContext } from 'build/index.js';
+import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils.js';
 
 jest.useFakeTimers();
 

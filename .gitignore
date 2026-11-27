@@ -3,3 +3,5 @@ build/*
 node_modules
 dr.pogodin-react-global-state-*.tgz
 /.eslintcache
+/jest/*.ts
+/jest/*.js

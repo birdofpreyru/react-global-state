@@ -7,8 +7,6 @@
 import { timer } from '@dr.pogodin/js-utils';
 import { expect, test } from '@jest/globals';
 
-import { act, mount } from 'jest/utils';
-
 import {
   type AsyncDataEnvelopeT,
   type AsyncDataReloaderT,
@@ -17,7 +15,9 @@ import {
   GlobalStateProvider,
   newAsyncDataEnvelope,
   useAsyncData,
-} from 'src';
+} from 'build/index.js';
+
+import { act, mount } from 'jest/utils.js';
 
 type StateT = {
   async: AsyncDataEnvelopeT<string>;

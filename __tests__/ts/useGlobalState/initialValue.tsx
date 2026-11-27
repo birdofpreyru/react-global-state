@@ -5,9 +5,8 @@
 import { expect, test } from '@jest/globals';
 import { getByText } from '@testing-library/dom';
 
-import { act, mount } from 'jest/utils';
-
-import { withGlobalStateType } from 'src';
+import { withGlobalStateType } from 'build/index.js';
+import { act, mount } from 'jest/utils.js';
 
 type StateT = { key?: string };
 

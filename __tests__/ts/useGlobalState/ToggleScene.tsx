@@ -3,8 +3,8 @@
 import { afterEach, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/dom';
 
-import { type MountedSceneT, act, mount } from 'jest/utils';
-import { GlobalStateProvider, useGlobalState } from 'src/index';
+import { GlobalStateProvider, useGlobalState } from 'build/index.js';
+import { type MountedSceneT, act, mount } from 'jest/utils.js';
 
 jest.useFakeTimers();
 

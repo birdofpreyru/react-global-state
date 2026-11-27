@@ -1,6 +1,6 @@
 import { get, set, toPath } from 'lodash-es';
 
-import type SsrContext from './SsrContext';
+import type SsrContext from './SsrContext.js';
 
 import {
   type CallbackT,
@@ -11,7 +11,7 @@ import {
   type ValueOrInitializerT,
   cloneDeepForLog,
   isDebugMode,
-} from './utils';
+} from './utils.js';
 
 const ERR_NO_SSR_WATCH = 'GlobalState must not be watched at server side';
 
@@ -115,7 +115,8 @@ export default class GlobalState<
     const prevDeps = this.#dependencies.get(path);
     let changed = prevDeps?.length !== deps.length;
     for (let i = 0; !changed && i < deps.length; ++i) {
-      changed = prevDeps![i] !== deps[i];
+      if (!prevDeps) throw Error('Internal error');
+      changed = prevDeps[i] !== deps[i];
     }
     this.#dependencies.set(path, Object.freeze(deps));
     return changed;
@@ -207,8 +208,7 @@ export default class GlobalState<
   get<
     PathT extends null | string | undefined,
     ValueArgT extends ValueAtPathT<StateT, PathT, never>,
-    ValueResT extends ValueAtPathT<StateT, PathT, void>,
-  >(path: PathT, opts?: GetOptsT<ValueArgT>): ValueResT;
+  >(path: PathT, opts?: GetOptsT<ValueArgT>): ValueAtPathT<StateT, PathT, void>;
 
   // This variant is not callable by default (without generic arguments),
   // otherwise it allows to set the correct ValueT directly.
@@ -249,11 +249,10 @@ export default class GlobalState<
    */
 
   // This variant attempts automatic value type resolution & checking.
-  set<
-    PathT extends null | string | undefined,
-    ValueArgT extends ValueAtPathT<StateT, PathT, never>,
-    ValueResT extends ValueAtPathT<StateT, PathT, void>,
-  >(path: PathT, value: ValueArgT): ValueResT;
+  set<PathT extends null | string | undefined>(
+    path: PathT,
+    value: ValueAtPathT<StateT, PathT, never>,
+  ): ValueAtPathT<StateT, PathT, void>;
 
   // This variant is disabled by default, otherwise allows to give
   // expected value type explicitly.
@@ -277,7 +276,8 @@ export default class GlobalState<
       let pos: Record<string, unknown> = root;
       const pathSegments = toPath(`state.${path}`);
       for (; segIdx < pathSegments.length - 1; segIdx += 1) {
-        const seg = pathSegments[segIdx]!;
+        const seg = pathSegments[segIdx];
+        if (seg === undefined) throw Error('Internal error');
 
         // TODO: Revise: Typing is not quite correct here, but it works fine in the runtime.
         const next = pos[seg];
@@ -294,7 +294,9 @@ export default class GlobalState<
       }
 
       if (segIdx === pathSegments.length - 1) {
-        pos[pathSegments[segIdx]!] = value;
+        const segment = pathSegments[segIdx];
+        if (segment === undefined) throw Error('Internal error');
+        pos[segment] = value;
       }
 
       this.#currentState = root.state;
@@ -317,7 +319,9 @@ export default class GlobalState<
     const watchers = this.#watchers;
     const pos = watchers.indexOf(callback);
     if (pos >= 0) {
-      watchers[pos] = watchers[watchers.length - 1]!;
+      const last = watchers[watchers.length - 1];
+      if (!last) throw Error('Internal error');
+      watchers[pos] = last;
       watchers.pop();
     }
   }

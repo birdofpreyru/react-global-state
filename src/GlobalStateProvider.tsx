@@ -5,10 +5,10 @@ import {
   useState,
 } from 'react';
 
-import GlobalState from './GlobalState';
-import type SsrContext from './SsrContext';
+import GlobalState from './GlobalState.js';
+import type SsrContext from './SsrContext.js';
 
-import type { ValueOrInitializerT } from './utils';
+import type { ValueOrInitializerT } from './utils.js';
 
 const Context = createContext<GlobalState<unknown> | null>(null);
 
@@ -40,6 +40,7 @@ export function useGlobalStateObject<
  *    context attached to the global state provided by <GlobalStateProvider>.
  */
 export function useSsrContext<
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
   SsrContextT extends SsrContext<unknown>,
 >(
   throwWithoutSsrContext = true,
@@ -118,7 +119,7 @@ const GlobalStateProvider = <
     setLocalState(state);
   }
 
-  return <Context value={state}>{children}</Context>;
+  return <Context value={state as GlobalState<unknown>}>{children}</Context>;
 };
 
 export default GlobalStateProvider;

@@ -16,14 +16,14 @@ import {
   test,
 } from '@jest/globals';
 
+import { type ForceT, GlobalStateProvider, useAsyncData } from 'build/index.js';
+
 import {
   type MountedSceneT,
   act,
   mockTimer,
   mount,
-} from 'jest/utils';
-
-import { type ForceT, GlobalStateProvider, useAsyncData } from 'src/index';
+} from 'jest/utils.js';
 
 jest.useFakeTimers();
 mockdate.set('2020-04-09Z');
@@ -91,18 +91,21 @@ afterEach(() => {
 });
 
 test('Scenario I', async () => {
+  if (!scene) throw Error('Missing scene');
+
   /* Check of the initial state. */
-  scene!.snapshot();
+  scene.snapshot();
 
   /* Data are not stale. */
   await wait(10);
   await wait(10);
-  scene!.snapshot();
+  scene.snapshot();
 
   /* Press of button forces data refresh via "deps" option. */
   act(() => {
-    button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (!button) throw Error('Missing button');
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
   await wait(10);
-  scene!.snapshot();
+  scene.snapshot();
 });

@@ -1,16 +1,16 @@
-import GlobalState from './GlobalState';
+import GlobalState from './GlobalState.js';
 
 import GlobalStateProvider, {
   useGlobalStateObject,
   useSsrContext,
-} from './GlobalStateProvider';
+} from './GlobalStateProvider.js';
 
-import SsrContext from './SsrContext';
+import SsrContext from './SsrContext.js';
 
 import useAsyncCollection, {
   type UseAsyncCollectionI,
   type UseAsyncCollectionResT,
-} from './useAsyncCollection';
+} from './useAsyncCollection.js';
 
 import {
   type AsyncDataEnvelopeT,
@@ -23,19 +23,19 @@ import {
   loadAsyncData,
   newAsyncDataEnvelope,
   useAsyncData,
-} from './useAsyncData';
+} from './useAsyncData.js';
 
-import useGlobalState, { type UseGlobalStateI } from './useGlobalState';
+import useGlobalState, { type UseGlobalStateI } from './useGlobalState.js';
 
 export type {
   AsyncCollectionLoaderT,
   AsyncCollectionReloaderT,
   AsyncCollectionT,
-} from './useAsyncCollection';
+} from './useAsyncCollection.js';
 
-export type { SetterT, UseGlobalStateResT } from './useGlobalState';
+export type { SetterT, UseGlobalStateResT } from './useGlobalState.js';
 
-export type { ForceT, ValueOrInitializerT } from './utils';
+export type { ForceT, ValueOrInitializerT } from './utils.js';
 
 export {
   type AsyncDataEnvelopeT,

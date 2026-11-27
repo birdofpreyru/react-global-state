@@ -6,12 +6,12 @@ import { useState } from 'react';
 import { expect, test } from '@jest/globals';
 import { getByText } from '@testing-library/dom';
 
-import { act, mount } from 'jest/utils';
-
 import {
   type AsyncDataEnvelopeT,
   withGlobalStateType,
-} from 'src';
+} from 'build/index.js';
+
+import { act, mount } from 'jest/utils.js';
 
 // Tests scenario when the hook uses dependencies and changes its path
 // to another path that has non-stale data loaded, but for different

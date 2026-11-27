@@ -6,12 +6,11 @@
  * Tests that data reloading happens as expected when `deps` option is used.
  */
 
+import { GlobalStateProvider, useAsyncData } from 'build';
 import { act, mockTimer, mount } from 'jest/utils';
 import mockdate from 'mockdate';
 
 import { useState } from 'react';
-
-import { GlobalStateProvider, useAsyncData } from 'src';
 
 import { timer } from '@dr.pogodin/js-utils';
 

@@ -1,4 +1,4 @@
-import { useAsyncData, useGlobalState } from 'src';
+import { useAsyncData, useGlobalState } from 'build';
 import { timer } from '@dr.pogodin/js-utils';
 
 // TODO: Are we missing something here? Right now the test components A and B,

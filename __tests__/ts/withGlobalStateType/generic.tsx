@@ -7,9 +7,9 @@ import {
   it,
 } from '@jest/globals';
 
-import { type MountedSceneT, mount } from 'jest/utils';
+import { withGlobalStateType } from 'build/index.js';
 
-import { withGlobalStateType } from 'src/index';
+import { type MountedSceneT, mount } from 'jest/utils.js';
 
 type StateT = { some: { path: ValueT } };
 type ValueT = 'value-a' | 'value-b';

@@ -7,10 +7,18 @@
   "exclude": ["__tests__/ts-types"],
 
   "compilerOptions": {
+    // NOTE: These are only necessary to support a few asset imports inside
+    // Jest tests... all stems from the problem that while TypeScript does
+    // resolve .js imports to the .ts files at the same path, Jest does not
+    // do it, so we need correct paths in the tests (at least for now).
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+
     "declaration": true,
     "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "noUncheckedIndexedAccess": true,
     "outDir": "build",
     "paths": {

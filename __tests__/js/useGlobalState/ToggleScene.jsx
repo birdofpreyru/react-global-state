@@ -2,8 +2,8 @@
 
 /* global document, MouseEvent */
 
+import { GlobalStateProvider, useGlobalState } from 'build';
 import { act, mount } from 'jest/utils';
-import { GlobalStateProvider, useGlobalState } from 'src';
 
 jest.useFakeTimers();
 

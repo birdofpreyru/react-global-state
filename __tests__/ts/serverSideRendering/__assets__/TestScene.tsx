@@ -1,7 +1,7 @@
 import { timer } from '@dr.pogodin/js-utils';
 import { jest } from '@jest/globals';
 
-import { type ForceT, useAsyncData, useGlobalState } from 'src/index';
+import { type ForceT, useAsyncData, useGlobalState } from 'build/index.js';
 
 // TODO: Are we missing something here? Right now the test components A and B,
 // look identical along with their loaders. Were they intended to be slightly

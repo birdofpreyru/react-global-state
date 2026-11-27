@@ -7,8 +7,8 @@
 import { timer } from '@dr.pogodin/js-utils';
 import { afterEach, test } from '@jest/globals';
 
-import { type MountedSceneT, act, mount } from 'jest/utils';
-import { GlobalStateProvider, useGlobalState } from 'src/index';
+import { GlobalStateProvider, useGlobalState } from 'build/index.js';
+import { type MountedSceneT, act, mount } from 'jest/utils.js';
 
 /* Test with the state containing only objects. */
 

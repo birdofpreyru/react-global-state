@@ -10,18 +10,17 @@ import {
   test,
 } from '@jest/globals';
 
+import { GlobalStateProvider, SsrContext } from 'build/index.js';
+
 import {
   type MountedSceneT,
   consoleLogs,
   mockConsoleLog,
   unMockConsoleLog,
-} from 'jest/utils';
+} from 'jest/utils.js';
 
-import { GlobalStateProvider, SsrContext } from 'src/index';
-
-import StringDestination from './__assets__/StringDestination';
-
-import type * as TestSceneNS from './__assets__/TestScene';
+import StringDestination from './__assets__/StringDestination.ts';
+import type * as TestSceneNS from './__assets__/TestScene.tsx';
 
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');
@@ -101,7 +100,7 @@ async function renderPass<T>(
  * This is the sample SSR code assembly.
  */
 async function serverSideRender(): Promise<string> {
-  let stream: ReactDOM.PipeableStream;
+  let stream: ReactDOM.PipeableStream | undefined;
   ssrRound = 0;
 
   const ssrContext = new SsrContext({});
@@ -113,7 +112,10 @@ async function serverSideRender(): Promise<string> {
     } else break;
   }
   const dest = new StringDestination();
-  stream!.pipe(dest);
+
+  if (!stream) throw Error('Missing stream');
+
+  stream.pipe(dest);
   return dest.waitResult();
 }
 

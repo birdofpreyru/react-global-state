@@ -7,7 +7,7 @@ import {
   test,
 } from '@jest/globals';
 
-import { isDebugMode } from 'src/utils';
+import { isDebugMode } from 'build/utils.js';
 
 describe('isDebugMode()', () => {
   let origEnv: NodeJS.ProcessEnv;

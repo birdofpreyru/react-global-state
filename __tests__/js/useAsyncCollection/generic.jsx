@@ -4,14 +4,15 @@
 
 // A very generic test of basic useAsyncCollection() functionality.
 
+import { GlobalStateProvider, useAsyncCollection } from 'build';
+
+import GlobalState from 'build/GlobalState';
+
 import { act, mount } from 'jest/utils';
 import mockdate from 'mockdate';
 
 import { useState } from 'react';
 
-import { GlobalStateProvider, useAsyncCollection } from 'src';
-
-import GlobalState from 'src/GlobalState';
 import { timer } from '@dr.pogodin/js-utils';
 
 mockdate.set('2021-05-08Z');

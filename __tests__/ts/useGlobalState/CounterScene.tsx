@@ -14,9 +14,9 @@ import {
   test,
 } from '@jest/globals';
 
-import { type MountedSceneT, act, mount } from 'jest/utils';
-import GlobalState from 'src/GlobalState';
-import { GlobalStateProvider, useGlobalState } from 'src/index';
+import GlobalState from 'build/GlobalState.js';
+import { GlobalStateProvider, useGlobalState } from 'build/index.js';
+import { type MountedSceneT, act, mount } from 'jest/utils.js';
 
 jest.useFakeTimers();
 
@@ -109,13 +109,15 @@ test('The scene works as expected', () => {
   scene.snapshot();
   let button = document.querySelector('[data-testid=button-1]');
   act(() => {
-    button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (!button) throw Error('Missing button');
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
   scene.snapshot();
   button = document.querySelector('[data-testid=button-2]');
   act(() => {
-    button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (!button) throw Error('Missing button');
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
   scene.snapshot();
@@ -126,13 +128,15 @@ it('Test of `stateProxy` prop of the state provider', () => {
   scene.snapshot();
   let button = document.querySelector('[data-testid=button-1]');
   act(() => {
-    button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (!button) throw Error('Missing button');
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
   scene.snapshot();
   button = document.querySelector('[data-testid=button-2]');
   act(() => {
-    button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (!button) throw Error('Missing button');
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
   scene.snapshot();
@@ -145,14 +149,16 @@ it('Test of `stateProxy` prop of the state provider II', () => {
   scene.snapshot();
   let button = document.querySelector('[data-testid=button-1]');
   act(() => {
-    button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (!button) throw Error('Missing button');
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
   expect(innerGlobalState.get()).toMatchSnapshot();
   scene.snapshot();
   button = document.querySelector('[data-testid=button-2]');
   act(() => {
-    button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (!button) throw Error('Missing button');
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     jest.runAllTimers();
   });
   expect(innerGlobalState.get()).toMatchSnapshot();

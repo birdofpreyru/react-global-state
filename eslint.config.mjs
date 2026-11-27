@@ -8,6 +8,7 @@ export default defineConfig([
     'build/',
     'docs/build/',
     'docs/.docusaurus/',
+    'jest/',
   ] },
   eslintConfigs.configs.javascript,
   eslintConfigs.configs.typescript,

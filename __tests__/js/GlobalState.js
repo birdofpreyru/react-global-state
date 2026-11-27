@@ -7,7 +7,7 @@
  * in this module we only test for several corner-cases.
  */
 
-import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils';
+import { consoleLogs, mockConsoleLog, unMockConsoleLog } from 'jest/utils.js';
 
 jest.useFakeTimers();
 
@@ -17,7 +17,7 @@ beforeEach(() => {
   jest.resetModules();
   delete process.env.REACT_GLOBAL_STATE_DEBUG;
   unMockConsoleLog();
-  GlobalState = require('src/GlobalState').default;
+  GlobalState = require('build/GlobalState').default;
 });
 
 describe('State set & get', () => {

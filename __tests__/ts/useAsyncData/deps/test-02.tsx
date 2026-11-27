@@ -15,14 +15,14 @@ import {
   test,
 } from '@jest/globals';
 
+import { type AsyncDataEnvelopeT, withGlobalStateType } from 'build/index.js';
+
 import {
   type MountedSceneT,
   act,
   mockTimer,
   mount,
-} from 'jest/utils';
-
-import { type AsyncDataEnvelopeT, withGlobalStateType } from 'src';
+} from 'jest/utils.js';
 
 jest.useFakeTimers();
 mockdate.set('2023-11-19');

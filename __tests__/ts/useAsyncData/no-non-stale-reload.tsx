@@ -12,17 +12,17 @@ import {
 } from '@jest/globals';
 
 import {
+  type AsyncDataEnvelopeT,
+  newAsyncDataEnvelope,
+  withGlobalStateType,
+} from 'build/index.js';
+
+import {
   type MountedSceneT,
   act,
   mount,
   timer,
-} from 'jest/utils';
-
-import {
-  type AsyncDataEnvelopeT,
-  newAsyncDataEnvelope,
-  withGlobalStateType,
-} from 'src';
+} from 'jest/utils.js';
 
 type StateT = {
   key: AsyncDataEnvelopeT<string>;
@@ -61,5 +61,6 @@ beforeEach(async () => {
 
 it('does not reload data', () => {
   expect(loader).not.toHaveBeenCalled();
-  scene!.snapshot();
+  if (!scene) throw Error('Missing scene');
+  scene.snapshot();
 });

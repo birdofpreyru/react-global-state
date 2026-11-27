@@ -7,9 +7,8 @@ import { useState } from 'react';
 import { expect, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/dom';
 
-import { act, mount } from 'jest/utils';
-
-import { type AsyncCollectionT, withGlobalStateType } from 'src';
+import { type AsyncCollectionT, withGlobalStateType } from 'build/index.js';
+import { act, mount } from 'jest/utils.js';
 
 type StateT = {
   path: AsyncCollectionT<string[]>;

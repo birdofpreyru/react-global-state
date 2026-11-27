@@ -6,9 +6,13 @@ import { SEC_MS, timer } from '@dr.pogodin/js-utils';
 import { expect, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/dom';
 
-import { act, mount } from 'jest/utils';
+import {
+  type AsyncDataEnvelopeT,
+  newAsyncDataEnvelope,
+  withGlobalStateType,
+} from 'build/index.js';
 
-import { type AsyncDataEnvelopeT, newAsyncDataEnvelope, withGlobalStateType } from 'src';
+import { act, mount } from 'jest/utils.js';
 
 jest.useFakeTimers();
 
@@ -65,7 +69,7 @@ test('base scenario', async () => {
   // The value in the global state is "null", the 0 value data loading is
   // pending for 1 second.
   expect(gs.numAsyncDataAbortCallbacks).toBe(1);
-  expect(abortSignals.get(0)!.aborted).toBe(false);
+  expect(abortSignals.get(0)?.aborted).toBe(false);
   scene.snapshot();
 
   await act(async () => jest.advanceTimersByTimeAsync(2 * SEC_MS));
@@ -74,7 +78,7 @@ test('base scenario', async () => {
   // The value in the global state is 1 now. The load was successful,
   // thus not aborted.
   expect(gs.numAsyncDataAbortCallbacks).toBe(0);
-  expect(abortSignals.get(0)!.aborted).toBe(false);
+  expect(abortSignals.get(0)?.aborted).toBe(false);
   scene.snapshot();
 
   const component = getByTestId(scene, 'component');
@@ -87,7 +91,7 @@ test('base scenario', async () => {
 
   // By this point the data has not been reloaded yet - the value is still 0.
   expect(gs.numAsyncDataAbortCallbacks).toBe(1);
-  expect(abortSignals.get(1)!.aborted).toBe(false);
+  expect(abortSignals.get(1)?.aborted).toBe(false);
   scene.snapshot();
 
   // This bumps the `x` value, causing the next data reload, to the value 2,
@@ -101,8 +105,8 @@ test('base scenario', async () => {
   // At this point the operation for value 1 has been aborted, but the operation
   // for value #2 is still pending.
   expect(gs.numAsyncDataAbortCallbacks).toBe(1);
-  expect(abortSignals.get(1)!.aborted).toBe(true);
-  expect(abortSignals.get(2)!.aborted).toBe(false);
+  expect(abortSignals.get(1)?.aborted).toBe(true);
+  expect(abortSignals.get(2)?.aborted).toBe(false);
   scene.snapshot();
 
   await act(async () => jest.advanceTimersByTimeAsync(SEC_MS));
@@ -111,6 +115,6 @@ test('base scenario', async () => {
   // Now the pending operation has completed, the final value in the global
   // state is 2.
   expect(gs.numAsyncDataAbortCallbacks).toBe(0);
-  expect(abortSignals.get(2)!.aborted).toBe(false);
+  expect(abortSignals.get(2)?.aborted).toBe(false);
   scene.snapshot();
 });

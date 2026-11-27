@@ -9,16 +9,16 @@ import { timer } from '@dr.pogodin/js-utils';
 import { expect, it } from '@jest/globals';
 import { getByText } from '@testing-library/dom';
 
-import { act, mount } from 'jest/utils';
+import GlobalState from 'build/GlobalState.js';
 
 import {
   type AsyncDataEnvelopeT,
   type ForceT,
   GlobalStateProvider,
   useAsyncCollection,
-} from 'src';
+} from 'build/index.js';
 
-import GlobalState from 'src/GlobalState';
+import { act, mount } from 'jest/utils.js';
 
 mockdate.set('2021-05-08Z');
 

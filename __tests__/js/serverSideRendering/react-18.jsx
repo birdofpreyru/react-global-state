@@ -43,7 +43,7 @@ afterEach(() => {
 // TODO: Revise
 // eslint-disable-next-line jest/no-done-callback
 test('Naive server-side rendering', (done) => {
-  Lib = require('src');
+  Lib = require('build');
   const stream = ReactDOM.renderToPipeableStream(
     <Lib.GlobalStateProvider>
       <Scene />
@@ -79,7 +79,7 @@ function renderPass(ssrContext) {
  * This is the sample SSR code assembly.
  */
 async function serverSideRender() {
-  Lib = require('src');
+  Lib = require('build');
   let stream;
   serverSideRender.round = 0;
   const ssrContext = { state: {} };
@@ -96,7 +96,7 @@ async function serverSideRender() {
 
 test('Smart server-sider rendering', async () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
-  Lib = require('src');
+  Lib = require('build');
   mockConsoleLog();
   let render = serverSideRender();
   await jest.runAllTimersAsync();

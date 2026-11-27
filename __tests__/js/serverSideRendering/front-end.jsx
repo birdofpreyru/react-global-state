@@ -9,6 +9,8 @@
  * Base test of the server-side rendering features.
  */
 
+import { GlobalStateProvider, useSsrContext } from 'build/index';
+
 import {
   act,
   mockTimer,
@@ -17,8 +19,6 @@ import {
 } from 'jest/utils';
 
 import mockdate from 'mockdate';
-
-import { GlobalStateProvider, useSsrContext } from 'src/index';
 
 import Scene, { loaderA, loaderB } from './__assets__/TestScene';
 

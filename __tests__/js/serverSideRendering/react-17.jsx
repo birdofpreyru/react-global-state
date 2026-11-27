@@ -39,7 +39,7 @@ afterEach(() => {
 });
 
 test('Naive server-side rendering', () => {
-  Lib = require('src');
+  Lib = require('build');
   const render = ReactDOM.renderToString((
     <Lib.GlobalStateProvider>
       <Scene />
@@ -52,7 +52,7 @@ test('Naive server-side rendering', () => {
  * This is the sample SSR code assembly.
  */
 async function serverSideRender() {
-  Lib = require('src');
+  Lib = require('build');
   let render;
   serverSideRender.round = 0;
   const ssrContext = { state: {} };
@@ -74,7 +74,7 @@ async function serverSideRender() {
 
 test('Smart server-sider rendering', async () => {
   process.env.REACT_GLOBAL_STATE_DEBUG = true;
-  Lib = require('src');
+  Lib = require('build');
   mockConsoleLog();
   let render = serverSideRender();
   await jest.runAllTimers();

@@ -5,12 +5,17 @@
  * state update.
  */
 
-import { type ReactNode, useEffect, useState } from 'react';
+import {
+  type FunctionComponent,
+  type ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 
 import { expect, jest, test } from '@jest/globals';
 
-import { mount } from 'jest/utils';
-import { GlobalStateProvider, useGlobalState } from 'src/index';
+import { GlobalStateProvider, useGlobalState } from 'build/index.js';
+import { mount } from 'jest/utils.js';
 
 const PATH = 'path';
 
@@ -19,7 +24,7 @@ type ValueT = jest.Mock | number | string | undefined;
 type State2T = { key: number };
 type StateT = { [PATH]?: ValueT };
 
-const Wrapper: React.FunctionComponent<{
+const Wrapper: FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => (
   <GlobalStateProvider<StateT> initialState={{}}>
@@ -29,7 +34,7 @@ const Wrapper: React.FunctionComponent<{
 
 let pass01 = 0;
 
-const TestComponent01: React.FunctionComponent = () => {
+const TestComponent01: FunctionComponent = () => {
   ++pass01;
   const [value] = useGlobalState<StateT, typeof PATH>(PATH, 'value-01');
   expect(value).toBe('value-01');
@@ -43,7 +48,7 @@ test('Non-functional initial value', () => {
 
 let pass02 = 0;
 
-const TestComponent02: React.FunctionComponent = () => {
+const TestComponent02: FunctionComponent = () => {
   ++pass02;
   const [value] = useGlobalState<StateT, typeof PATH>(PATH, () => 'value-02');
   expect(value).toBe('value-02');
@@ -58,7 +63,7 @@ test('Functional initial value', () => {
 let pass03 = 0;
 const func03 = jest.fn();
 
-const TestComponent03: React.FunctionComponent = () => {
+const TestComponent03: FunctionComponent = () => {
   ++pass03;
   const [value] = useGlobalState<StateT, typeof PATH>(
     PATH,
@@ -76,7 +81,7 @@ test('Functional initial value, returing a function', () => {
 
 let pass04 = 0;
 
-const TestComponent04: React.FunctionComponent = () => {
+const TestComponent04: FunctionComponent = () => {
   ++pass04;
   const [value, set] = useGlobalState<StateT, typeof PATH>(PATH, 'value-04');
   setTimeout(() => {
@@ -100,7 +105,7 @@ test('Setting a non-functional value', () => {
 
 let pass05 = 0;
 
-const TestComponent05: React.FunctionComponent = () => {
+const TestComponent05: FunctionComponent = () => {
   ++pass05;
   const [value, set] = useGlobalState<StateT, typeof PATH>(
     PATH,
@@ -129,7 +134,7 @@ test('Functional update', () => {
 // each subsequent one should get the current (previously updated) state,
 // and not the very original one.
 
-const TestComponent05b: React.FunctionComponent = () => {
+const TestComponent05b: FunctionComponent = () => {
   const [, set] = useGlobalState<State2T, 'key'>('key', 0);
   set((x) => Math.min(1, x + 1));
   set((x) => {
@@ -147,7 +152,7 @@ let pass06 = 0;
 const func06a = jest.fn();
 const func06b = jest.fn();
 
-const TestComponent06: React.FunctionComponent = () => {
+const TestComponent06: FunctionComponent = () => {
   ++pass06;
   const [value, set] = useGlobalState<StateT, typeof PATH>(
     'path',
@@ -176,7 +181,7 @@ test('Functional update to a function value', () => {
 
 let pass07 = 0;
 
-const TestComponent07: React.FunctionComponent = () => {
+const TestComponent07: FunctionComponent = () => {
   ++pass07;
   const [value, set] = useGlobalState<StateT, typeof PATH>(
     PATH,

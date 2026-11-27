@@ -4,8 +4,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import type GlobalState from './GlobalState';
-import { useGlobalStateObject } from './GlobalStateProvider';
+import type GlobalState from './GlobalState.js';
+import { useGlobalStateObject } from './GlobalStateProvider.js';
 
 import {
   type AsyncDataEnvelopeT,
@@ -17,9 +17,9 @@ import {
   type UseAsyncDataResT,
   loadAsyncData,
   newAsyncDataEnvelope,
-} from './useAsyncData';
+} from './useAsyncData.js';
 
-import useGlobalState from './useGlobalState';
+import useGlobalState from './useGlobalState.js';
 
 import {
   type ForceT,
@@ -27,7 +27,7 @@ import {
   type TypeLock,
   areEqual,
   isDebugMode,
-} from './utils';
+} from './utils.js';
 
 export type AsyncCollectionT<
   DataT = unknown,
@@ -82,8 +82,8 @@ type StableT<DataT, IdT extends number | string> = {
  * the state according to the new param values. It increments by 1 `numRefs`
  * counters for the requested collection items.
  */
-function gcOnWithhold<IdT extends number | string>(
-  ids: IdT[],
+function gcOnWithhold(
+  ids: Array<number | string>,
   path: null | string | undefined,
   gs: GlobalState<unknown>,
 ) {
@@ -99,7 +99,7 @@ function gcOnWithhold<IdT extends number | string>(
   gs.set<ForceT, AsyncCollectionT>(path, collection);
 }
 
-function idsToStringSet<IdT extends number | string>(ids: IdT[]): Set<string> {
+function idsToStringSet(ids: Array<number | string>): Set<string> {
   const res = new Set<string>();
   for (const id of ids) {
     res.add(id.toString());
@@ -114,6 +114,7 @@ function idsToStringSet<IdT extends number | string>(ids: IdT[]): Set<string> {
  * for previously requested collection items, and also drops from the state
  * stale records.
  */
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 function gcOnRelease<IdT extends number | string>(
   ids: IdT[],
   path: null | string | undefined,

@@ -9,9 +9,8 @@ import { type FunctionComponent, useState } from 'react';
 import { expect, it, jest } from '@jest/globals';
 import { getByText } from '@testing-library/react';
 
-import { act, mount } from 'jest/utils';
-
-import { type AsyncDataEnvelopeT, withGlobalStateType } from 'src';
+import { type AsyncDataEnvelopeT, withGlobalStateType } from 'build/index.js';
+import { act, mount } from 'jest/utils.js';
 
 jest.useFakeTimers();
 mockdate.set('2024-08-11Z');

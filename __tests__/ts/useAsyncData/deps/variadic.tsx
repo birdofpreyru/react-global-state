@@ -7,13 +7,13 @@ import { type FunctionComponent, useState } from 'react';
 import { expect, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/dom';
 
-import { act, mount, waitNextAnimFrame } from 'jest/utils';
-
 import {
   type AsyncDataEnvelopeT,
   newAsyncDataEnvelope,
   withGlobalStateType,
-} from 'src';
+} from 'build/index.js';
+
+import { act, mount, waitNextAnimFrame } from 'jest/utils.js';
 
 type StateT = {
   path: AsyncDataEnvelopeT<string[]>;

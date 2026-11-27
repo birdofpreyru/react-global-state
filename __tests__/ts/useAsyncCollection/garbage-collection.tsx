@@ -5,9 +5,8 @@ import { useState } from 'react';
 import { expect, jest, test } from '@jest/globals';
 import { getByText } from '@testing-library/react';
 
-import { act, mount, timer } from 'jest/utils';
-
-import { type AsyncDataEnvelopeT, withGlobalStateType } from 'src';
+import { type AsyncDataEnvelopeT, withGlobalStateType } from 'build/index.js';
+import { act, mount, timer } from 'jest/utils.js';
 
 jest.useFakeTimers();
 

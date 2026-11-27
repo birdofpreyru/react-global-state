@@ -10,16 +10,16 @@ import {
   test,
 } from '@jest/globals';
 
+import { GlobalStateProvider, SsrContext } from 'build/index.js';
+
 import {
   type MountedSceneT,
   consoleLogs,
   mockConsoleLog,
   unMockConsoleLog,
-} from 'jest/utils';
+} from 'jest/utils.js';
 
-import { GlobalStateProvider, SsrContext } from 'src/index';
-
-import type * as TestSceneNS from './__assets__/TestScene';
+import type * as TestSceneNS from './__assets__/TestScene.js';
 
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');

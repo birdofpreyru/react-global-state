@@ -23,8 +23,7 @@ jest.mock<typeof LodashM>('lodash-es', () => {
 });
 
 test('key timeout works as expected', async () => {
-  // eslint-disable-next-line import/dynamic-import-chunkname
-  const { cloneDeepForLog } = await import('src/utils');
+  const { cloneDeepForLog } = await import('build/utils.js');
 
   const oA = { data: { key: 'value' } };
   let oB = cloneDeepForLog(oA, '2');

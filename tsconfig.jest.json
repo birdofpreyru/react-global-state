@@ -1,0 +1,18 @@
+// Compiles Jest utilities.
+
+{
+  "extends": "@tsconfig/recommended",
+  "include": ["jest-ts-src"],
+  "compilerOptions": {
+    "declaration": true,
+    "jsx": "react-jsx",
+    "isolatedModules": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "noUncheckedIndexedAccess": true,
+    "outDir": "jest",
+    "rootDir": "./jest-ts-src",
+    "types": ["node"],
+    "verbatimModuleSyntax": true
+  }
+}

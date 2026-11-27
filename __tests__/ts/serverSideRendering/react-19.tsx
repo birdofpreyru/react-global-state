@@ -10,18 +10,17 @@ import {
   test,
 } from '@jest/globals';
 
+import { GlobalStateProvider, SsrContext } from 'build/index.js';
+
 import {
   type MountedSceneT,
   consoleLogs,
   mockConsoleLog,
   unMockConsoleLog,
-} from 'jest/utils';
+} from 'jest/utils.js';
 
-import { GlobalStateProvider, SsrContext } from 'src/index';
-
-import StringDestination from './__assets__/StringDestination';
-
-import type * as TestSceneNS from './__assets__/TestScene';
+import StringDestination from './__assets__/StringDestination.ts';
+import type * as TestSceneNS from './__assets__/TestScene.ts';
 
 jest.useFakeTimers();
 mockdate.set('2024-12-31Z');
@@ -70,7 +69,7 @@ test('Naive server-side rendering', async () => {
  * This is the sample SSR code assembly.
  */
 async function serverSideRender(): Promise<string> {
-  let prelude: NodeJS.ReadableStream;
+  let prelude: NodeJS.ReadableStream | undefined;
   ssrRound = 0;
 
   const ssrContext = new SsrContext({});
@@ -89,7 +88,10 @@ async function serverSideRender(): Promise<string> {
     } else break;
   }
   const dest = new StringDestination();
-  prelude!.pipe(dest);
+
+  if (!prelude) throw Error('Missing prelude');
+
+  prelude.pipe(dest);
   return dest.waitResult();
 }
 

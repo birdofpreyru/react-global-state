@@ -18,6 +18,8 @@ import {
   test,
 } from '@jest/globals';
 
+import { type ForceT, GlobalStateProvider, useAsyncData } from 'build/index.js';
+
 import {
   type MountedSceneT,
   act,
@@ -27,9 +29,7 @@ import {
   mount,
   wait,
   waitNextAnimFrame,
-} from 'jest/utils';
-
-import { type ForceT, GlobalStateProvider, useAsyncData } from 'src/index';
+} from 'jest/utils.js';
 
 jest.useFakeTimers({
   doNotFake: ['cancelAnimationFrame', 'requestAnimationFrame'],
@@ -88,7 +88,8 @@ let button: Element | null = null;
 async function clickButton() {
   const event = new MouseEvent('click', { bubbles: true });
   act(() => {
-    button!.dispatchEvent(event);
+    if (!button) throw Error('Missing button');
+    button.dispatchEvent(event);
   });
   await act(async () => {
     await mockTimer(10);
@@ -122,16 +123,19 @@ test('Scenario I', async () => {
   mockConsoleLog();
   await initTestScene();
 
+  if (!scene) throw Error('Missing scene');
+
   /* Empty scene. */
-  scene!.snapshot();
+  scene.snapshot();
 
   /* Mounts ComponentA, checks the loading started. */
   act(() => {
-    button!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (!button) throw Error('Missing button');
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
   await act(async () => mockTimer(1));
   await waitNextAnimFrame();
-  scene!.snapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).not.toHaveBeenCalled();
 
@@ -140,7 +144,7 @@ test('Scenario I', async () => {
     await mockTimer(1000);
   });
   await waitNextAnimFrame();
-  scene!.snapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(1);
   expect(loaderB).not.toHaveBeenCalled();
 
@@ -150,7 +154,7 @@ test('Scenario I', async () => {
   for (let i = 0; i < 4; i += 1) {
     await clickButton();
     await waitNextAnimFrame();
-    scene!.snapshot();
+    scene.snapshot();
     expect(loaderA).toHaveBeenCalledTimes(1);
     expect(loaderB).not.toHaveBeenCalled();
   }
@@ -163,7 +167,7 @@ test('Scenario I', async () => {
   await wait(6 * 60 * 1000);
   await clickButton();
   await waitNextAnimFrame();
-  scene!.snapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).not.toHaveBeenCalled();
 
@@ -171,7 +175,7 @@ test('Scenario I', async () => {
    * are mounted. */
   await wait(1000);
   await waitNextAnimFrame();
-  scene!.snapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).not.toHaveBeenCalled();
 
@@ -180,7 +184,7 @@ test('Scenario I', async () => {
   await wait(6 * 60 * 1000);
   await clickButton();
   await waitNextAnimFrame();
-  scene!.snapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);
 
@@ -188,7 +192,7 @@ test('Scenario I', async () => {
   await wait(1000);
   await clickButton();
   await waitNextAnimFrame();
-  scene!.snapshot();
+  scene.snapshot();
   expect(loaderA).toHaveBeenCalledTimes(2);
   expect(loaderB).toHaveBeenCalledTimes(1);
 

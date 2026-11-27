@@ -6,12 +6,12 @@ import { useEffect, useRef, useState } from 'react';
 
 import { MIN_MS } from '@dr.pogodin/js-utils';
 
-import type GlobalState from './GlobalState';
-import { useGlobalStateObject } from './GlobalStateProvider';
+import type GlobalState from './GlobalState.js';
+import { useGlobalStateObject } from './GlobalStateProvider.js';
 
-import type SsrContext from './SsrContext';
+import type SsrContext from './SsrContext.js';
 
-import useGlobalState from './useGlobalState';
+import useGlobalState from './useGlobalState.js';
 import {
   type ForceT,
   type LockT,
@@ -19,7 +19,7 @@ import {
   type ValueAtPathT,
   cloneDeepForLog,
   isDebugMode,
-} from './utils';
+} from './utils.js';
 
 export const DEFAULT_MAXAGE = 5 * MIN_MS; // 5 minutes.
 
@@ -116,6 +116,7 @@ function setState<
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 function finalizeLoad<DataT>(
   data: DataT,
   path: null | string | undefined,

@@ -7,6 +7,8 @@
  * the same data into the same state segment.
  */
 
+import { GlobalStateProvider, useAsyncData } from 'build/index.js';
+
 import {
   act,
   consoleLogs,
@@ -15,13 +17,11 @@ import {
   mount,
   wait,
   waitNextAnimFrame,
-} from 'jest/utils';
+} from 'jest/utils.js';
 
 import mockdate from 'mockdate';
 
 import { useState } from 'react';
-
-import { GlobalStateProvider, useAsyncData } from 'src/index';
 
 import { timer } from '@dr.pogodin/js-utils';
 

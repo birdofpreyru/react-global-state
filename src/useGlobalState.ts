@@ -11,8 +11,8 @@ import {
 
 import { Emitter } from '@dr.pogodin/js-utils';
 
-import type GlobalState from './GlobalState';
-import { useGlobalStateObject } from './GlobalStateProvider';
+import type GlobalState from './GlobalState.js';
+import { useGlobalStateObject } from './GlobalStateProvider.js';
 
 import {
   type ForceT,
@@ -22,7 +22,7 @@ import {
   type ValueOrInitializerT,
   cloneDeepForLog,
   isDebugMode,
-} from './utils';
+} from './utils.js';
 
 export type SetterT<T> = Dispatch<SetStateAction<T>>;
 
@@ -192,16 +192,19 @@ function useGlobalState(
   };
 
   useEffect(() => {
+    if (!ref.current) throw Error('Internal error');
+
     ref.current = {
       globalState,
       path,
-      prevValue: ref.current!.prevValue,
+      prevValue: ref.current.prevValue,
     };
 
     const watcher = () => {
       const nextValue = globalState.get<ForceT, unknown>(path);
-      if (ref.current!.prevValue !== nextValue) {
-        ref.current!.prevValue = nextValue;
+      if (!ref.current) throw Error('Internal error');
+      if (ref.current.prevValue !== nextValue) {
+        ref.current.prevValue = nextValue;
         stable.emitter.emit();
       }
     };

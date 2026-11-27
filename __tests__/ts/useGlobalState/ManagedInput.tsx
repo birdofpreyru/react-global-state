@@ -8,8 +8,8 @@
 
 import { expect, it, jest } from '@jest/globals';
 
-import { type MountedSceneT, act, mount } from 'jest/utils';
-import { GlobalStateProvider, useGlobalState } from 'src';
+import { GlobalStateProvider, useGlobalState } from 'build/index.js';
+import { type MountedSceneT, act, mount } from 'jest/utils.js';
 
 jest.useFakeTimers();
 
@@ -39,7 +39,8 @@ let scene: MountedSceneT | undefined;
 
 it('works as expected', () => {
   scene = mount(<TestScene />);
-  const input = document.querySelector('input')!;
+  const input = document.querySelector('input');
+  if (!input) throw Error('Missing input');
   expect(input.selectionStart).toBe(5);
   input.selectionStart = 2;
   expect(input.selectionStart).toBe(2);
@@ -56,7 +57,8 @@ it('works as expected', () => {
     const setter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
       'value',
-    )!.set!;
+    )?.set;
+    if (!setter) throw Error('Missing setter');
     setter.call(input, '12A345');
     input.selectionStart = 3;
     expect(input.selectionStart).toBe(3);

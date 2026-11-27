@@ -19,17 +19,17 @@ import {
   test,
 } from '@jest/globals';
 
+import { GlobalStateProvider, SsrContext, useSsrContext } from 'build/index.js';
+
 import {
   type MountedSceneT,
   act,
   mockTimer,
   mount,
   unMockConsoleLog,
-} from 'jest/utils';
+} from 'jest/utils.js';
 
-import { GlobalStateProvider, SsrContext, useSsrContext } from 'src/index';
-
-import Scene, { loaderA, loaderB } from './__assets__/TestScene';
+import Scene, { loaderA, loaderB } from './__assets__/TestScene.tsx';
 
 jest.useFakeTimers();
 mockdate.set('2019-11-07Z');

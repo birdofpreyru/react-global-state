@@ -4,14 +4,14 @@ import type { FunctionComponent } from 'react';
 
 import { expect, jest, test } from '@jest/globals';
 
-import { mount } from 'jest/utils';
-
 import {
   type AsyncDataEnvelopeT,
   type UseAsyncDataResT,
   newAsyncDataEnvelope,
   withGlobalStateType,
-} from 'src';
+} from 'build/index.js';
+
+import { mount } from 'jest/utils.js';
 
 type StateT = {
   collection: Record<string, AsyncDataEnvelopeT<string>>;

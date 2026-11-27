@@ -5,9 +5,13 @@ import { type FunctionComponent, useState } from 'react';
 import { expect, jest, test } from '@jest/globals';
 import { getByTestId } from '@testing-library/react';
 
-import { act, mount } from 'jest/utils';
+import {
+  GlobalState,
+  GlobalStateProvider,
+  useGlobalStateObject,
+} from 'build/index.js';
 
-import { GlobalState, GlobalStateProvider, useGlobalStateObject } from 'src';
+import { act, mount } from 'jest/utils.js';
 
 type GlobalStateT = InstanceType<typeof GlobalState<number>>;
 
@@ -67,7 +71,7 @@ test('base scenario', () => {
     getByTestId(scene, 'toggle-read').click();
   });
   expect(componentGS).toBe(sceneGS);
-  expect(componentGS!.get()).toBe(0);
+  expect(componentGS?.get()).toBe(0);
 
   const oldGS = sceneGS;
   act(() => {
